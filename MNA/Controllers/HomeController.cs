@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using MNA.Models;
+using Models;
 
 namespace MNA.Controllers
 {

@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using MNA.Data;
+using DataAccess;
 
 namespace MNA
 {
