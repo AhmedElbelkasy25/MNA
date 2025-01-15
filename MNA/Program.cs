@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using DataAccess;
+using Microsoft.AspNetCore.Identity;
 
 namespace MNA
 {
@@ -11,11 +12,14 @@ namespace MNA
             
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddRazorPages();
 
             //add connections
             builder.Services.AddDbContext<ApplicationDbContext>(
                option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
                );
+
+            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 
             var app = builder.Build();
 
@@ -31,12 +35,12 @@ namespace MNA
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.MapRazorPages();
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
         }
