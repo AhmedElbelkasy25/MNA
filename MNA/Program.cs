@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using DataAccess;
 using Microsoft.AspNetCore.Identity;
+using Models;
 
 namespace MNA
 {
@@ -19,7 +20,10 @@ namespace MNA
                option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
                );
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
+            // Add Identity services.
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
             var app = builder.Build();
 
