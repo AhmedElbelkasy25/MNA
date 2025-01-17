@@ -2,7 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using DataAccess;
 using Microsoft.AspNetCore.Identity;
 using Models;
-
+using DataAccess.Repository;
+using DataAccess.Repository.IRepository;
 namespace MNA
 {
     public class Program
@@ -25,6 +26,26 @@ namespace MNA
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
+
+            //Add connection 
+
+            
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<ICartRepository, CartRepository>();
+            builder.Services.AddScoped<ICouponRepository, CouponRepository>();
+            builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+            builder.Services.AddScoped<IDegreeRepository, DegreeRepository>();
+            builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
+            builder.Services.AddScoped<IFavouriteRepository, FavouriteRepository>();
+            builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
+            builder.Services.AddScoped<ILessonRepository, LessonRepository>();
+            builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+            builder.Services.AddScoped<IQuizRepository, QuizRepository>();
+            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+            builder.Services.AddScoped<ISectionRepository, SectionRepository>();
+            builder.Services.AddScoped<IStudentCategoriesRepository, StudentCategoriesRepository>();
+            builder.Services.AddScoped<IStudentCouponsRepository, StudentCouponsRepository>();
+            builder.Services.AddScoped<IApplicationUserRepository, IApplicationUserRepository>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
