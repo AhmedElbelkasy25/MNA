@@ -7,17 +7,14 @@ namespace Models
         public string Name { get; set; }
         public string? Address { get; set; }
         public string? ImgUrl { get; set; }
-    }
-    public class Category 
-    {
-        public int Id {  get; set; }
-        public string Name { get; set; }
-    }
-
-    public class ErrorViewModel
-    {
-        public string? RequestId { get; set; }
-
-        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+        public int? NumOfCourses { get; set; }
+        public ICollection<Degree> Degrees { get; set; } = new List<Degree>();
+        public ICollection<StudentCouPons> StudentCouPons { get; set; } = new List<StudentCouPons>();
+        public ICollection<StudentCategories> StudentCategories { get; set; } = new List<StudentCategories>();
+        public ICollection<Cart> Carts { get; set; } = new List<Cart>();
+        public ICollection<Payment> Payments { get; set; } = new List<Payment>();
+        public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
+        public ICollection<Favourite> Favourites { get; set; } = new List<Favourite>();
+        public ICollection<Review> Reviews { get; set; } = new List<Review>();
     }
 }
