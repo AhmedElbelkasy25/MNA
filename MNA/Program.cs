@@ -45,7 +45,7 @@ namespace MNA
             builder.Services.AddScoped<ISectionRepository, SectionRepository>();
             builder.Services.AddScoped<IStudentCategoriesRepository, StudentCategoriesRepository>();
             builder.Services.AddScoped<IStudentCouponsRepository, StudentCouponsRepository>();
-            builder.Services.AddScoped<IApplicationUserRepository, IApplicationUserRepository>();
+            builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
