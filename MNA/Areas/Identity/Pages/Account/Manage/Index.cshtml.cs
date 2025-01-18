@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Models;
 
 namespace MNA.Areas.Identity.Pages.Account.Manage
 {
@@ -58,9 +59,15 @@ namespace MNA.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+            [Display(Name = "Name")]
+            public string? Name { get; set; }
+            [Display(Name = "Address")]
+            public string? Address { get; set; }
+            [Display(Name = "ImgUrl")]
+            public string? ImgUrl { get; set; }
         }
 
-        private async Task LoadAsync(IdentityUser user)
+        private async Task LoadAsync(ApplicationUser user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
@@ -69,13 +76,16 @@ namespace MNA.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                Name= user.Name,
+                Address= user.Address,
+                ImgUrl = user.ImgUrl
             };
         }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User) as ApplicationUser;
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -87,7 +97,7 @@ namespace MNA.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User) as ApplicationUser;
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -109,7 +119,10 @@ namespace MNA.Areas.Identity.Pages.Account.Manage
                     return RedirectToPage();
                 }
             }
-
+            user.Address= Input.Address;
+            user.Name = Input.Name;
+            user.ImgUrl = Input.ImgUrl;
+            await _userManager.UpdateAsync(user);
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();

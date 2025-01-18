@@ -21,12 +21,13 @@ namespace MNA
             builder.Services.AddDbContext<ApplicationDbContext>(
                 option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
                 );
-            //builder.Services.AddDefaultIdentity<ApplicationUser >(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
+            //builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 
             // Add Identity services.
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
+
 
 
             //Add connection 
@@ -48,6 +49,8 @@ namespace MNA
             builder.Services.AddScoped<ISectionRepository, SectionRepository>();
             builder.Services.AddScoped<IStudentCategoriesRepository, StudentCategoriesRepository>();
             builder.Services.AddScoped<IStudentCouponsRepository, StudentCouponsRepository>();
+
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
