@@ -17,11 +17,11 @@ namespace MNA
             builder.Services.AddRazorPages();
 
             //add connections
-            builder.Services.AddDbContext<ApplicationDbContext>(
-               option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-               );
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddDbContext<ApplicationDbContext>(
+                option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+                );
+            //builder.Services.AddDefaultIdentity<ApplicationUser >(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 
             // Add Identity services.
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -32,6 +32,7 @@ namespace MNA
             //Add connection 
 
             
+            builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<ICartRepository, CartRepository>();
             builder.Services.AddScoped<ICouponRepository, CouponRepository>();
@@ -47,7 +48,6 @@ namespace MNA
             builder.Services.AddScoped<ISectionRepository, SectionRepository>();
             builder.Services.AddScoped<IStudentCategoriesRepository, StudentCategoriesRepository>();
             builder.Services.AddScoped<IStudentCouponsRepository, StudentCouponsRepository>();
-            builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
