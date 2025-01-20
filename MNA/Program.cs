@@ -4,6 +4,8 @@ using DataAccess;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using MNA.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,8 @@ builder.Services.AddRazorPages();
 // Add DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 // Add Identity with ApplicationUser
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -37,6 +41,9 @@ builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<ISectionRepository, SectionRepository>();
 builder.Services.AddScoped<IStudentCategoriesRepository, StudentCategoriesRepository>();
 builder.Services.AddScoped<IStudentCouponsRepository, StudentCouponsRepository>();
+
+
+
 
 var app = builder.Build();
 
