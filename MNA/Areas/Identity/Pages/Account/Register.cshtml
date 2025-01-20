@@ -38,10 +38,11 @@
                 <span asp-validation-for="Input.Address" class="text-danger"></span>
             </div>
             <div class="form-floating mb-3">
-                <input asp-for="Input.ImgUrl" class="form-control" autocomplete="ImgUrl" aria-required="true" placeholder="ImgUrl" />
-                <label asp-for="Input.ImgUrl">ImgUrl</label>
+                <input asp-for="Input.ImgUrl" type="file" class="form-control" aria-required="true" accept="image/*" />
+                <label asp-for="Input.ImgUrl">Upload Photo</label>
                 <span asp-validation-for="Input.ImgUrl" class="text-danger"></span>
             </div>
+
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </form>
     </div>
