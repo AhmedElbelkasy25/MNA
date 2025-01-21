@@ -14,17 +14,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Areas\Customer\Views\Home\Index.cshtml" />
-    <None Include="Areas\Customer\Views\Home\Privacy.cshtml" />
-    <None Include="Areas\Customer\Views\_ViewImports.cshtml" />
-    <None Include="Areas\Customer\Views\_ViewStart.cshtml" />
+    <None Include="Areas\Student\Views\Home\Index.cshtml" />
+    <None Include="Areas\Student\Views\Home\Privacy.cshtml" />
+    <None Include="Areas\Student\Views\_ViewImports.cshtml" />
+    <None Include="Areas\Student\Views\_ViewStart.cshtml" />
   </ItemGroup>
 	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="13.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.12" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.11" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.11" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.11" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.11">
 			<PrivateAssets>all</PrivateAssets>
