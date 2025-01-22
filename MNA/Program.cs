@@ -37,22 +37,25 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.S
     .AddDefaultTokenProviders();
 
 // Add repository services
-builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<ICartRepository, CartRepository>();
-builder.Services.AddScoped<ICouponRepository, CouponRepository>();
-builder.Services.AddScoped<ICourseRepository, CourseRepository>();
-builder.Services.AddScoped<IDegreeRepository, DegreeRepository>();
-builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
-builder.Services.AddScoped<IFavouriteRepository, FavouriteRepository>();
-builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
-builder.Services.AddScoped<ILessonRepository, LessonRepository>();
-builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
-builder.Services.AddScoped<IQuizRepository, QuizRepository>();
-builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
-builder.Services.AddScoped<ISectionRepository, SectionRepository>();
-builder.Services.AddScoped<IStudentCategoriesRepository, StudentCategoriesRepository>();
-builder.Services.AddScoped<IStudentCouponsRepository, StudentCouponsRepository>();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+//builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
+//builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+//builder.Services.AddScoped<ICartRepository, CartRepository>();
+//builder.Services.AddScoped<ICouponRepository, CouponRepository>();
+//builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+//builder.Services.AddScoped<IDegreeRepository, DegreeRepository>();
+//builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
+//builder.Services.AddScoped<IFavouriteRepository, FavouriteRepository>();
+//builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
+//builder.Services.AddScoped<ILessonRepository, LessonRepository>();
+//builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+//builder.Services.AddScoped<IQuizRepository, QuizRepository>();
+//builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+//builder.Services.AddScoped<ISectionRepository, SectionRepository>();
+//builder.Services.AddScoped<IStudentCategoriesRepository, StudentCategoriesRepository>();
+//builder.Services.AddScoped<IStudentCouponsRepository, StudentCouponsRepository>();
 
 
 var app = builder.Build();

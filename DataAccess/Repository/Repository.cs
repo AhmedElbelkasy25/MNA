@@ -38,10 +38,10 @@ namespace DataAccess.Repository
             _dbSet.Remove(entity);
             
         }
-        public void Commit()
-        {
-            _dbContext.SaveChanges();
-        }
+        //public void Commit()
+        //{
+        //    _dbContext.SaveChanges();
+        //}
 
         public IQueryable<T> Get(Expression<Func<T, bool>>? filter = null,
             Func<IQueryable<T>, IIncludableQueryable<T, object>>? includeProps = null,
