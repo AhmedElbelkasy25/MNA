@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> userManager;
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -12,27 +15,59 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="Customer" asp-controller="Home" asp-action="Index">MNA</a>
+                @* <a class="navbar-brand" asp-area="Student" asp-controller="Home" asp-action="Index"> MNA/></a> *@
+                <a class="navbar-brand" asp-area="Student" asp-controller="Home" asp-action="Index">MNA</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+
+                        @* <a class="btn" href="/Cart/Index"><i class="bi bi-cart4"></i></a> *@
                     </ul>
-                    <partial name="_LoginPartial.cshtml"></partial>
+                    <ul class="navbar-nav">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            var user = await userManager.GetUserAsync(User);
+
+                            <li>
+                                @if (user.ImgUrl == null)
+                                {
+                                    <a href="Identity/account/GetProfile?name=@User.Identity.Name">
+                                        <img src="~/images/AdminImg/Basic_Ui__28186_29.jpg" class="rounded-circle" style="width:40px;height:auto" />
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="/Identity/account/GetProfile?name=@User.Identity.Name">
+                                        <img src="/images/AdminImg/@user.ImgUrl" class="rounded-3" style="width:35px;height:auto" />
+                                    </a>
+                                }
+
+                                <span>Welcome </span>
+                                <a class="btn btn-outline-primary" href="/Identity/account/GetProfile?name=@User.Identity.Name"> @User.Identity.Name </a>
+                            </li>
+
+                            <li> <a class="btn btn-light" href="/Identity/Account/Logout">Logut </a></li>
+                        }
+                        else
+                        {
+                            <li> <a class="btn btn-light" href="/Identity/Account/Login">Login </a></li>
+                            <li> <a class="btn btn-light" href="/Identity/Account/Register">Register </a></li>
+                        }
+                    </ul>
+
                 </div>
             </div>
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main" class="pb-3" style="min-height:100vh">
             @RenderBody()
         </main>
     </div>

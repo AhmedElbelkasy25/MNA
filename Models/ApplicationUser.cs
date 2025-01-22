@@ -8,6 +8,7 @@ namespace Models
         public string? Address { get; set; }
         public string? ImgUrl { get; set; }
         public int? NumOfCourses { get; set; }
+        public Boolean IsLocked { get; set; } = false;
         public ICollection<Degree> Degrees { get; set; } = new List<Degree>();
         public ICollection<StudentCouPons> StudentCouPons { get; set; } = new List<StudentCouPons>();
         public ICollection<StudentCategories> StudentCategories { get; set; } = new List<StudentCategories>();
