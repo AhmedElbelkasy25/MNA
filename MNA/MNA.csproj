@@ -8,9 +8,13 @@
 
   <ItemGroup>
     <Compile Remove="Areas\Identity\Data\**" />
+    <Compile Remove="wwwroot\uploads\**" />
     <Content Remove="Areas\Identity\Data\**" />
+    <Content Remove="wwwroot\uploads\**" />
     <EmbeddedResource Remove="Areas\Identity\Data\**" />
+    <EmbeddedResource Remove="wwwroot\uploads\**" />
     <None Remove="Areas\Identity\Data\**" />
+    <None Remove="wwwroot\uploads\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,10 +38,5 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
 	  <ProjectReference Include="..\Models\Models.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Areas\Admin\Controllers\" />
-	  <Folder Include="Areas\Admin\Views\" />
-	  <Folder Include="wwwroot\uploads\" />
 	</ItemGroup>
 </Project>

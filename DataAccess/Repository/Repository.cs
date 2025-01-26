@@ -18,7 +18,7 @@ namespace DataAccess.Repository
         public Repository(ApplicationDbContext dbContext)
         {
             this._dbContext = dbContext;
-            
+            _dbSet = _dbContext.Set<T>();
         }
 
         public void Create(T entity)
