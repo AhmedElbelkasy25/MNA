@@ -75,10 +75,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Email)
                 </td>
-                @* <td>
-                    <button disabled class="btn @((bool)item.ISBlocked ? "btn-danger" : "btn-primary")">
-                        @item.ISBlocked</button>
-            </td> *@
+                
                 <td>
                     @if ((bool)item.IsLocked)
                     {

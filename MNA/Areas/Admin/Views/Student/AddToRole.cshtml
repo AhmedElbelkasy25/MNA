@@ -1,5 +1,5 @@
 ﻿@using Models.ViewModels
-@model AddUserToRoleVM
+@model AddToRoleVM
 
 <div class="row">
     <div class="col-md-8">
@@ -12,7 +12,7 @@
 
             <div class="form-group">
                 <label asp-for="@Model.Name" class="control-label"></label>
-                <input readonly asp-for="@Model.Name" class="form-control" />
+                <input readonly asp-for="Name" class="form-control" />
                 <span asp-validation-for="@Model.Name" class="text-danger"></span>
             </div>
             <div class="form-group">

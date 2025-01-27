@@ -8,7 +8,7 @@ namespace MNA.Profiles
     {
         public UserProfile()
         {
-            CreateMap<UserRegiesterVm, ApplicationUser>();
+            CreateMap<ApplicationUser, AddToRoleVM>();
         }
     }
 }

@@ -22,6 +22,9 @@ namespace DataAccess
         public DbSet<Section> Sections { get; set; }
         public DbSet<StudentCategories> StudentCategories { get; set; }
         public DbSet<StudentCouPons> StudentCouPons { get; set; }
+        
+        
+        
 
 
         
