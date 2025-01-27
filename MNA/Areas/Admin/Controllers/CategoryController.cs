@@ -1,5 +1,6 @@
 ﻿using DataAccess.Repository;
 using DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
@@ -8,17 +9,20 @@ namespace MNA.Areas.Admin.Controllers
     [Area("Admin")]
     public class CategoryController : Controller
     {
-        private readonly IRepository<Category> _categoryRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public CategoryController(IRepository<Category> CategoryRepository)
+        public CategoryController(IUnitOfWork unitOfWork,
+          UserManager<ApplicationUser> userManager)
         {
-            _categoryRepository = CategoryRepository;
+            this._unitOfWork = unitOfWork;
+            this._userManager = userManager;
         }
 
         // GET: Category
         public IActionResult Index()
         {
-            var categories = _categoryRepository.Get().ToList();
+            var categories = _unitOfWork.Categories.Get().ToList();
             return View(categories);
         }
 
@@ -30,12 +34,12 @@ namespace MNA.Areas.Admin.Controllers
 
         // POST: Category/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Create(Category category)
         {
             if (ModelState.IsValid)
             {
-                _categoryRepository.Create(category);
+                _unitOfWork.Categories.Create(category);
+                _unitOfWork.Commit();
                 return RedirectToAction(nameof(Index));
             }
 
@@ -45,7 +49,7 @@ namespace MNA.Areas.Admin.Controllers
         // GET: Category/Edit/5
         public IActionResult Edit(int id)
         {
-            var category = _categoryRepository.GetOne(c => c.Id == id);
+            var category = _unitOfWork.Categories.GetOne(c => c.Id == id);
 
             if (category == null)
             {
@@ -67,7 +71,8 @@ namespace MNA.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                _categoryRepository.Alter(category);
+                _unitOfWork.Categories.Alter(category);
+                _unitOfWork.Commit();
                 return RedirectToAction(nameof(Index));
             }
 
@@ -77,7 +82,7 @@ namespace MNA.Areas.Admin.Controllers
         // GET: Category/Delete/5
         public IActionResult Delete(int id)
         {
-            var category = _categoryRepository.GetOne(c => c.Id == id);
+            var category = _unitOfWork.Categories.GetOne(c => c.Id == id);
 
             if (category == null)
             {
@@ -89,17 +94,17 @@ namespace MNA.Areas.Admin.Controllers
 
         // POST: Category/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            var category = _categoryRepository.GetOne(c => c.Id == id);
+            var category = _unitOfWork.Categories.GetOne(c => c.Id == id);
 
             if (category == null)
             {
                 return NotFound();
             }
 
-            _categoryRepository.Delete(category);
+            _unitOfWork.Categories.Delete(category);
+            _unitOfWork.Commit();
             return RedirectToAction(nameof(Index));
         }
     }
