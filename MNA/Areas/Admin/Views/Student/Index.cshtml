@@ -1,0 +1,104 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Models;
+@inject UserManager<ApplicationUser> userManager
+@model IEnumerable<Models.ApplicationUser>
+
+
+
+
+@section Scripts {
+
+    @if (@TempData["success"] != null)
+    {
+        <script>
+            toastr.success('@TempData["success"]')
+        </script>
+    }
+    @if (TempData["error"] != null)
+    {
+        <script>
+            toastr.error('@TempData["error"]')
+        </script>
+    }
+}
+
+
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h3> all users</h3>
+
+<div>
+    <form asp-action="SearchForUser" asp-controller="User" asp-area="" method="post">
+        <div class="col-md-3 d-flex">
+            <input type="Text" class="form-control" placeholder="User Name Or Email" name="account" />
+            <button class="btn btn-primary" type="submit"> Search </button>
+        </div>
+    </form>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+
+
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+
+
+            <th>  block | unblock </th>
+            <th> Role</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var role = await userManager.GetRolesAsync(item);
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                @* <td>
+                    <button disabled class="btn @((bool)item.ISBlocked ? "btn-danger" : "btn-primary")">
+                        @item.ISBlocked</button>
+            </td> *@
+                <td>
+                    @if ((bool)item.IsLocked)
+                    {
+                        <a href="/Admin/student/unblockUser?UserId=@item.Id" class="btn btn-outline-info">UnBlock</a>
+                    }
+                    else
+                    {
+
+                        <a href="/Admin/student/blockUser?UserId=@item.Id" class="btn btn-outline-danger">Block</a>
+                    }
+
+                </td>
+                <td>
+                    @string.Join(" ", role)
+
+                </td>
+                <td>
+                    <a href="/Admin/student/AddToRole?userId=@item.Id" class="btn btn-outline-success"> ADD to Role</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

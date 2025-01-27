@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using DataAccess.Repository.IRepository;
+using Models;
 
 namespace DataAccess.Repository
 {

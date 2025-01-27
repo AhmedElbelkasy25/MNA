@@ -7,6 +7,7 @@ using Models;
 
 using Microsoft.AspNetCore.Identity.UI.Services;
 using MNA.Utility;
+using DataAccess.DbIntializer;
 
 
 
@@ -39,6 +40,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.S
 // Add repository services
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IDbIntializer, DbIntializer>();
+
 
 //builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
 //builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -76,7 +79,9 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-
+var scope = app.Services.CreateScope();
+var service = scope.ServiceProvider.GetService<IDbIntializer>();
+service.Intial();
 
 app.MapControllerRoute(
     name: "default",
