@@ -23,60 +23,85 @@
     </header>
     <div class="wrapper">
 
-        <aside id="sidebar" class="js-sidebar">
+        <aside id="sidebar" class="js-sidebar bg-gradient">
             <div class="h-100">
-                <div class="sidebar-logo">
-                    <a >Admin Dashboard</a>
+                <div class="sidebar-logo p-3">
+                    <h5 class="text-info fw-bold">Admin Dashboard</h5>
                 </div>
                 <ul class="sidebar-nav">
                     <li class="sidebar-header">
-                        Welcome @User.Identity.Name
+                        <h5> Welcome @User.Identity.Name </h5>
                     </li>
                     <li class="sidebar-item">
-                        <a href="#" class="sidebar-link collapsed" data-bs-target="#pages" data-bs-toggle="collapse"
+                        <a href="#" id="elem" class="sidebar-link collapsed" data-bs-target="#pages" data-bs-toggle="collapse"
                            aria-expanded="false">
                             <i class="fa-solid fa-file-lines pe-2"></i>
                             Elemnets   <i class="bi bi-card-list"></i>
                         </a>
                         <ul id="pages" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                             <li class="sidebar-item">
-                                <a href="/movie/index" class="sidebar-link">
+                                <a href="/Admin/Course/index" class="sidebar-link">
                                     <i class="fa-solid fa-list pe-2"></i>
-                                    Movies <i class="bi bi-film"></i>
+                                    Course <i class="bi bi-book"></i>
                                 </a>
                             </li>
                             <li class="sidebar-item">
-                                <a href="/Cinema/index" class="sidebar-link">
+                                <a href="/Admin/Section/index" class="sidebar-link">
                                     <i class="fa-solid fa-list pe-2"></i>
-                                    Cinemas <i class="bi bi-camera-reels"></i>
+                                    Section <i class="bi bi-archive"></i>
                                 </a>
                             </li>
                             <li class="sidebar-item">
-                                <a href="/Category/index" class="sidebar-link">
+                                <a href="/Admin/Lesson/index" class="sidebar-link">
                                     <i class="fa-solid fa-list pe-2"></i>
-                                    Category <i class="bi bi-bookmark-star"></i>
+                                    Lesson <i class="bi bi-file-play-fill"></i>
                                 </a>
                             </li>
                             <li class="sidebar-item">
-                                <a href="/Actor/index" class="sidebar-link">
+                                <a href="/Admin/Quiz/index" class="sidebar-link">
                                     <i class="fa-solid fa-list pe-2"></i>
-                                    Actors  <i class="bi bi-person-rolodex"></i>
+                                    Quiz  <i class="bi bi-files"></i>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="/Admin/Instructor/index" class="sidebar-link">
+                                    <i class="fa-solid fa-list pe-2"></i>
+                                    Instructors <i class="bi bi-person-check"></i>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="/Admin/Category/index" class="sidebar-link">
+                                    <i class="fa-solid fa-list pe-2"></i>
+                                    Category <i class="bi bi-bookmark-check"></i>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="/Admin/Coupon/index" class="sidebar-link">
+                                    <i class="fa-solid fa-list pe-2"></i>
+                                    Coupons  <i class="bi bi-person-rolodex"></i>
                                 </a>
                             </li>
 
                             <li class="sidebar-item">
-                                <a href="/User/index" class="sidebar-link">
+                                <a href="/Admin/Student/index" class="sidebar-link">
                                     <i class="fa-solid fa-list pe-2"></i>
                                     Users <i class="bi bi-people"></i>
                                 </a>
                             </li>
 
                             <li class="sidebar-item">
-                                <a href="/RequestCinema/index" class="sidebar-link">
+                                <a href="/Admin/Payment/index" class="sidebar-link">
                                     <i class="fa-solid fa-list pe-2"></i>
-                                    Requested Cinema <i class="bi bi-folder-plus"></i>
+                                    Payments <i class="bi bi-currency-dollar"></i>
                                 </a>
                             </li>
+@* 
+                            <li class="sidebar-item">
+                                <a href="/RequestCinema/index" class="sidebar-link">
+                                    <i class="fa-solid fa-list pe-2"></i>
+                                    
+                                </a>
+                            </li> *@
                         </ul>
                     </li>
                    
@@ -89,9 +114,9 @@
         </aside>
 
         
-        <main role="main" class="flex-grow-1 p-3">
+        <main role="main" class="flex-grow-1 p-1">
 
-            <nav class="navbar navbar-expand bg-danger px-3 flex-grow-1 border-bottom">
+            <nav class="navbar navbar-expand px-3 flex-grow-1 border-bottom">
                 <button class="btn" id="sidebar-toggle" type="button">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -154,12 +179,9 @@
 
     <footer class="border-top footer text-muted">
         <div class="container text-center">
-            <div class="m-2">
-                Are you a new Cinema
-                <a href="/RequestCinema/Create" class="btn btn-outline-danger">Register now</a>
-            </div>
+            
             <div>
-                &copy; 2024 - Movie_Point - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                &copy; 2024 - MNA - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
             </div>
         </div>
     </footer>
@@ -201,6 +223,9 @@
             font-size: 1.275rem;
             color: var(--bs-emphasis-color);
         }
+        nav {
+            background-color: #999cb0;
+        }
 
         /* Layout for admin dashboard skeleton */
 
@@ -233,6 +258,7 @@
 
         .sidebar-logo {
             padding: 1.15rem;
+            text-align:center;
         }
 
             .sidebar-logo a {
@@ -241,7 +267,13 @@
                 font-weight: 600;
             }
 
-           
+         #pages li:hover{
+            background-color: #6c757e;
+         }
+
+        #elem:hover {
+            background-color: #5d605d;
+         }
 
         .sidebar-nav {
             list-style: none;

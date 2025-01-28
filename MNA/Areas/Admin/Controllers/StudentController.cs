@@ -69,7 +69,7 @@ namespace MNA.Areas.Admin.Controllers
                 var allUser2 = _userManager.Users.ToList();
                 return View("Index", allUser2);
             }
-            return RedirectToAction("NotFoundPage");
+            return RedirectToAction("NotFoundPage","Home" , new {Area = "Student"});
         }
 
         public async Task<IActionResult> unBlockUser(string userId)
@@ -94,7 +94,7 @@ namespace MNA.Areas.Admin.Controllers
                 var allUser2 = _userManager.Users.ToList();
                 return View("Index", allUser2);
             }
-            return RedirectToAction("NotFoundPage", "home");
+            return RedirectToAction("NotFoundPage","Home" , new {Area = "Student"});
         }
 
         [HttpGet]
@@ -103,16 +103,19 @@ namespace MNA.Areas.Admin.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             var role = await _userManager.GetRolesAsync(user);
             var roles = _roleManager.Roles.ToList();
-            return View(new AddUserToRoleVM()
+            var userToFrm = new AddToRoleVM()
             {
-                Id = user.Id,
+                Id = userId,
                 Name = user.Name,
                 Role = string.Join("", role),
                 Roles = roles
-            });
+            };
+            
+
+            return View(model: userToFrm);
         }
         [HttpPost]
-        public async Task<IActionResult> AddToRole(AddUserToRoleVM userfrmVM)
+        public async Task<IActionResult> AddToRole(AddToRoleVM userfrmVM)
         {
 
             var user = await _userManager.FindByIdAsync(userfrmVM.Id);
@@ -127,7 +130,7 @@ namespace MNA.Areas.Admin.Controllers
                 }
                 return View("index", _userManager.Users.ToList());
             }
-            return RedirectToAction("NotFoundPage", "home");
+            return RedirectToAction("NotFoundPage","Home" , new {Area = "Student"});
         }
 
 
