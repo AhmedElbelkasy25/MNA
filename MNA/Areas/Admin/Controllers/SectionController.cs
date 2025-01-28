@@ -7,6 +7,7 @@ namespace MNA.Areas.Admin.Controllers
 {
 
     [Area("Admin")]
+
     public class SectionController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

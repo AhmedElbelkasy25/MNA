@@ -5,7 +5,10 @@ using Models;
 
 namespace MNA.Areas.Admin.Controllers
 {
+
+
     [Area("Admin")]
+
     public class QuizController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
