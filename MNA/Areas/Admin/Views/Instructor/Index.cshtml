@@ -13,6 +13,10 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+
+            <th>
                 @Html.DisplayNameFor(model => model.Bio)
             </th>
             <th>
@@ -27,6 +31,10 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+
             <td>
                 @Html.DisplayFor(modelItem => item.Bio)
             </td>
@@ -38,7 +46,7 @@
             </td>
                 <td>
                     <a class="btn btn-outline-info" asp-action="Edit" asp-route-id="@item.Id"> <i class="bi bi-gear"></i> Edit</a>
-                    <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.Id"> <i class="bi bi-gear"></i> Details</a>
+                   
                     <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">  <i class="bi bi-trash"></i>  Delete</a>
                 </td>
         </tr>

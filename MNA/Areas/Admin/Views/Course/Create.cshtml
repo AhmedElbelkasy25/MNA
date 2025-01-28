@@ -9,7 +9,7 @@
 <h4>Course</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-12">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -44,13 +44,23 @@
             </div>
             <div class="form-group">
                 <label asp-for="InstructorId" class="control-label"></label>
-                <select asp-for="InstructorId" class ="form-control" asp-items="ViewBag.InstructorId"></select>
+                <select asp-for="InstructorId" class ="form-control" >
+                    @foreach (var item in ViewBag.Instructors)
+                    {
+                        <option value="@item.Id">@item.Id</option>
+                    }
+                </select>
             </div>
             <div class="form-group">
                 <label asp-for="CategoryId" class="control-label"></label>
-                <select asp-for="CategoryId" class ="form-control" asp-items="ViewBag.CategoryId"></select>
+                <select asp-for="CategoryId" class ="form-control" >
+                    @foreach (var item in ViewBag.Categories)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                </select>
             </div>
-            <div class="form-group">
+            <div class="form-group pt-3">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
@@ -58,7 +68,7 @@
 </div>
 
 <div>
-    <a asp-action="Index" class="btn btn-primary">Back to List</a>
+    <a asp-action="Index" class="">Back to List</a>
 </div>
 
 @section Scripts {

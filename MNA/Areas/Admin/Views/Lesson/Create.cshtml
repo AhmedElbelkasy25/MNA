@@ -9,7 +9,7 @@
 <h4>Lesson</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-12">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -29,9 +29,14 @@
             </div>
             <div class="form-group">
                 <label asp-for="SectionId" class="control-label"></label>
-                <select asp-for="SectionId" class ="form-control" asp-items="ViewBag.SectionId"></select>
+                <select asp-for="SectionId" class ="form-control" >
+                    @foreach (var item in ViewBag.Lessons)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                </select>
             </div>
-            <div class="form-group">
+            <div class="form-group mt-3">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
@@ -39,7 +44,7 @@
 </div>
 
 <div>
-    <a asp-action="Index" class="btn btn-primary">Back to List</a>
+    <a asp-action="Index" class="btn ">Back to List</a>
 </div>
 
 @section Scripts {
