@@ -5,10 +5,8 @@ using Models;
 
 namespace MNA.Areas.Admin.Controllers
 {
-<<<<<<< HEAD
-=======
+
     [Area("Admin")]
->>>>>>> ea3db1396122d650513b0827682b9c0b1110862c
     public class LessonController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
