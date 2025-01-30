@@ -17,7 +17,7 @@ namespace Models.ViewModels
         public double Discount { get; set; }
         public string? Serial { get; set; }
         [Required]
-        public String CourseId { get; set; }
+        public int CourseId { get; set; }
         
         public int? NumOfCoupon { get; set; } = 1;
     }

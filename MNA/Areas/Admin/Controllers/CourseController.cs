@@ -60,7 +60,7 @@ namespace MNA.Areas.Admin.Controllers
         }
 
         // GET: Course/Edit/5
-        public IActionResult Edit(string id)
+        public IActionResult Edit(int id)
         {
             var course = _unitOfWork.Courses.GetOne(
                 c => c.Id == id,
@@ -81,7 +81,7 @@ namespace MNA.Areas.Admin.Controllers
         // POST: Course/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(string id, Course course)
+        public IActionResult Edit(int id, Course course)
         {
             if (id != course.Id)
             {
@@ -101,7 +101,7 @@ namespace MNA.Areas.Admin.Controllers
         }
 
         // GET: Course/Delete/5
-        public IActionResult Delete(string id)
+        public IActionResult Delete(int id)
         {
             var course = _unitOfWork.Courses.GetOne(
                 c => c.Id == id,
@@ -119,7 +119,7 @@ namespace MNA.Areas.Admin.Controllers
         // POST: Course/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(string id)
+        public IActionResult DeleteConfirmed(int id)
         {
             var course = _unitOfWork.Courses.GetOne(c => c.Id == id);
 

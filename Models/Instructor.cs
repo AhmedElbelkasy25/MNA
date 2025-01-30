@@ -9,6 +9,7 @@ namespace Models
     public class Instructor
     {
         public int Id { get; set; }
+        public string Name { get; set; }
         public string Bio { get; set; }
         public string? PicUrl { get; set; }
         public Double? Rating { get; set; }

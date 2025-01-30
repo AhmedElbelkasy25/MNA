@@ -9,12 +9,12 @@ namespace Models
 {
     public class Course
     {
-        public String Id { get; set; }
+        public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public double Price { get; set; }
-        public DateOnly StartDate { get; set; }
-        public DateOnly EndDate { get; set; }
+        public string ImgUrl { get; set; }
+        public DateOnly Date { get; set; }     
         public int InstructorId { get; set; }
         public int CategoryId { get; set; }
         public Instructor Instructor { get; set; }

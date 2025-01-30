@@ -12,7 +12,7 @@ namespace Models
         public DateOnly ExpireDate { get; set; }
         public double Discount { get; set; }
         public string Serial { get; set; }
-        public String CourseId { get; set; }
+        public int CourseId { get; set; }
         public Course Course { get; set; }
         public ICollection<StudentCouPons> Coupons { get; set; } = new List<StudentCouPons>();
     }
