@@ -1,44 +1,88 @@
 ﻿@model Models.ViewModels.UserRegiesterVm
 
+<h1 class="text-center text-primary fw-bold"><i class="bi bi-person-plus-fill"></i> Register</h1>
 
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-lg border-0 rounded-3 p-4">
+            <div class="card-body">
+                <form asp-action="Register">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-<h1>Register</h1>
+                    <!-- Username -->
+                    <div class="form-group mb-3">
+                        <label asp-for="UserName" class="form-label fw-bold"><i class="bi bi-person-circle"></i> Username</label>
+                        <input asp-for="UserName" class="form-control rounded-pill" placeholder="Enter username" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
 
-<div class="row">
-    <div class="col-md-12">
-        <form asp-action="Register">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="UserName" class="control-label"></label>
-                <input asp-for="UserName" class="form-control" />
-                <span asp-validation-for="UserName" class="text-danger"></span>
+                    <!-- Email -->
+                    <div class="form-group mb-3">
+                        <label asp-for="Email" class="form-label fw-bold"><i class="bi bi-envelope-fill"></i> Email</label>
+                        <input asp-for="Email" type="email" class="form-control rounded-pill" placeholder="Enter email" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group mb-3 position-relative">
+                        <label asp-for="Password" class="form-label fw-bold"><i class="bi bi-lock-fill"></i> Password</label>
+                        <div class="input-group">
+                            <input asp-for="Password" type="password" class="form-control rounded-pill" id="passwordField" placeholder="Enter password" />
+                            <button type="button" class="btn btn-outline-secondary rounded-pill" onclick="togglePassword('passwordField', 'toggleIcon1')">
+                                <i id="toggleIcon1" class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="form-group mb-3 position-relative">
+                        <label asp-for="conPassword" class="form-label fw-bold"><i class="bi bi-lock-fill"></i> Confirm Password</label>
+                        <div class="input-group">
+                            <input asp-for="conPassword" type="password" class="form-control rounded-pill" id="confirmPasswordField" placeholder="Confirm password" />
+                            <button type="button" class="btn btn-outline-secondary rounded-pill" onclick="togglePassword('confirmPasswordField', 'toggleIcon2')">
+                                <i id="toggleIcon2" class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="conPassword" class="text-danger"></span>
+                    </div>
+
+                    <!-- Register Button -->
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill w-100">
+                            <i class="bi bi-check-circle"></i> Create Account
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group mt-3">
-                <label asp-for="conPassword" class="control-label"></label>
-                <input asp-for="conPassword" class="form-control" />
-                <span asp-validation-for="conPassword" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
+
+        <!-- Back to Home -->
+        <div class="text-center mt-3">
+            <a asp-action="Index" asp-controller="Home" asp-area="Student" class="text-decoration-none">
+                <i class="bi bi-arrow-left"></i> Back to Home
+            </a>
+        </div>
     </div>
 </div>
 
-<div class="mt-3">
-    <a asp-action="Index" asp-controller="Home" asp-area="Student">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        function togglePassword(fieldId, iconId) {
+            let field = document.getElementById(fieldId);
+            let icon = document.getElementById(iconId);
+
+            if (field.type === "password") {
+                field.type = "text";
+                icon.classList.replace("bi-eye", "bi-eye-slash");
+            } else {
+                field.type = "password";
+                icon.classList.replace("bi-eye-slash", "bi-eye");
+            }
+        }
+    </script>
 }

@@ -4,47 +4,83 @@
     ViewData["Title"] = "Login";
 }
 
-<h1>Login</h1>
+<h1 class="text-center text-primary fw-bold"><i class="bi bi-box-arrow-in-right"></i> Login</h1>
 
-<h4>LoginVM</h4>
-<hr />
-<div class="row">
-    <div class="col-md-12">
-        <form asp-action="Login">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Account" class="control-label"></label>
-                <input asp-for="Account" class="form-control" />
-                <span asp-validation-for="Account" class="text-danger"></span>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-lg border-0 rounded-3 p-4">
+            <div class="card-body">
+                <form asp-action="Login">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <!-- Account -->
+                    <div class="form-group mb-3">
+                        <label asp-for="Account" class="form-label fw-bold"><i class="bi bi-person-circle"></i> Account</label>
+                        <input asp-for="Account" class="form-control rounded-pill" placeholder="Enter your account" />
+                        <span asp-validation-for="Account" class="text-danger"></span>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group mb-3 position-relative">
+                        <label asp-for="Password" class="form-label fw-bold"><i class="bi bi-lock-fill"></i> Password</label>
+                        <div class="input-group">
+                            <input asp-for="Password" type="password" class="form-control rounded-pill" id="passwordField" placeholder="Enter password" />
+                            <button type="button" class="btn btn-outline-secondary rounded-pill" onclick="togglePassword('passwordField', 'toggleIcon')">
+                                <i id="toggleIcon" class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <!-- Remember Me -->
+                    <div class="form-group form-check mb-3">
+                        <input class="form-check-input" asp-for="RememberMe" id="rememberMeCheckbox" />
+                        <label class="form-check-label fw-bold" for="rememberMeCheckbox">
+                            <i class="bi bi-check2-square"></i> @Html.DisplayNameFor(model => model.RememberMe)
+                        </label>
+                    </div>
+
+                    <!-- Login Button -->
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill w-100">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="RememberMe" /> @Html.DisplayNameFor(model => model.RememberMe)
-                </label>
-            </div>
-            <div class="form-group mt-4">
-                <input type="submit" value="Login" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
+
+        <!-- Forgot Password & Back to Home -->
+        <div class="text-center mt-3">
+            <a asp-action="forgetPassword" asp-controller="Account" asp-area="Identity" class="text-decoration-none">
+                <i class="bi bi-key-fill"></i> Forgot Password?
+            </a>
+        </div>
+        <div class="text-center mt-2">
+            <a asp-action="Index" asp-controller="Home" asp-area="Student" class="text-decoration-none">
+                <i class="bi bi-arrow-left"></i> Back to Home
+            </a>
+        </div>
     </div>
 </div>
 
-<div>
-    <a class="mt-2" asp-action="forgetPassword" asp-controller="Account" asp-area="Identity"> Forget Password</a>
-</div>
-
-
-<div>
-    <a asp-action="Index" asp-controller="Home" asp-area="Student">Back to List</a>
-</div>
-
-
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        function togglePassword(fieldId, iconId) {
+            let field = document.getElementById(fieldId);
+            let icon = document.getElementById(iconId);
+
+            if (field.type === "password") {
+                field.type = "text";
+                icon.classList.replace("bi-eye", "bi-eye-slash");
+            } else {
+                field.type = "password";
+                icon.classList.replace("bi-eye-slash", "bi-eye");
+            }
+        }
+    </script>
 }
