@@ -30,7 +30,7 @@ namespace MNA.Areas.Admin.Controllers
 
         public IActionResult Create()
         {
-
+            ViewBag.lessons = _unitOfWork.Lessons.Get().ToList();
             return View();
         }
 

@@ -55,14 +55,14 @@
                 @Html.DisplayFor(modelItem => item.EndDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Instructor.Bio)
+                @Html.DisplayFor(modelItem => item.Instructor.Id)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Category.Name)
             </td>
                 <td>
                     <a class="btn btn-outline-info" asp-action="Edit" asp-route-id="@item.Id"> <i class="bi bi-gear"></i> Edit</a>
-                    <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.Id"> <i class="bi bi-gear"></i> Details</a>
+                   
                     <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">  <i class="bi bi-trash"></i>  Delete</a>
                 </td>
         </tr>

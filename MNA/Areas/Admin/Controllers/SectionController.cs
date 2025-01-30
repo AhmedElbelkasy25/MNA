@@ -1,4 +1,5 @@
 ﻿using DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models;
@@ -11,10 +12,12 @@ namespace MNA.Areas.Admin.Controllers
     public class SectionController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public SectionController(IUnitOfWork unitOfWork)
+        public SectionController(IUnitOfWork unitOfWork , RoleManager<IdentityRole> roleManager)
         {
             _unitOfWork = unitOfWork;
+            this._roleManager = roleManager;
         }
 
         public IActionResult Index()
@@ -30,7 +33,9 @@ namespace MNA.Areas.Admin.Controllers
         public IActionResult Create()
         {
 
-            ViewBag.Courses = _unitOfWork.Sections.Get().ToList();
+
+            //ViewBag.Courses = _unitOfWork.Sections.Get(includeProps:e=>e.Include(e=>e.Course)
+            //.ThenInclude(e=>e.Instructor).ThenInclude(e=>e.),filter: e=>e.Course.Instructor. );
             return View();
         }
 

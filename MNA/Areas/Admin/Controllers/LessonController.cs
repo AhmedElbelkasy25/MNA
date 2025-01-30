@@ -29,7 +29,7 @@ namespace MNA.Areas.Admin.Controllers
         // GET: Lesson/Create
         public IActionResult Create()
         {
-
+            ViewBag.Courses = _unitOfWork.Courses.Get().ToList();
             return View();
         }
 
