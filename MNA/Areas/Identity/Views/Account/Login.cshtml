@@ -3,8 +3,9 @@
 @{
     ViewData["Title"] = "Login";
 }
-
-<h1 class="text-center text-primary fw-bold"><i class="bi bi-box-arrow-in-right"></i> Login</h1>
+<h1 class="text-center fw-bold display-4" style="color: white; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);">
+    <i class="bi bi-envelope-exclamation-fill"></i>Login
+</h1>
 
 <div class="row justify-content-center">
     <div class="col-md-6">
@@ -52,15 +53,16 @@
 
         <!-- Forgot Password & Back to Home -->
         <div class="text-center mt-3">
-            <a asp-action="forgetPassword" asp-controller="Account" asp-area="Identity" class="text-decoration-none">
+            <a asp-action="forgetPassword" asp-controller="Account" asp-area="Identity" class="btn btn-outline-warning px-4 py-2 rounded-pill shadow-sm text-decoration-none">
                 <i class="bi bi-key-fill"></i> Forgot Password?
             </a>
         </div>
         <div class="text-center mt-2">
-            <a asp-action="Index" asp-controller="Home" asp-area="Student" class="text-decoration-none">
+            <a asp-action="Index" asp-controller="Home" asp-area="Student" class="btn btn-outline-primary px-4 py-2 rounded-pill shadow-sm text-decoration-none">
                 <i class="bi bi-arrow-left"></i> Back to Home
             </a>
         </div>
+
     </div>
 </div>
 

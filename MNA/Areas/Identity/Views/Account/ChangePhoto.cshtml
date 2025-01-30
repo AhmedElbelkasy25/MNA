@@ -1,16 +1,27 @@
-﻿<div class="row justify-content-center">
+﻿@{
+    ViewData["Title"] = "Change Profile Photo";
+}
+
+<h1 class="text-center fw-bold display-4" style="color: white; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);">
+    <i class="bi bi-image"></i> Change Profile Photo
+</h1>
+
+<div class="row justify-content-center">
     <div class="col-md-6">
         <div class="card shadow-lg border-0 rounded-3 p-4">
             <div class="card-body">
-                <h3 class="text-center text-primary fw-bold"><i class="bi bi-image"></i> Change Profile Photo</h3>
-
                 <form asp-action="ChangePhoto" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                     <!-- File Input -->
                     <div class="form-group mb-3 text-center">
                         <label for="file" class="form-label fw-bold"><i class="bi bi-upload"></i> Upload New Photo</label>
-                        <input type="file" name="file" id="file" class="form-control rounded-pill" />
+                        <input type="file" name="file" id="file" class="form-control rounded-pill" onchange="previewImage(event)" />
+                    </div>
+
+                    <!-- Image Preview -->
+                    <div class="form-group mb-3 text-center">
+                        <img id="imagePreview" src="#" alt="Image Preview" style="max-width: 200px; display: none;" class="img-fluid rounded-circle border shadow-sm" />
                     </div>
 
                     <!-- Submit Button -->
@@ -22,12 +33,19 @@
                 </form>
             </div>
         </div>
-
-        <!-- Back to Profile -->
-        <div class="text-center mt-3">
-            <a asp-action="Edit" asp-controller="Account" class="text-decoration-none">
-                <i class="bi bi-arrow-left"></i> Back to Profile
-            </a>
-        </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var output = document.getElementById('imagePreview');
+                output.src = reader.result;
+                output.style.display = 'block';
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+}

@@ -10,7 +10,6 @@
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     
     <style>
-
         /* ----- Animated Welcome Section ----- */
         .welcome-container {
             max-width: 700px;
@@ -54,6 +53,15 @@
         .carousel {
             max-width: 800px;
             margin-top: 20px;
+        }
+
+        /* ----- Testimonials Section ----- */
+        .testimonial-box {
+            max-width: 500px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
@@ -99,7 +107,98 @@
         </button>
     </div>
 
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Testimonials Section -->
+    <div class="container py-5">
+        <h2 class="text-center" style="color: #f39c12;">What Our Students Say</h2>
+        <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="d-flex justify-content-center">
+                        <div class="testimonial-box p-4 shadow-sm rounded">
+                            <p>"MNA Academy transformed my career. The web development course was hands-on and engaging!"</p>
+                            <small>- Sarah Johnson, Web Developer</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="d-flex justify-content-center">
+                        <div class="testimonial-box p-4 shadow-sm rounded">
+                            <p>"The data science course gave me the skills I needed to land a great job in tech!"</p>
+                            <small>- John Doe, Data Scientist</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            </button>
+        </div>
+    </div>
 
-</body>
-</html>
+    <!-- Featured Courses Section -->
+    <div class="container py-5">
+        <h2 class="text-center" style="color: #f39c12;">Featured Courses</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="~/images/featured_course1.jpg" class="card-img-top" alt="Featured Course 1">
+                    <div class="card-body">
+                        <h5 class="card-title">Python for Data Science</h5>
+                        <p class="card-text">A complete course on Python for data analysis and visualization.</p>
+                        <a href="/Student/Courses" class="btn btn-custom">Enroll Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="~/images/featured_course2.jpg" class="card-img-top" alt="Featured Course 2">
+                    <div class="card-body">
+                        <h5 class="card-title">Advanced Web Development</h5>
+                        <p class="card-text">Master full-stack web development with modern frameworks.</p>
+                        <a href="/Student/Courses" class="btn btn-custom">Enroll Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="~/images/featured_course3.jpg" class="card-img-top" alt="Featured Course 3">
+                    <div class="card-body">
+                        <h5 class="card-title">Cyber Security Fundamentals</h5>
+                        <p class="card-text">Learn the basics of network security and ethical hacking.</p>
+                        <a href="/Student/Courses" class="btn btn-custom">Enroll Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instructor Section -->
+    <div class="container py-5">
+        <h2 class="text-center" style="color: #f39c12;">Meet Our Instructors</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="~/images/instructor1.jpg" class="card-img-top" alt="Instructor 1">
+                    <div class="card-body">
+                        <h5 class="card-title">Dr. James Anderson</h5>
+                        <p class="card-text">Expert in Cyber Security, with over 15 years of teaching experience.</p>
+                        <a href="/Instructor/James" class="btn btn-custom">View Profile</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="~/images/instructor2.jpg" class="card-img-top" alt="Instructor 2">
+                    <div class="card-body">
+                        <h5 class="card-title">Prof. Emily Roberts</h5>
+                        <p class="card-text">Specialist in Data Science and Artificial Intelligence.</p>
+                        <a href="/Instructor/Emily" class="btn btn-custom">View Profile</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    </body>
