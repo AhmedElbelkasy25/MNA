@@ -19,6 +19,7 @@
         body {
             position: relative;
             background-image: url("/images/background.jpg");
+            
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -41,13 +42,13 @@
 
         .container {
             flex-grow: 1;
-            padding: 20px;
+            padding: 5px;
         }
 
         /* ----- Navbar Styles ----- */
         .navbar {
             background: #2C3E50;
-            padding: 12px 20px;
+            padding: 5px 5px;
         }
 
         .navbar-brand {
@@ -102,7 +103,7 @@
         footer {
             background: #2C3E50;
             color: white;
-            padding: 20px 0;
+            padding: 15px 0;
             text-align: center;
             margin-top: auto; /* Pushes the footer to the bottom */
         }
@@ -155,11 +156,11 @@
                             {
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle user-profile" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                        <img src="@(string.IsNullOrEmpty(user.ImgUrl) ? "/images/AdminImg/default-user.png" : $"/images/AdminImg/{user.ImgUrl}")" alt="User">
+                                        <img src="@(string.IsNullOrEmpty(user.ImgUrl) ? "/images/AdminImg/Basic_Ui__28186_29.jpg" : $"/images/AdminImg/{user.ImgUrl}")" alt="User">
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         <li><a class="dropdown-item" href="/Identity/account/GetProfile?name=@User.Identity.Name"><i class="fas fa-user-circle"></i> Profile</a></li>
-                                        <li><a class="dropdown-item" href="/Student/MyCourses"><i class="fas fa-graduation-cap"></i> My Courses</a></li>
+                                        <li><a class="dropdown-item" href="/Student/Course"><i class="fas fa-graduation-cap"></i> My Courses</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li><a class="dropdown-item text-danger" href="/Identity/Account/Logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                                     </ul>

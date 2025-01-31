@@ -9,16 +9,12 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - MNA</title>
+    <title>@ViewData["Title"] - Movie_Point</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/MNA.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Movie_Point.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-
-
 
 </head>
 <body>
@@ -121,60 +117,56 @@
         <main role="main" class="flex-grow-1 p-1">
 
             <nav class="navbar navbar-expand px-3 flex-grow-1 border-bottom">
-                <button class="btn btn-light" id="sidebar-toggle" type="button">
+                <button class="btn" id="sidebar-toggle" type="button">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="container-fluid">
-                    <a class="navbar-brand" asp-area="Student" asp-controller="Home" asp-action="Index">MNA Academy</a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <a class="navbar-brand" asp-area="Student" asp-controller="Home" asp-action="Index">MNA</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
 
-                    <div class="collapse navbar-collapse show" id="navbarNav">
-                        <ul class="navbar-nav me-auto">
+                        <ul class="navbar-nav flex-grow-1">
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
-                                    <i class="fas fa-home"></i> Home
-                                </a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="Student" asp-controller="Courses" asp-action="Index">
-                                    <i class="fas fa-book"></i> Courses
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="Student" asp-controller="Lessons" asp-action="Index">
-                                    <i class="fas fa-chalkboard"></i> Lessons
-                                </a>
-                            </li>
+
+                            @* <a class="btn" href="/Cart/Index"><i class="bi bi-cart4"></i></a> *@
                         </ul>
-
                         <ul class="navbar-nav">
                             @if (User.Identity.IsAuthenticated)
                             {
                                 var user = await userManager.GetUserAsync(User);
-                                if (user != null)
-                                {
-                                    <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle user-profile" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                            <img src="@(string.IsNullOrEmpty(user.ImgUrl) ? "/images/AdminImg/Basic_Ui__28186_29.jpg" : $"/images/AdminImg/{user.ImgUrl}")" alt="User">
+
+                                <li>
+                                    @if (user.ImgUrl == null & user.ImgUrl != null)
+                                    {
+                                        <a href="Identity/account/GetProfile?name=@User.Identity.Name">
+                                            <img src="~/images/AdminImg/Basic_Ui__28186_29.jpg" class="rounded-circle" style="width:40px;height:auto" />
                                         </a>
-                                        <ul class="dropdown-menu dropdown-menu-end">
-                                            <li><a class="dropdown-item" href="/Identity/account/GetProfile?name=@User.Identity.Name"><i class="fas fa-user-circle"></i> Profile</a></li>
-                                            <li><a class="dropdown-item" href="/Student/Course"><i class="fas fa-graduation-cap"></i> My Courses</a></li>
-                                            <li><hr class="dropdown-divider"></li>
-                                            <li><a class="dropdown-item text-danger" href="/Identity/Account/Logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                                        </ul>
-                                    </li>
-                                }
+                                    }
+                                    else
+                                    {
+                                        <a href="/Identity/account/GetProfile?name=@User.Identity.Name">
+                                            <img src="/images/AdminImg/@user.ImgUrl" class="rounded-3" style="width:35px;height:auto" />
+                                        </a>
+                                    }
+
+                                    <span>Welcome </span>
+                                    <a class="btn btn-outline-primary" href="/Identity/account/GetProfile?name=@User.Identity.Name"> @User.Identity.Name </a>
+                                </li>
+
+                                <li> <a class="btn btn-light" href="/Identity/Account/Logout">Logut </a></li>
                             }
                             else
                             {
-                                <li class="nav-item"><a class="btn btn-outline-light me-2" href="/Identity/Account/Login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-                                <li class="nav-item"><a class="btn btn-warning" href="/Identity/Account/Register"><i class="fas fa-user-plus"></i> Register</a></li>
+                                <li> <a class="btn btn-light" href="/Identity/Account/Login">Login </a></li>
+                                <li> <a class="btn btn-light" href="/Identity/Account/Register">Register </a></li>
                             }
-
                         </ul>
+
                     </div>
                 </div>
             </nav>
@@ -185,7 +177,14 @@
 
     </div>
 
-    
+    <footer class="border-top footer text-muted">
+        <div class="container text-center">
+            
+            <div>
+                &copy; 2024 - MNA - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </div>
+    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
@@ -197,220 +196,35 @@
 
 
 
-    <style>
-        /* ----- Background Image with Dark Overlay ----- */
-        body {
-            position: relative;
-            background-image: url("/images/background.jpg");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-            /* Dark overlay effect */
-            body::before {
-                content: "";
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.5); /* Adjust opacity for darkness */
-                z-index: -1;
-            }
-
-        .container {
-            flex-grow: 1;
-            padding: 5px;
-        }
-
-        /* ----- Navbar Styles ----- */
-        .navbar {
-            background: #2C3E50;
-            padding: 5px 5px;
-        }
-
-        .navbar-brand {
-            font-size: 22px;
-            font-weight: bold;
-            color: #ecf0f1 !important;
-        }
-
-        .navbar-nav .nav-link {
-            color: #dfe6e9 !important;
-            font-weight: 500;
-            padding: 8px 15px;
-            transition: 0.3s;
-        }
-
-            .navbar-nav .nav-link:hover {
-                color: #f39c12 !important;
-            }
-
-        /* ----- User Profile Dropdown ----- */
-        .user-profile img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid white;
-        }
-
-        .dropdown-menu {
-            border-radius: 8px;
-            border: none;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .dropdown-item:hover {
-            background: #ecf0f1;
-        }
-
-        /* ----- Buttons ----- */
-        .btn-outline-light {
-            border-color: #ecf0f1;
-            color: #ecf0f1;
-            transition: 0.3s;
-        }
-
-            .btn-outline-light:hover {
-                background: #ecf0f1;
-                color: #2C3E50;
-            }
-
-        /* ----- Dynamic Footer Styles ----- */
-        footer {
-            background: #2C3E50;
-            color: white;
-            padding: 15px 0;
-            text-align: center;
-            margin-top: auto; /* Pushes the footer to the bottom */
-        }
-
-        .footer-links a {
-            color: #f39c12;
-            margin: 0 10px;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-
-            .footer-links a:hover {
-                color: #ffffff;
-            }
-
-
-
-
-
-    </style>
-
 
      <style>
-
-
-        /* Sidebar Toggle */
-
-
-
-
-        #sidebar.collapsed {
-            margin-left: -264px;
+    
+        body{
+            font-family:  sans-serif;
+            font-size: 0.875rem;
+            opacity: 1;
+            overflow-y: scroll;
+            margin: 0;
+            
         }
 
-        /* New Responsive Additions */
-        @@media (max-width: 768px) {
-            #sidebar {
-                /* position: absolute ; */
-                z-index: 2001;
-                margin-left: -270px;
-                height: 100vh;
-                /* transform: translateX(100%); */
-                transition: transform 0.35s ease-in-out;
-            }
-
-                #sidebar.collapsed {
-                    /* transform: translateX(0); */
-                    margin-left: 0;
-                }
-
-            main {
-                margin-left: 0;
-                padding: 0.5rem;
-            }
-
-            .navbar-brand {
-                font-size: 1.1rem;
-            }
-
-            .navbar-nav .nav-link {
-                padding: 8px 10px;
-                font-size: 0.9rem;
-            }
-
-            .user-profile img {
-                width: 35px;
-                height: 35px;
-            }
-
-            .sidebar-header h5 {
-                font-size: 0.9rem;
-            }
-
-            .sidebar-link {
-                padding: 0.5rem 1rem;
-            }
+        a {
+            cursor: pointer;
+            text-decoration: none;
+            font-family:  sans-serif;
         }
 
-        @@media (max-width: 480px) {
-           /*  .navbar-collapse {
-                position: absolute ;
-                top: 40px;
-                left: 0;
-                right: 0;
-                background: #2C3E50;
-                z-index: 1000;
-                padding: 10px;
-            }
-
-            .user-profile img {
-                width: 30px;
-                height: 30px;
-            }
-
-            .dropdown-menu {
-                position: absolute;
-                right: 10px;
-                left: auto;
-            }
-
-            .btn {
-                padding: 0.25rem 0.5rem;
-                font-size: 0.8rem;
-            } */
-
-            footer .container {
-                font-size: 0.8rem;
-            }
-
-            .sidebar-logo h5 {
-                font-size: 1rem;
-            }
-
-            .sidebar-link {
-                font-size: 0.8rem;
-            }
+        li {
+            list-style: none;
         }
 
-        img {
-            max-width: 100%;
-            height: auto;
+        h4 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.275rem;
+            color: var(--bs-emphasis-color);
         }
-
-        .table-responsive {
-            overflow-x: auto;
+        nav {
+            background-color: #999cb0;
         }
 
         /* Layout for admin dashboard skeleton */
@@ -502,12 +316,25 @@
 
 
 
+        /* Sidebar Toggle */
+
+
+
+
+        #sidebar.collapsed {
+            margin-left: -264px;
+
+            
+        }
 
      </style>   
 
 
 
 
+
+</body>
+</html>
 
 <script>
 
@@ -518,15 +345,3 @@
 
     
 </script>
-</body>
-
-</html>
-
-<footer class="border-top footer text-muted">
-    <div class="container text-center">
-
-        <div>
-            &copy; 2024 - MNA - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </div>
-</footer>
