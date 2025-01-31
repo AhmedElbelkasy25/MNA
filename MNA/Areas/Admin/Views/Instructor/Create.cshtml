@@ -1,43 +1,71 @@
 ﻿@model Models.Instructor
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Instructor";
 }
 
-<h1>Create</h1>
+<h1 class="text-center mb-4" style="color: #007bff; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);">
+    <i class="bi bi-person-plus"></i> Create Instructor
+</h1>
 
-<h4>Instructor</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Bio" class="control-label"></label>
-                <input asp-for="Bio" class="form-control" />
-                <span asp-validation-for="Bio" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PicUrl" class="control-label"></label>
-                <input asp-for="PicUrl" class="form-control" />
-                <span asp-validation-for="PicUrl" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Rating" class="control-label"></label>
-                <input asp-for="Rating" class="form-control" />
-                <span asp-validation-for="Rating" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<!-- Card Container for Form -->
+<div class="container d-flex justify-content-center">
+    <div class="card shadow-lg border-0 rounded-4 p-4" style="max-width: 500px; width: 100%;">
+        <div class="card-body">
+            <h4 class="text-center text-primary fw-bold mb-3">Instructor Details</h4>
+            <hr />
+
+            <!-- Form for Instructor Creation -->
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Name -->
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label fw-bold"><i class="bi bi-person"></i> Name</label>
+                    <input asp-for="Name" class="form-control rounded-pill" placeholder="Enter instructor name" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <!-- Bio -->
+                <div class="mb-3">
+                    <label asp-for="Bio" class="form-label fw-bold"><i class="bi bi-file-text"></i> Bio</label>
+                    <textarea asp-for="Bio" class="form-control rounded-3" rows="3" placeholder="Enter short bio"></textarea>
+                    <span asp-validation-for="Bio" class="text-danger"></span>
+                </div>
+
+                <!-- Picture Upload -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold"><i class="bi bi-image"></i> Upload Photo</label>
+                    <input type="file" name="imageFile" class="form-control rounded-pill" accept="image/*" />
+                </div>
+
+                <!-- Rating -->
+                <div class="mb-3">
+                    <label asp-for="Rating" class="form-label fw-bold"><i class="bi bi-star-fill"></i> Rating</label>
+                    <input asp-for="Rating" class="form-control rounded-pill" type="number" min="0" max="5" step="0.1" placeholder="Enter rating (0-5)" />
+                    <span asp-validation-for="Rating" class="text-danger"></span>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg rounded-pill w-100">
+                        <i class="bi bi-check-circle"></i> Create Instructor
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index" class="btn btn-primary">Back to List</a>
+<!-- Back to List Button -->
+<div class="text-center mt-4">
+    <a asp-action="Index" class="btn btn-outline-primary px-4 py-2 rounded-pill shadow-sm text-decoration-none">
+        <i class="bi bi-arrow-left"></i> Back to List
+    </a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
