@@ -151,23 +151,27 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             var user = await userManager.GetUserAsync(User);
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle user-profile" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                    <img src="@(user.ImgUrl == null ? "/images/AdminImg/default-user.png" : $"/images/AdminImg/{user.ImgUrl}")" alt="User">
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="/Identity/account/GetProfile?name=@User.Identity.Name"><i class="fas fa-user-circle"></i> Profile</a></li>
-                                    <li><a class="dropdown-item" href="/Student/MyCourses"><i class="fas fa-graduation-cap"></i> My Courses</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item text-danger" href="/Identity/Account/Logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                                </ul>
-                            </li>
+                            if (user != null)
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle user-profile" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                        <img src="@(string.IsNullOrEmpty(user.ImgUrl) ? "/images/AdminImg/default-user.png" : $"/images/AdminImg/{user.ImgUrl}")" alt="User">
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" href="/Identity/account/GetProfile?name=@User.Identity.Name"><i class="fas fa-user-circle"></i> Profile</a></li>
+                                        <li><a class="dropdown-item" href="/Student/MyCourses"><i class="fas fa-graduation-cap"></i> My Courses</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item text-danger" href="/Identity/Account/Logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                                    </ul>
+                                </li>
+                            }
                         }
                         else
                         {
                             <li class="nav-item"><a class="btn btn-outline-light me-2" href="/Identity/Account/Login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
                             <li class="nav-item"><a class="btn btn-warning" href="/Identity/Account/Register"><i class="fas fa-user-plus"></i> Register</a></li>
                         }
+
                     </ul>
                 </div>
             </div>

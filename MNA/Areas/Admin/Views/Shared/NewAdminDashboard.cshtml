@@ -141,7 +141,7 @@
                                 var user = await userManager.GetUserAsync(User);
 
                                 <li>
-                                    @if (user.ImgUrl == null)
+                                    @if (user.ImgUrl == null & user.ImgUrl != null)
                                     {
                                         <a href="Identity/account/GetProfile?name=@User.Identity.Name">
                                             <img src="~/images/AdminImg/Basic_Ui__28186_29.jpg" class="rounded-circle" style="width:40px;height:auto" />
