@@ -23,7 +23,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
-builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddTransient<MNA.Utility.IEmailSender, EmailSender>();
 
 builder.Services.AddAuthentication().AddGoogle(googleOptions =>
 {
