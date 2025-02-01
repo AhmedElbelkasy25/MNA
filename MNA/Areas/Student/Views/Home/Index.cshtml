@@ -1,67 +1,68 @@
-﻿@{
+﻿@using Models.ViewModels
+@{
     ViewData["Title"] = "Home Page";
 }
-
+@model CourseReviewInstructorVM
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-    
+
     <style>
         /* ----- Animated Welcome Section ----- */
         .welcome-container {
-            max-width: 700px;
-            padding: 40px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(8px);
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease-in-out;
+        max-width: 700px;
+        padding: 40px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(8px);
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease-in-out;
         }
         .welcome-container:hover {
-            transform: scale(1.05);
+        transform: scale(1.05);
         }
 
         /* ----- Button Styling ----- */
         .btn-custom {
-            background: #f39c12;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: 0.3s;
+        background: #f39c12;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.3s;
         }
         .btn-custom:hover {
-            background: #e67e22;
-            color: white;
+        background: #e67e22;
+        color: white;
         }
 
         /* ----- Floating Animation Effect ----- */
         .floating {
-            animation: float 3s ease-in-out infinite;
+        animation: float 3s ease-in-out infinite;
         }
 
         @@keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
         }
 
         /* ----- Course Carousel Styles ----- */
         .carousel {
-            max-width: 800px;
-            margin-top: 20px;
+        max-width: 800px;
+        margin-top: 20px;
         }
 
         /* ----- Testimonials Section ----- */
         .testimonial-box {
-            max-width: 500px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 8px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
@@ -74,37 +75,43 @@
         <a href="/Student/Courses" class="btn-custom"><i class="fas fa-book"></i> Browse Courses</a>
     </div>
 
-    <!-- Course Carousel -->
-    <div id="courseCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="~/images/course1.jpg" class="d-block w-100 rounded" alt="Course 1">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>Web Development</h5>
-                    <p>Master front-end and back-end technologies.</p>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <img src="~/images/course2.jpg" class="d-block w-100 rounded" alt="Course 2">
+    <div class="d-block">
+        <!-- Course Carousel -->
+        <div id="courseCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                @for (int i = 0; i < Model.Courses.Count; i++)
+                {
+                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                        <img src="~/images/Course/@Model.Courses[i].ImgUrl" class="d-block w-100 rounded" alt="@Model.Courses[i].Title"
+                        style="height:5 rem ; width:auto"  >
+                        <div class="carousel-caption d-none d-md-block">
+                            <h5>@Model.Courses[i].Title</h5>
+                            <p>@Model.Courses[i].Description</p>
+                        </div>
+                    </div>
+                }
+                @*  <div class="carousel-item">
+                <img src="~/images/Course/12.jpg" class="d-block w-100 rounded" alt="Course 2">
                 <div class="carousel-caption d-none d-md-block">
                     <h5>Data Science</h5>
                     <p>Analyze data with Python and AI-driven tools.</p>
                 </div>
             </div>
             <div class="carousel-item">
-                <img src="~/images/course3.jpg" class="d-block w-100 rounded" alt="Course 3">
+                <img src="~/images/Course/13.jpg" class="d-block w-100 rounded" alt="Course 3">
                 <div class="carousel-caption d-none d-md-block">
                     <h5>Cyber Security</h5>
                     <p>Learn to protect digital assets and prevent cyber threats.</p>
                 </div>
+            </div> *@
             </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#courseCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#courseCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            </button>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#courseCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#courseCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        </button>
     </div>
 
     <!-- Testimonials Section -->
@@ -112,22 +119,25 @@
         <h2 class="text-center" style="color: #f39c12;">What Our Students Say</h2>
         <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
-                <div class="carousel-item active">
+                @* <div class="carousel-item active">
                     <div class="d-flex justify-content-center">
                         <div class="testimonial-box p-4 shadow-sm rounded">
                             <p>"MNA Academy transformed my career. The web development course was hands-on and engaging!"</p>
                             <small>- Sarah Johnson, Web Developer</small>
                         </div>
                     </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="d-flex justify-content-center">
+                </div> *@
+                @for (int i = 0; i < Model.Reviews.Count; i++)
+                {
+                    <div class="carousel-item @(i == 0 ? "active" : "")">
+
                         <div class="testimonial-box p-4 shadow-sm rounded">
-                            <p>"The data science course gave me the skills I needed to land a great job in tech!"</p>
-                            <small>- John Doe, Data Scientist</small>
+                            <p>@Model.Reviews[i].Comment</p>
+                            <small>@Model.Reviews[i].Student.Name , @Model.Reviews[i].Course.Title </small>
                         </div>
                     </div>
-                </div>
+                }
+
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -142,36 +152,21 @@
     <div class="container py-5">
         <h2 class="text-center" style="color: #f39c12;">Featured Courses</h2>
         <div class="row">
-            <div class="col-md-4">
-                <div class="card">
-                    <img src="~/images/featured_course1.jpg" class="card-img-top" alt="Featured Course 1">
-                    <div class="card-body">
-                        <h5 class="card-title">Python for Data Science</h5>
-                        <p class="card-text">A complete course on Python for data analysis and visualization.</p>
-                        <a href="/Student/Courses" class="btn btn-custom">Enroll Now</a>
+            @for (int i = 0; i < 3; i++)
+            {
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="~/images/course/@Model.FeatureCourse[i].ImgUrl" class="card-img-top" alt="@Model.FeatureCourse[i].Title">
+                        <div class="card-body">
+                            <h5 class="card-title">@Model.FeatureCourse[i].Title</h5>
+                            <p class="card-text">@Model.FeatureCourse[i].Description</p>
+                            <a href="/Student/Courses" class="btn btn-custom">Enroll Now</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <img src="~/images/featured_course2.jpg" class="card-img-top" alt="Featured Course 2">
-                    <div class="card-body">
-                        <h5 class="card-title">Advanced Web Development</h5>
-                        <p class="card-text">Master full-stack web development with modern frameworks.</p>
-                        <a href="/Student/Courses" class="btn btn-custom">Enroll Now</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <img src="~/images/featured_course3.jpg" class="card-img-top" alt="Featured Course 3">
-                    <div class="card-body">
-                        <h5 class="card-title">Cyber Security Fundamentals</h5>
-                        <p class="card-text">Learn the basics of network security and ethical hacking.</p>
-                        <a href="/Student/Courses" class="btn btn-custom">Enroll Now</a>
-                    </div>
-                </div>
-            </div>
+            }
+           
+           
         </div>
     </div>
 
@@ -179,17 +174,20 @@
     <div class="container py-5">
         <h2 class="text-center" style="color: #f39c12;">Meet Our Instructors</h2>
         <div class="row">
-            <div class="col-md-4">
-                <div class="card">
-                    <img src="~/images/instructor1.jpg" class="card-img-top" alt="Instructor 1">
-                    <div class="card-body">
-                        <h5 class="card-title">Dr. James Anderson</h5>
-                        <p class="card-text">Expert in Cyber Security, with over 15 years of teaching experience.</p>
-                        <a href="/Instructor/James" class="btn btn-custom">View Profile</a>
+            @for (int i = 0; i <3; i++)
+            {
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="~/images/instructors/@Model.Instructors[i].PicUrl" class="card-img-top" alt="Instructor @i+1">
+                        <div class="card-body">
+                            <h5 class="card-title">@Model.Instructors[i].Name</h5>
+                            <p class="card-text">@Model.Instructors[i].Bio</p>
+                            <a href="/Instructor/GetInstructor/@Model.Instructors[i].Id" class="btn btn-custom">View Profile</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
+            }
+           @*  <div class="col-md-4">
                 <div class="card">
                     <img src="~/images/instructor2.jpg" class="card-img-top" alt="Instructor 2">
                     <div class="card-body">
@@ -198,7 +196,7 @@
                         <a href="/Instructor/Emily" class="btn btn-custom">View Profile</a>
                     </div>
                 </div>
-            </div>
+            </div> *@
             <div class="col-md-4">
                 <div class="card">
                     </body>

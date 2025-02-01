@@ -35,8 +35,13 @@
 
                 <!-- Picture Upload -->
                 <div class="mb-3">
-                    <label class="form-label fw-bold"><i class="bi bi-image"></i> Upload Photo</label>
-                    <input type="file" name="imageFile" class="form-control rounded-pill" accept="image/*" />
+                    <label asp-for="PicUrl" class="form-label fw-bold"><i class="bi bi-image"></i> Upload Photo</label>
+                    @* <input type="file" name="imageFile" class="form-control rounded-pill" accept="image/*" /> *@
+                    <input type="file" name="file" class="form-control mt-2">
+                   
+
+                   
+                    
                 </div>
 
                 <!-- Rating -->
@@ -63,6 +68,12 @@
         <i class="bi bi-arrow-left"></i> Back to List
     </a>
 </div>
+
+
+
+
+    
+</script>
 
 @section Scripts {
     @{

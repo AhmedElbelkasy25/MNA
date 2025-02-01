@@ -30,9 +30,9 @@
             <div class="form-group">
                 <label asp-for="SectionId" class="control-label"></label>
                 <select asp-for="SectionId" class ="form-control" >
-                    @foreach (var item in ViewBag.Lessons)
+                    @foreach (var item in ViewBag.Sections)
                     {
-                        <option value="@item.Id">@item.Name</option>
+                        <option value="@item.Id">@item.Title</option>
                     }
                 </select>
             </div>

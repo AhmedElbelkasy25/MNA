@@ -41,10 +41,28 @@ namespace MNA.Areas.Admin.Controllers
         // POST: Instructor/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Instructor instructor)
+        public IActionResult Create(Instructor instructor , IFormFile? file)
         {
+            ModelState.Remove("PicUrl");
             if (ModelState.IsValid)
             {
+                if (file != null && file.Length > 0)
+                {
+                    // Genereate name
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+
+                    // Save in wwwroot
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\Instructors", fileName);
+
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        file.CopyTo(stream);
+                    }
+
+                    // Save in db
+                    instructor.PicUrl = fileName;
+                }
+
                 _unitOfWork.Instructors.Create(instructor);
                 _unitOfWork.Commit();
                 return RedirectToAction(nameof(Index));
@@ -72,18 +90,47 @@ namespace MNA.Areas.Admin.Controllers
         // POST: Instructor/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Instructor instructor)
+        public IActionResult Edit(int id, Instructor instructor , IFormFile file)
         {
             if (id != instructor.Id)
             {
-                return BadRequest();
+                return View(instructor);
             }
-
+            ModelState.Remove("file");
+            var oldInstructor = _unitOfWork.Instructors.GetOne(filter: e => e.Id == instructor.Id, tracked: false);
             if (ModelState.IsValid)
             {
+                if (file != null && file.Length > 0)
+                {
+                    // Genereate name
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+
+                    // Save in wwwroot
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\instructors", fileName);
+
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        file.CopyTo(stream);
+                    }
+                    //delete old img
+                    var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\instructors", oldInstructor.PicUrl);
+                    if (System.IO.File.Exists(oldPath))
+                    {
+                        System.IO.File.Delete(oldPath);
+                    }
+                    
+                    // Save in db
+                    instructor.PicUrl = fileName;
+                }
+                else
+                {
+                    instructor.PicUrl = oldInstructor.PicUrl;
+                }
+
+
                 _unitOfWork.Instructors.Alter(instructor);
                 _unitOfWork.Commit();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
 
             return View(instructor);

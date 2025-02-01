@@ -9,8 +9,8 @@
 <h4>Course</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+    <div class="col-md-12">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
@@ -30,12 +30,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="ImgUrl" class="control-label"></label>
-                <input asp-for="ImgUrl" class="form-control" />
+                <input asp-for="ImgUrl" type="file" name="file" onchange="previewImage(event)" class="form-control" />
                 <span asp-validation-for="ImgUrl" class="text-danger"></span>
+            </div>
+
+            <!-- Image Preview -->
+            <div class="form-group">
+                <img id="imgPreview" src="#" alt="Image Preview" style="display: none; max-width: 80px; height: auto; border: 1px solid #ddd; margin-top: 10px;" />
             </div>
             <div class="form-group">
                 <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" class="form-control" />
+                <input type="date" asp-for="Date" class="form-control" />
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -43,7 +48,7 @@
                 <select asp-for="InstructorId" class="form-control" >
                     @foreach (var item in ViewBag.Instructors)
                     {
-                        <option value="@item.Id">@item.Id</option>
+                        <option value="@item.Id">@item.Name</option>
                     }
                 </select>
                 <span asp-validation-for="InstructorId" class="text-danger"></span>
@@ -58,7 +63,7 @@
                 </select>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mt-4">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
@@ -70,5 +75,28 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Function to preview image
+        function previewImage(event) {
+            var input = event.target;
+            var preview = document.getElementById('imgPreview');
+
+            // Check if a file is selected and it is an image
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    preview.src = e.target.result; // Set the image source
+                    preview.style.display = 'block'; // Show the image
+                };
+
+                reader.readAsDataURL(input.files[0]); // Read the file as a data URL
+            }
+        }
+    </script>
+
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -33,7 +33,21 @@ namespace DataAccess
         {
 
         }
-        
 
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Review>()
+                .ToTable(tb => tb.HasTrigger("triggerUpdateCourseRating"));
+
+            modelBuilder.Entity<IdentityUserLogin<string>>(b =>
+            {
+                b.HasKey(ul => new { ul.LoginProvider, ul.ProviderKey });
+            });
+        }
+
+      
     }
 }

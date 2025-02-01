@@ -99,6 +99,12 @@
                                     Payments <i class="bi bi-currency-dollar"></i>
                                 </a>
                             </li>
+                            <li class="sidebar-item">
+                                <a href="/Admin/Review/index" class="sidebar-link">
+                                    <i class="fa-solid fa-list pe-2"></i>
+                                    Review <i class="bi bi-currency-dollar"></i>
+                                </a>
+                            </li>
 @* 
                             <li class="sidebar-item">
                                 <a href="/RequestCinema/index" class="sidebar-link">
@@ -184,8 +190,17 @@
         
 
     </div>
+    <footer class="border-top footer text-muted">
+        <div class="container text-center">
+
+            <div>
+                &copy; 2024 - MNA - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </div>
+    </footer>
 
     
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
@@ -200,14 +215,15 @@
     <style>
         /* ----- Background Image with Dark Overlay ----- */
         body {
-            position: relative;
+            
             background-image: url("/images/background.jpg");
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            min-height: 100vh;
+            /* min-height: 100vh; */
             display: flex;
             flex-direction: column;
+            margin-bottom:0;
         }
 
             /* Dark overlay effect */
@@ -522,11 +538,3 @@
 
 </html>
 
-<footer class="border-top footer text-muted">
-    <div class="container text-center">
-
-        <div>
-            &copy; 2024 - MNA - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </div>
-</footer>

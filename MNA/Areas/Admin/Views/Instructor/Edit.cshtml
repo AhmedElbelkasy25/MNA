@@ -34,18 +34,13 @@
 
                         <!-- Profile Picture Upload -->
                         <div class="mb-3 text-center">
-                            <label class="form-label"><i class="bi bi-image"></i> Profile Picture</label>
+                            <label asp-for="PicUrl" class="form-label"><i class="bi bi-image"></i> Profile Picture</label>
                             <div class="d-flex flex-column align-items-center">
-                                <img id="profileImage" src="@Model.PicUrl" class="rounded shadow-lg mb-2 border border-primary" alt="Profile Picture" style="width: 180px; height: 180px; object-fit: cover;">
+                                <img id="profileImage" src="/images/instructors/@Model.PicUrl" class="rounded shadow-lg mb-2 border border-primary" alt="Profile Picture" style="width: 180px; height: 180px; object-fit: cover;">
 
-                                <input type="file" class="form-control mt-2" id="imageUpload" accept="image/*">
+                                <input asp-for="PicUrl" type="file" name="file" class="form-control mt-2" id="imageUpload">
 
-                                <!-- Hidden Input to Store Image URL -->
-                                <input type="hidden" asp-for="PicUrl" id="imageUrl">
-
-                                <button type="button" class="btn btn-danger btn-sm mt-2 rounded-pill" id="removeImage">
-                                    <i class="bi bi-trash"></i> Remove Image
-                                </button>
+                                
                             </div>
                         </div>
 
@@ -80,15 +75,10 @@
             const reader = new FileReader();
             reader.onload = function (e) {
                 document.getElementById("profileImage").src = e.target.result;
-                document.getElementById("imageUrl").value = e.target.result;
+                
             };
             reader.readAsDataURL(file);
         }
-    });
-
-    document.getElementById("removeImage").addEventListener("click", function () {
-        document.getElementById("profileImage").src = "https://via.placeholder.com/180"; // Default placeholder image
-        document.getElementById("imageUrl").value = "";
     });
 </script>
 

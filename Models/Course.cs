@@ -14,7 +14,8 @@ namespace Models
         public string Description { get; set; }
         public double Price { get; set; }
         public string ImgUrl { get; set; }
-        public DateOnly Date { get; set; }     
+        public DateOnly Date { get; set; }    
+        public double? Rating { get; set; }
         public int InstructorId { get; set; }
         public int CategoryId { get; set; }
         public Instructor Instructor { get; set; }
