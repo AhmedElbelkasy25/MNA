@@ -44,6 +44,7 @@ namespace MNA.Areas.Identity.Controllers
                 await _roleManager.CreateAsync(new("Admin"));
                 await _roleManager.CreateAsync(new("Instructor"));
                 await _roleManager.CreateAsync(new("student"));
+                ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             }
 
             //await _userManager.AddToRoleAsync(user, "Admin");
@@ -291,11 +292,19 @@ namespace MNA.Areas.Identity.Controllers
             return RedirectToAction("GetProfile", "Account", new { name = User.Identity.Name });
         }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 85945e69b7c2c961efda3df2e152a3a85f91caaa
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login", "Account");
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 85945e69b7c2c961efda3df2e152a3a85f91caaa
         [HttpPost]
         [AllowAnonymous]
         public IActionResult ExternalLogin(string provider, string returnUrl = null)
