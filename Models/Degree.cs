@@ -10,7 +10,7 @@ namespace Models
     {
         public int Id { get; set; }
         public string ApplicationUserId { get; set; }
-        public string CourseId { get; set; }
+        public int CourseId { get; set; }
         public int LessonId { get; set; }
         public int Marks { get; set; }
         public DateOnly Date { get; set; }

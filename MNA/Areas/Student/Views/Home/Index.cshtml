@@ -1,7 +1,249 @@
-﻿@{
+﻿@using Models.ViewModels
+@{
     ViewData["Title"] = "Home Page";
+    
 }
+@model CourseReviewInstructorVM
 
-<div class="text-center">
-    <h1 class="display-4">Welcome..!</h1>
-</div>
+<head>
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <style>
+        /* ----- Animated Welcome Section ----- */
+        .welcome-container {
+        max-width: 700px;
+        padding: 40px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(8px);
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease-in-out;
+        }
+        .welcome-container:hover {
+        transform: scale(1.05);
+        }
+
+        /* ----- Button Styling ----- */
+        .btn-custom {
+        background: #f39c12;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.3s;
+        }
+        .btn-custom:hover {
+        background: #e67e22;
+        color: white;
+        }
+
+        /* ----- Floating Animation Effect ----- */
+        .floating {
+        animation: float 3s ease-in-out infinite;
+        }
+
+        @@keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        }
+
+        /* ----- Course Carousel Styles ----- */
+        .carousel {
+        max-width: 800px;
+        margin-top: 20px;
+        }
+
+        /* ----- Testimonials Section ----- */
+        .testimonial-box {
+        max-width: 500px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        /* Adjust Course Image Size */
+        .carousel-item img {
+            height: 250px;
+            width: 100%;
+            object-fit: contain; /* Ensures the entire image is visible */
+        }
+
+        /* Improve Card Layout */
+        .card {
+            border-radius: 12px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-in-out;
+        }
+
+            .card:hover {
+                transform: scale(1.05);
+            }
+
+            .card img {
+                height: 180px;
+                width: 100%;
+                object-fit: contain; /* Ensures the entire image is visible */
+                padding: 10px; /* Adds spacing inside the card */
+                background-color: #f8f9fa; /* Optional: adds a neutral background */
+            }
+
+
+    </style>
+</head>
+<body>
+
+    <!-- Welcome Section -->
+    <div class="welcome-container floating">
+        <h1>Welcome to <span style="color: #f39c12;">MNA Academy</span></h1>
+        <p>Start your learning journey with expert instructors and interactive courses.</p>
+        <a href="/Student/Courses" class="btn-custom"><i class="fas fa-book"></i> Browse Courses</a>
+    </div>
+
+    <div class="d-block">
+        <!-- Course Carousel -->
+        <div id="courseCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                @for (int i = 0; i < Model.Courses.Count; i++)
+                {
+                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                        <img src="~/images/Course/@Model.Courses[i].ImgUrl" class="d-block w-100 rounded" alt="@Model.Courses[i].Title"
+                        style="height:5 rem ; width:auto"  >
+                        <div class="carousel-caption d-none d-md-block">
+                            <h5>@Model.Courses[i].Title</h5>
+                            <p>@Model.Courses[i].Description</p>
+                        </div>
+                    </div>
+                }
+                @*  <div class="carousel-item">
+                <img src="~/images/Course/12.jpg" class="d-block w-100 rounded" alt="Course 2">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Data Science</h5>
+                    <p>Analyze data with Python and AI-driven tools.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="~/images/Course/13.jpg" class="d-block w-100 rounded" alt="Course 3">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Cyber Security</h5>
+                    <p>Learn to protect digital assets and prevent cyber threats.</p>
+                </div>
+            </div> *@
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#courseCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#courseCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Testimonials Section -->
+    <div class="container py-5">
+        <h2 class="text-center" style="color: #f39c12;">What Our Students Say</h2>
+        <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                @* <div class="carousel-item active">
+                    <div class="d-flex justify-content-center">
+                        <div class="testimonial-box p-4 shadow-sm rounded">
+                            <p>"MNA Academy transformed my career. The web development course was hands-on and engaging!"</p>
+                            <small>- Sarah Johnson, Web Developer</small>
+                        </div>
+                    </div>
+                </div> *@
+                @for (int i = 0; i < Model.Reviews.Count; i++)
+                {
+                    <div class="carousel-item @(i == 0 ? "active" : "")">
+
+                        <div class="testimonial-box p-4 shadow-sm rounded">
+                            <p>@Model.Reviews[i].Comment</p>
+                            <small>@Model.Reviews[i].Student.Name , @Model.Reviews[i].Course.Title </small>
+                        </div>
+                    </div>
+                }
+
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Featured Courses Section -->
+    @if (Model.FeatureCourse != null && Model.FeatureCourse.Count > 0)
+    {
+        <div class="container py-5">
+            <h2 class="text-center" style="color: #f39c12;">Featured Courses</h2>
+            <div class="row">
+                @for (int i = 0; i < Math.Min(3, Model.FeatureCourse.Count); i++)
+                {
+                    <div class="col-md-4">
+                        <div class="card">
+                            <img src="@(string.IsNullOrEmpty(Model.FeatureCourse[i].ImgUrl) ? "/images/default.jpg" : "/images/course/" + Model.FeatureCourse[i].ImgUrl)"
+                                 class="card-img-top" alt="@Model.FeatureCourse[i].Title">
+                            <div class="card-body">
+                                <h5 class="card-title">@Model.FeatureCourse[i].Title</h5>
+                                <p class="card-text">@Model.FeatureCourse[i].Description</p>
+                                <a href="/Student/Courses" class="btn btn-custom">Enroll Now</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <p class="text-center text-muted">No featured courses available.</p>
+    }
+
+           
+           
+        </div>
+    </div>
+
+    <!-- Instructor Section -->
+    @if (Model.Instructors != null && Model.Instructors.Count > 0)
+    {
+        <div class="container py-5">
+            <h2 class="text-center" style="color: #f39c12;">Meet Our Instructors</h2>
+            <div class="row">
+                @foreach (var instructor in Model.Instructors)
+                {
+                    <div class="col-md-4 d-flex align-items-stretch">
+                        <div class="card">
+                            <img src="@(string.IsNullOrEmpty(instructor.PicUrl) ? "/images/default-profile.jpg" : "/images/instructors/" + instructor.PicUrl)"
+                                 class="card-img-top" alt="Instructor">
+                            <div class="card-body">
+                                <h5 class="card-title">@instructor.Name</h5>
+                                <p class="card-text">@instructor.Bio</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <p class="text-center text-muted">No Instructors available.</p>
+    }
+           @*  <div class="col-md-4">
+                <div class="card">
+                    <img src="~/images/instructor2.jpg" class="card-img-top" alt="Instructor 2">
+                    <div class="card-body">
+                        <h5 class="card-title">Prof. Emily Roberts</h5>
+                        <p class="card-text">Specialist in Data Science and Artificial Intelligence.</p>
+                        <a href="/Instructor/Emily" class="btn btn-custom">View Profile</a>
+                    </div>
+                </div>
+            </div> *@
+         @*    <div class="col-md-4">
+                <div class="card"> *@
+                    </body>

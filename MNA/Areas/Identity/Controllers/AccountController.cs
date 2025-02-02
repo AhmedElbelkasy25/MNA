@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using MNA.Utility;
 using Models;
 using Models.ViewModels;
+using System.Security.Claims;
 
 namespace MNA.Areas.Identity.Controllers
 {
@@ -15,17 +18,20 @@ namespace MNA.Areas.Identity.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
+        private readonly IEmailSender _emailSender;
 
         public AccountController(UserManager<ApplicationUser> userManager ,
             SignInManager<ApplicationUser> signInManager ,
             RoleManager<IdentityRole> roleManager,
-            IMapper mapper
+            IMapper mapper,
+            IEmailSender emailSender
             )
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
             this._roleManager = roleManager;
             this._mapper = mapper;
+            this._emailSender = emailSender;
         }
         public IActionResult Index()
         {
@@ -38,6 +44,7 @@ namespace MNA.Areas.Identity.Controllers
                 await _roleManager.CreateAsync(new("Admin"));
                 await _roleManager.CreateAsync(new("Instructor"));
                 await _roleManager.CreateAsync(new("student"));
+                ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             }
 
             //await _userManager.AddToRoleAsync(user, "Admin");
@@ -132,28 +139,37 @@ namespace MNA.Areas.Identity.Controllers
             if (ModelState.IsValid)
             {
                 var appUserithEmail = await _userManager.FindByEmailAsync(userEmail.Account);
-                var appUserithName = await _userManager.FindByNameAsync(userEmail.Account);
-                if (appUserithEmail != null || appUserithName != null)
+                if (appUserithEmail != null)
                 {
+                    // Create a link for changing the password
+                    var changePasswordLink = Url.Action("ChangeForgottenPassword", "Account", new { acc = userEmail.Account }, Request.Scheme);
+                    var emailBody = $"<p>Click the link below to change your password:</p><p><a href='{changePasswordLink}'>Change Your Password</a></p>";
 
-                    return RedirectToAction("ChangeForgottenPassword", "Account", new { acc = userEmail.Account });
+                    await _emailSender.SendEmailAsync(userEmail.Account, "Change Your Password", emailBody);
+
+                    return RedirectToAction("Index", "home", new { area = "student" });
                 }
                 else
                 {
-                    ModelState.AddModelError("Account", "This Account Dosn't Exist");
+                    ModelState.AddModelError("Account", "This Account Doesn't Exist");
                 }
-
             }
 
             return View(userEmail);
-
         }
 
         [HttpGet]
-        public IActionResult ChangeForgottenPassword(string acc)
+        public async Task<IActionResult> ChangeForgottenPassword(string acc)
         {
-            ViewBag.Email = acc;
-            return View();
+            //var appUserithEmail = await _userManager.FindByEmailAsync(acc);
+            //var appUserithName = await _userManager.FindByNameAsync(acc);
+            var account = new ForgetPassordVM()
+            {
+                Account = acc
+            };
+            return View(model: account);
+
+            
         }
 
         [HttpPost]
@@ -162,12 +178,15 @@ namespace MNA.Areas.Identity.Controllers
             if (ModelState.IsValid)
             {
                 var appUserithEmail = await _userManager.FindByEmailAsync(newpass.Account);
-                var appUserithName = await _userManager.FindByNameAsync(newpass.Account);
+                //var appUserithName = await _userManager.FindByNameAsync(newpass.Account);
 
-                await _userManager.RemovePasswordAsync(appUserithEmail ?? appUserithName);
-                await _userManager.AddPasswordAsync(appUserithEmail ?? appUserithName, newpass.Password);
-                TempData["success"] = "Password has been changed successfully";
-                return RedirectToAction("Index", "Home");
+                await _userManager.RemovePasswordAsync(appUserithEmail);
+                var result = await _userManager.AddPasswordAsync(appUserithEmail, newpass.Password);
+                if (result.Succeeded)
+                {
+                    TempData["success"] = "Password has been changed successfully";
+                    return RedirectToAction("Index", "Home", new { Area = "Student" });
+                }
             }
             return View(newpass);
         }
@@ -274,13 +293,60 @@ namespace MNA.Areas.Identity.Controllers
         }
 
 
-
-
-
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login", "Account");
         }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public IActionResult ExternalLogin(string provider, string returnUrl = null)
+        {
+            var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { returnUrl });
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            return Challenge(properties, provider);
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
+        {
+            if (remoteError != null)
+            {
+                ModelState.AddModelError(string.Empty, $"Error from external provider: {remoteError}");
+                return RedirectToAction(nameof(Login));
+            }
+
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+            // Attempt to sign in the user
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+            if (result.Succeeded)
+            {
+                return LocalRedirect(returnUrl ?? "/");
+            }
+            else
+            {
+                // If the user does not have an account, we create one
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                if (email != null)
+                {
+                    var user = new ApplicationUser { UserName = email, Email = email };
+                    var createResult = await _userManager.CreateAsync(user);
+                    if (createResult.Succeeded)
+                    {
+                        await _userManager.AddLoginAsync(user, info);
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return LocalRedirect(returnUrl ?? "/");
+                    }
+                }
+                return RedirectToAction(nameof(Login));
+            }
+        }
+
     }
 }

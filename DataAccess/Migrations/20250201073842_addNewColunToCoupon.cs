@@ -5,26 +5,25 @@
 namespace DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class EditingDbContextDeletingAppUser : Migration
+    public partial class addNewColunToCoupon : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "Discriminator",
-                table: "AspNetUsers",
-                type: "nvarchar(21)",
-                maxLength: 21,
+            migrationBuilder.AddColumn<int>(
+                name: "NumOfUsing",
+                table: "Coupons",
+                type: "int",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: 10);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Discriminator",
-                table: "AspNetUsers");
+                name: "NumOfUsing",
+                table: "Coupons");
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using DataAccess.Repository.IRepository;
+using Models;
 
 namespace DataAccess.Repository
 {
@@ -18,7 +19,7 @@ namespace DataAccess.Repository
         public Repository(ApplicationDbContext dbContext)
         {
             this._dbContext = dbContext;
-            
+            _dbSet = _dbContext.Set<T>();
         }
 
         public void Create(T entity)

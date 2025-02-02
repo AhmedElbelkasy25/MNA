@@ -1,0 +1,170 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Models;
+@inject UserManager<ApplicationUser> userManager
+@model IEnumerable<Models.ApplicationUser>
+
+@section Scripts {
+    @if (@TempData["success"] != null)
+    {
+        <script>
+            toastr.success('@TempData["success"]')
+        </script>
+    }
+    @if (TempData["error"] != null)
+    {
+        <script>
+            toastr.error('@TempData["error"]')
+        </script>
+    }
+}
+
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<!-- Page Title -->
+<h3 class="text-center mb-5" style="color: #007bff; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);">
+    <i class="bi bi-person-circle"></i> All Users
+</h3>
+
+<!-- Search Form -->
+<div class="text-center mb-4">
+    <form asp-action="SearchForUser" asp-controller="Student" method="post" class="d-inline-flex">
+        <input type="text" class="form-control" placeholder="Search by User Name or Email" name="account" />
+        <button type="submit" class="btn btn-info ms-2">Search</button>
+    </form>
+</div>
+
+<!-- User Cards Container -->
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var item in Model)
+        {
+            var role = await userManager.GetRolesAsync(item);
+            <div class="col mb-4">
+                <div class="card shadow-lg border-0 rounded-3" style="background-color: #f8f9fa;">
+                    <div class="card-body">
+                        <!-- User Profile Name -->
+                        <h5 class="card-title text-center text-primary">@item.UserName</h5>
+                        <p class="text-center text-muted">@item.Name</p>
+
+                        <!-- User Email -->
+                        <p class="text-center text-muted">@item.Email</p>
+
+                        <!-- User Status Badge -->
+                        <div class="text-center mb-3">
+                            @if ((bool)item.IsLocked)
+                            {
+                                <span class="badge bg-danger text-white">Blocked</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success text-white">Active</span>
+                            }
+                        </div>
+
+                        <!-- User Roles -->
+                        <div class="text-center my-2">
+                            <span class="badge bg-info text-dark">@string.Join(" ", role)</span>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-around gap-3 mt-3">
+                            <a href="/Admin/student/AddToRole?userId=@item.Id" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-person-plus"></i> Add to Role
+                            </a>
+                            <a href="/Admin/student/Edit?userId=@item.Id" class="btn btn-outline-warning btn-sm">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                            @if ((bool)item.IsLocked)
+                            {
+                                <a href="/Admin/student/unblockUser?UserId=@item.Id" class="btn btn-outline-success btn-sm">
+                                    <i class="bi bi-unlock"></i> Unblock
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="/Admin/student/blockUser?UserId=@item.Id" class="btn btn-outline-danger btn-sm">
+                                    <i class="bi bi-lock"></i> Block
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Optional Styling for Equal Spacing and Vibrant Colors -->
+<style>
+    .card {
+        transition: transform 0.3s ease-in-out;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+    .badge {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+    }
+
+    .btn-sm {
+        font-size: 0.875rem;
+        padding: 0.375rem 0.75rem;
+    }
+
+    .container {
+        margin-top: 20px;
+    }
+
+    /* Equal Spacing between cards */
+    .row {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    /* Color Scheme Updates */
+    .btn-outline-primary {
+        border-color: #007bff;
+        color: #007bff;
+    }
+
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+    .btn-outline-warning {
+        border-color: #ffc107;
+        color: #ffc107;
+    }
+
+        .btn-outline-warning:hover {
+            background-color: #ffc107;
+            color: #fff;
+        }
+
+    .btn-outline-danger {
+        border-color: #dc3545;
+        color: #dc3545;
+    }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+    .btn-outline-success {
+        border-color: #28a745;
+        color: #28a745;
+    }
+
+        .btn-outline-success:hover {
+            background-color: #28a745;
+            color: #fff;
+        }
+</style>

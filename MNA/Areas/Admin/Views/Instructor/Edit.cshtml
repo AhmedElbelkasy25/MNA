@@ -1,0 +1,89 @@
+﻿@model Models.Instructor
+
+@{
+    ViewData["Title"] = "Edit Instructor";
+}
+
+<!-- Page Title -->
+<h1 class="text-center mb-4" style="color: #007bff; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); font-weight: bold;">
+    <i class="bi bi-pencil-square"></i> Edit Instructor
+</h1>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-4">
+                    <form asp-action="Edit" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Id" />
+
+                        <!-- Name Field -->
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label"><i class="bi bi-person"></i> Name</label>
+                            <input asp-for="Name" class="form-control" placeholder="Enter instructor's name" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <!-- Bio Field -->
+                        <div class="mb-3">
+                            <label asp-for="Bio" class="form-label"><i class="bi bi-file-text"></i> Bio</label>
+                            <textarea asp-for="Bio" class="form-control" rows="3" placeholder="Enter a short bio"></textarea>
+                            <span asp-validation-for="Bio" class="text-danger"></span>
+                        </div>
+
+                        <!-- Profile Picture Upload -->
+                        <div class="mb-3 text-center">
+                            <label asp-for="PicUrl" class="form-label"><i class="bi bi-image"></i> Profile Picture</label>
+                            <div class="d-flex flex-column align-items-center">
+                                <img id="profileImage" src="/images/instructors/@Model.PicUrl" class="rounded shadow-lg mb-2 border border-primary" alt="Profile Picture" style="width: 180px; height: 180px; object-fit: cover;">
+
+                                <input asp-for="PicUrl" type="file" name="file" class="form-control mt-2" id="imageUpload">
+
+                                
+                            </div>
+                        </div>
+
+                        <!-- Rating Field -->
+                        <div class="mb-3">
+                            <label asp-for="Rating" class="form-label"><i class="bi bi-star-fill"></i> Rating</label>
+                            <input asp-for="Rating" type="number" step="0.1" class="form-control" min="0" max="5" />
+                            <span asp-validation-for="Rating" class="text-danger"></span>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 shadow">
+                                <i class="bi bi-arrow-left"></i> Back
+                            </a>
+                            <button type="submit" class="btn btn-primary rounded-pill px-4 shadow">
+                                <i class="bi bi-check-circle"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Image Upload & Remove -->
+<script>
+    document.getElementById("imageUpload").addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById("profileImage").src = e.target.result;
+                
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

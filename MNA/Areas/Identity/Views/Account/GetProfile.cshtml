@@ -1,61 +1,103 @@
 ﻿@model Models.ApplicationUser
 
-
-@section Scripts {
-
-    @if (@TempData["success"] != null)
-    {
-        <script>
-            toastr.success('@TempData["success"]')
-        </script>
-    }
+@{
+    ViewData["Title"] = "GetProfile";
 }
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile Page</title>
+}
 
+
+<head>
+    <style>
+        /* Profile Card Styles */
+        .profile-card {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+
+        .profile-image {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: #007bff;
+            color: white;
+        }
+
+        .card-body {
+            font-size: 1.1rem;
+        }
+
+        .row label {
+            font-weight: 600;
+            color: #444;
+        }
+
+        .card-body .btn {
+            font-size: 1rem;
+            padding: 0.75rem 1.5rem;
+            transition: background-color 0.3s ease;
+        }
+
+            .card-body .btn:hover {
+                background-color: #0056b3;
+                color: #fff;
+            }
+
+        .card-body .btn-outline-dark:hover {
+            background-color: #343a40;
+            color: white;
+        }
+
+        .mt-4 {
+            margin-top: 2rem;
+        }
+
+        .profile-actions {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+    </style>
 </head>
 <body>
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white text-center">
+                <div class="card profile-card">
+                    <div class="card-header">
                         @if (Model.ImgUrl == null)
                         {
                             <img src="~/images/AdminImg/Basic_Ui__28186_29.jpg"
                                  alt="Profile Picture"
-                                 class="rounded-circle mb-3"
-                                 style="width: 150px; height: 150px; object-fit: cover;">
+                                 class="profile-image">
                         }
                         else
                         {
                             <img src="~/images/AdminImg/@Model.ImgUrl"
                                  alt="Profile Picture"
-                                 class="rounded-circle mb-3"
-                                 style="width: 150px; height: 150px; object-fit: cover;">
+                                 class="profile-image">
                         }
                         <div>
-                            <a href="/identity/Account/ChangePhoto" class="btn btn-outline-dark"> Change photo</a>
-
+                            <a href="/identity/Account/ChangePhoto" class="btn btn-outline-light">Change photo</a>
                         </div>
                     </div>
-                    <div class="card-body text-center">
-
+                    <div class="card-body">
+                        <!-- User Information -->
                         <div class="row mb-3">
-                            <label class="col-sm-4 text-end fw-bold">UserName:</label>
+                            <label class="col-sm-4 text-end">UserName:</label>
                             <div class="col-sm-8 text-start">
                                 <span>@Model.UserName</span>
                             </div>
                         </div>
 
-
-
                         <div class="row mb-3">
-                            <label class="col-sm-4 text-end fw-bold">Name:</label>
+                            <label class="col-sm-4 text-end">Name:</label>
                             <div class="col-sm-8 text-start">
                                 <span>@Model.Name</span>
                             </div>
@@ -64,7 +106,7 @@
 
                         <!-- Email -->
                         <div class="row mb-3">
-                            <label class="col-sm-4 text-end fw-bold">Email:</label>
+                            <label class="col-sm-4 text-end">Email:</label>
                             <div class="col-sm-8 text-start">
                                 <span>@Model.Email</span>
                             </div>
@@ -72,14 +114,13 @@
 
                         <!-- Phone Number -->
                         <div class="row mb-3">
-                            <label class="col-sm-4 text-end fw-bold">Phone:</label>
+                            <label class="col-sm-4 text-end">Phone:</label>
                             <div class="col-sm-8 text-start">
                                 <span>@Model.PhoneNumber</span>
                             </div>
                         </div>
 
-                        <!-- Additional Actions -->
-                        <div class="mt-4">
+                        <div class="profile-actions">
                             <a href="@Url.Action("Edit", "Account",new{Area="Identity",id = Model.Id})" class="btn btn-primary me-2">Edit Profile</a>
                             <a href="@Url.Action("ChangePassword", "Account" ,new {Area="Identity"})" class="btn btn-warning">Change Password</a>
                         </div>

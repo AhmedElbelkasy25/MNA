@@ -9,8 +9,10 @@ namespace Models
     public class Review
     {
         public int Id { get; set; }
+        public string Comment { get; set; }
+        public double rating { get; set; }
         public string ApplicationUserId { get; set; }
-        public string CourseId { get; set; }
+        public int CourseId { get; set; }
         public ApplicationUser Student { get; set; }
         public Course Course { get; set; }
     }

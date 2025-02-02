@@ -10,7 +10,7 @@ namespace Models
     {
         public int Id { get; set; }
         public string ApplicationUserId { get; set; }
-        public string CourseId { get; set; }
+        public int CourseId { get; set; }
         public ApplicationUser Student { get; set; }
         public Course Course { get; set; }
     }
