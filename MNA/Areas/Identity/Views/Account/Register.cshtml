@@ -1,7 +1,7 @@
 ﻿@model Models.ViewModels.UserRegiesterVm
 
 <h1 class="text-center fw-bold display-4" style="color: white; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);">
-    <i class="bi bi-envelope-exclamation-fill"></i>Register
+    <i class="bi bi-envelope-exclamation-fill"></i> Register
 </h1>
 
 <div class="row justify-content-center">
@@ -56,6 +56,21 @@
                         </button>
                     </div>
                 </form>
+
+                <!-- OR Divider -->
+                <div class="text-center my-3">
+                    <span class="text-muted">OR</span>
+                </div>
+
+                <!-- Google Login Button -->
+                <div class="text-center">
+                    <form asp-action="ExternalLogin" method="post">
+                        <input type="hidden" name="provider" value="Google" />
+                        <button type="submit" class="btn btn-danger btn-lg rounded-pill w-100">
+                            <i class="bi bi-google"></i> Sign in with Google
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
 

@@ -18,7 +18,24 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Areas\Admin\Views\Home\index.cshtml" />
+    <None Include="Areas\Admin\Views\Category\Create.cshtml" />
+    <None Include="Areas\Admin\Views\Category\Delete.cshtml" />
+    <None Include="Areas\Admin\Views\Category\Edit.cshtml" />
+    <None Include="Areas\Admin\Views\Category\Index.cshtml" />
+    <None Include="Areas\Admin\Views\Coupon\Create.cshtml" />
+    <None Include="Areas\Admin\Views\Coupon\Edit.cshtml" />
+    <None Include="Areas\Admin\Views\Coupon\Index.cshtml" />
+    <None Include="Areas\Admin\Views\Lesson\Create.cshtml" />
+    <None Include="Areas\Admin\Views\Lesson\Delete.cshtml" />
+    <None Include="Areas\Admin\Views\Lesson\Edit.cshtml" />
+    <None Include="Areas\Admin\Views\Lesson\Index.cshtml" />
+    <None Include="Areas\Admin\Views\Payment\Create.cshtml" />
+    <None Include="Areas\Admin\Views\Payment\Edit.cshtml" />
+    <None Include="Areas\Admin\Views\Payment\Index.cshtml" />
+    <None Include="Areas\Admin\Views\Section\Create.cshtml" />
+    <None Include="Areas\Admin\Views\Section\Delete.cshtml" />
+    <None Include="Areas\Admin\Views\Section\Edit.cshtml" />
+    <None Include="Areas\Admin\Views\Section\Index.cshtml" />
     <None Include="Areas\Student\Views\Home\Index.cshtml" />
     <None Include="Areas\Student\Views\Home\Privacy.cshtml" />
     <None Include="Areas\Student\Views\_ViewImports.cshtml" />
@@ -39,8 +56,5 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
 	  <ProjectReference Include="..\Models\Models.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="wwwroot\uploads\" />
 	</ItemGroup>
 </Project>

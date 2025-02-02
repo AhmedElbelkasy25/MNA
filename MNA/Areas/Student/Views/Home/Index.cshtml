@@ -3,8 +3,7 @@
     ViewData["Title"] = "Home Page";
 }
 @model CourseReviewInstructorVM
-<!DOCTYPE html>
-<html lang="en">
+
 <head>
     <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -64,6 +63,33 @@
         border-radius: 8px;
         box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
         }
+        /* Adjust Course Image Size */
+        .carousel-item img {
+            height: 250px;
+            width: 100%;
+            object-fit: contain; /* Ensures the entire image is visible */
+        }
+
+        /* Improve Card Layout */
+        .card {
+            border-radius: 12px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-in-out;
+        }
+
+            .card:hover {
+                transform: scale(1.05);
+            }
+
+            .card img {
+                height: 180px;
+                width: 100%;
+                object-fit: contain; /* Ensures the entire image is visible */
+                padding: 10px; /* Adds spacing inside the card */
+                background-color: #f8f9fa; /* Optional: adds a neutral background */
+            }
+
+
     </style>
 </head>
 <body>
@@ -149,44 +175,64 @@
     </div>
 
     <!-- Featured Courses Section -->
-    <div class="container py-5">
-        <h2 class="text-center" style="color: #f39c12;">Featured Courses</h2>
-        <div class="row">
-            @for (int i = 0; i < 3; i++)
-            {
-                <div class="col-md-4">
-                    <div class="card">
-                        <img src="~/images/course/@Model.FeatureCourse[i].ImgUrl" class="card-img-top" alt="@Model.FeatureCourse[i].Title">
-                        <div class="card-body">
-                            <h5 class="card-title">@Model.FeatureCourse[i].Title</h5>
-                            <p class="card-text">@Model.FeatureCourse[i].Description</p>
-                            <a href="/Student/Courses" class="btn btn-custom">Enroll Now</a>
+    @if (Model.FeatureCourse != null && Model.FeatureCourse.Count > 0)
+    {
+        <div class="container py-5">
+            <h2 class="text-center" style="color: #f39c12;">Featured Courses</h2>
+            <div class="row">
+                @for (int i = 0; i < Math.Min(3, Model.FeatureCourse.Count); i++)
+                {
+                    <div class="col-md-4">
+                        <div class="card">
+                            <img src="@(string.IsNullOrEmpty(Model.FeatureCourse[i].ImgUrl) ? "/images/default.jpg" : "/images/course/" + Model.FeatureCourse[i].ImgUrl)"
+                                 class="card-img-top" alt="@Model.FeatureCourse[i].Title">
+                            <div class="card-body">
+                                <h5 class="card-title">@Model.FeatureCourse[i].Title</h5>
+                                <p class="card-text">@Model.FeatureCourse[i].Description</p>
+                                <a href="/Student/Courses" class="btn btn-custom">Enroll Now</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            }
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <p class="text-center text-muted">No featured courses available.</p>
+    }
+
            
            
         </div>
     </div>
 
     <!-- Instructor Section -->
-    <div class="container py-5">
-        <h2 class="text-center" style="color: #f39c12;">Meet Our Instructors</h2>
-        <div class="row">
-            @for (int i = 0; i <3; i++)
-            {
-                <div class="col-md-4">
-                    <div class="card">
-                        <img src="~/images/instructors/@Model.Instructors[i].PicUrl" class="card-img-top" alt="Instructor @i+1">
-                        <div class="card-body">
-                            <h5 class="card-title">@Model.Instructors[i].Name</h5>
-                            <p class="card-text">@Model.Instructors[i].Bio</p>
-                            <a href="/Instructor/GetInstructor/@Model.Instructors[i].Id" class="btn btn-custom">View Profile</a>
+    @if (Model.Instructors != null && Model.Instructors.Count > 0)
+    {
+        <div class="container py-5">
+            <h2 class="text-center" style="color: #f39c12;">Meet Our Instructors</h2>
+            <div class="row">
+                @foreach (var instructor in Model.Instructors)
+                {
+                    <div class="col-md-4 d-flex align-items-stretch">
+                        <div class="card">
+                            <img src="@(string.IsNullOrEmpty(instructor.PicUrl) ? "/images/default-profile.jpg" : "/images/instructors/" + instructor.PicUrl)"
+                                 class="card-img-top" alt="Instructor">
+                            <div class="card-body">
+                                <h5 class="card-title">@instructor.Name</h5>
+                                <p class="card-text">@instructor.Bio</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-            }
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <p class="text-center text-muted">No Instructors available.</p>
+    }
            @*  <div class="col-md-4">
                 <div class="card">
                     <img src="~/images/instructor2.jpg" class="card-img-top" alt="Instructor 2">
@@ -197,6 +243,6 @@
                     </div>
                 </div>
             </div> *@
-            <div class="col-md-4">
-                <div class="card">
+         @*    <div class="col-md-4">
+                <div class="card"> *@
                     </body>

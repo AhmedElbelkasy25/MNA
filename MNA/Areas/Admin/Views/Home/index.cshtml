@@ -2,3 +2,96 @@
     ViewData["Title"] = "Admin Dashboard";
 }
 
+<h1 class="text-center fw-bold display-4 text-light" style="text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);">
+    <i class="bi bi-speedometer2"></i> Admin Dashboard
+</h1>
+
+<div class="container mt-4">
+    <!-- Dashboard Overview Cards -->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-lg text-center p-4 dashboard-card">
+                <h5 class="fw-bold"><i class="bi bi-people-fill"></i> Total Users</h5>
+                <h3 class="text-primary">@ViewBag.TotalUsers</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-lg text-center p-4 dashboard-card">
+                <h5 class="fw-bold"><i class="bi bi-book-fill"></i> Total Courses</h5>
+                <h3 class="text-success">@ViewBag.TotalCourses</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-lg text-center p-4 dashboard-card">
+                <h5 class="fw-bold"><i class="bi bi-currency-dollar"></i> Total Revenue</h5>
+                <h3 class="text-danger">$@ViewBag.TotalRevenue</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Transactions Table -->
+    <div class="mt-5 transaction-container p-4 rounded shadow-lg">
+        <h4 class="fw-bold text-center text-dark"><i class="bi bi-card-list"></i> Recent Transactions</h4>
+        <table class="table table-hover mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Course</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.RecentTransactions != null)
+                {
+                    @foreach (var transaction in ViewBag.RecentTransactions)
+                    {
+                        <tr>
+                            <td>@transaction.Id</td>
+                            <td>@transaction.UserName</td>
+                            <td>@transaction.CourseName</td>
+                            <td>$@transaction.Amount</td>
+                            <td>@transaction.Date.ToShortDateString()</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center text-warning">No recent transactions available</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+    body {
+        background: #f4f4f4;
+        font-family: 'Poppins', sans-serif;
+    }
+
+        body.no-background {
+            background: none !important;
+        }
+
+
+    .dashboard-card {
+        background: linear-gradient(135deg, #ffffff, #f9f9f9);
+        border-radius: 15px;
+        transition: transform 0.3s;
+    }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .transaction-container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+</style>

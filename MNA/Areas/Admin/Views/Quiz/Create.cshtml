@@ -1,47 +1,135 @@
 ﻿@model Models.Quiz
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Quiz";
 }
 
-<h1>Create</h1>
+<!-- Page Title -->
+<h1 class="text-center mb-4" style="color: #007bff; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); font-weight: bold;">
+    <i class="bi bi-question-circle-fill"></i> Create a Quiz
+</h1>
 
-<h4>Quiz</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Question" class="control-label"></label>
-                <input asp-for="Question" class="form-control" />
-                <span asp-validation-for="Question" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="CorrectAnswer" /> @Html.DisplayNameFor(model => model.CorrectAnswer)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="LessonId" class="control-label"></label>
-                <select asp-for="LessonId" class ="form-control" >
-                    @foreach (var item in ViewBag.Lessons)
-                    {
-                        <option value="@item.Id">@item.Title</option>
-                    }
-                </select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<!-- Quiz Form Card -->
+<div class="container d-flex justify-content-center">
+    <div class="card shadow-lg border-0 rounded-4 p-4 w-75">
+        <div class="card-body">
+            <form asp-action="Create" id="quizForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Dynamic Questions List -->
+                <div id="questionsContainer">
+                    <div class="question-group">
+                        <div class="form-group mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-chat-square-text"></i> Question
+                            </label>
+                            <input name="Questions[0].Question" class="form-control" placeholder="Enter quiz question..." required />
+                        </div>
+
+                        <!-- Correct Answer: True or False -->
+                        <div class="form-group mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-check2-circle"></i> Correct Answer
+                            </label>
+                            <div class="d-flex gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="Questions[0].CorrectAnswer" value="true" required>
+                                    <label class="form-check-label fw-bold text-success">✅ True</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="Questions[0].CorrectAnswer" value="false" required>
+                                    <label class="form-check-label fw-bold text-danger">❌ False</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Remove Button (Hidden for first question) -->
+                        <button type="button" class="btn btn-danger btn-sm remove-question d-none">
+                            <i class="bi bi-trash"></i> Remove Question
+                        </button>
+                        <hr />
+                    </div>
+                </div>
+
+                <!-- Add Question Button -->
+                <button type="button" class="btn btn-outline-success rounded-pill px-4" id="addQuestion">
+                    <i class="bi bi-plus-circle"></i> Add Another Question
+                </button>
+
+                <!-- Lesson Selection -->
+                <div class="form-group mt-4">
+                    <label asp-for="LessonId" class="form-label fw-bold">
+                        <i class="bi bi-book"></i> Select Lesson
+                    </label>
+                    <select asp-for="LessonId" class="form-control">
+                        @foreach (var item in ViewBag.lessons)
+                        {
+                            <option value="@item.Id">@item.Title</option>
+                        }
+                    </select>
+                    <span asp-validation-for="LessonId" class="text-danger"></span>
+                </div>
+
+                <!-- Form Buttons -->
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">
+                        <i class="bi bi-arrow-left"></i> Back
+                    </a>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 shadow">
+                        <i class="bi bi-check-circle"></i> Create Quiz
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index" class="btn btn-primary">Back to List</a>
-</div>
-
+<!-- JavaScript for Adding More Questions -->
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let questionCount = 1;
+            const container = document.getElementById("questionsContainer");
+            const addButton = document.getElementById("addQuestion");
+
+            addButton.addEventListener("click", function () {
+                const newQuestion = document.createElement("div");
+                newQuestion.classList.add("question-group");
+                newQuestion.innerHTML = `
+                            <div class="form-group mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-chat-square-text"></i> Question
+                                </label>
+                                <input name="Questions[${questionCount}].Question" class="form-control" placeholder="Enter quiz question..." required />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-check2-circle"></i> Correct Answer
+                                </label>
+                                <div class="d-flex gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Questions[${questionCount}].CorrectAnswer" value="true" required>
+                                        <label class="form-check-label fw-bold text-success">✅ True</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Questions[${questionCount}].CorrectAnswer" value="false" required>
+                                        <label class="form-check-label fw-bold text-danger">❌ False</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger btn-sm remove-question">
+                                <i class="bi bi-trash"></i> Remove Question
+                            </button>
+                            <hr />
+                        `;
+                container.appendChild(newQuestion);
+                questionCount++;
+
+                // Add remove functionality
+                newQuestion.querySelector(".remove-question").addEventListener("click", function () {
+                    newQuestion.remove();
+                });
+            });
+        });
+    </script>
 }

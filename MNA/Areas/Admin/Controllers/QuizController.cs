@@ -45,7 +45,7 @@ namespace MNA.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Courses = _unitOfWork.Courses.Get().ToList();
+            ViewBag.Lessons = _unitOfWork.Lessons.Get().ToList();
             return View(quiz);
         }
 

@@ -1,61 +1,119 @@
 ﻿@model Models.Payment
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Payment";
 }
 
-<h1>Create</h1>
+<!-- Page Title -->
+<h1 class="text-center mb-4" style="color: #28a745; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);">
+    <i class="bi bi-wallet-fill"></i> Create Payment
+</h1>
 
-<h4>Payment</h4>
-<hr />
-<div class="row">
-    <div class="col-md-12">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="ApplicationUserId" class="control-label"></label>
-                <select asp-for="ApplicationUserId" class="form-control">
-                    @foreach (var item in ViewBag.Students)
-                    {
-                        <option value="@item.Id">@item.Name</option>
-                    }
-                </select>
-            </div>
-            <div class="form-group">
-                <label asp-for="CourseId" class="control-label"></label>
-                <select asp-for="CourseId" class ="form-control" >
-                    @foreach (var item in ViewBag.Courses)
-                    {
-                        <option value="@item.Id">@item.Title</option>
-                    }
-                </select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Amount" class="control-label"></label>
-                <input asp-for="Amount" class="form-control" />
-                <span asp-validation-for="Amount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TransactionId" class="control-label"></label>
-                <input asp-for="TransactionId" class="form-control" />
-                <span asp-validation-for="TransactionId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Date" class="control-label"></label>
-                <input type="date" asp-for="Date" class="form-control" />
-                <span asp-validation-for="Date" class="text-danger"></span>
-            </div>
-            <div class="form-group mt-4">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<!-- Card Container for Form -->
+<div class="container d-flex justify-content-center">
+    <div class="card shadow-lg border-0 rounded-4 p-4" style="max-width: 600px; width: 100%;">
+        <div class="card-body">
+            <h4 class="text-center text-success fw-bold mb-3">Payment Details</h4>
+            <hr />
+
+            <!-- Form for Payment Creation -->
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Student Selection -->
+                <div class="mb-3">
+                    <label asp-for="ApplicationUserId" class="form-label fw-bold"><i class="bi bi-person-fill"></i> Student</label>
+                    <select asp-for="ApplicationUserId" class="form-control rounded-pill">
+                        @foreach (var item in ViewBag.Students)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="ApplicationUserId" class="text-danger"></span>
+                </div>
+
+                <!-- Course Selection -->
+                <div class="mb-3">
+                    <label asp-for="CourseId" class="form-label fw-bold"><i class="bi bi-book-fill"></i> Course</label>
+                    <select asp-for="CourseId" class="form-control rounded-pill">
+                        @foreach (var item in ViewBag.Courses)
+                        {
+                            <option value="@item.Id">@item.Title</option>
+                        }
+                    </select>
+                    <span asp-validation-for="CourseId" class="text-danger"></span>
+                </div>
+
+                <!-- Amount Input -->
+                <div class="mb-3">
+                    <label asp-for="Amount" class="form-label fw-bold"><i class="bi bi-cash"></i> Amount</label>
+                    <input asp-for="Amount" class="form-control rounded-pill" placeholder="Enter amount" />
+                    <span asp-validation-for="Amount" class="text-danger"></span>
+                </div>
+
+                <!-- Transaction ID Input -->
+                <div class="mb-3">
+                    <label asp-for="TransactionId" class="form-label fw-bold"><i class="bi bi-credit-card"></i> Transaction ID</label>
+                    <input asp-for="TransactionId" class="form-control rounded-pill" placeholder="Enter transaction ID" />
+                    <span asp-validation-for="TransactionId" class="text-danger"></span>
+                </div>
+
+                <!-- Date Input -->
+                <div class="mb-3">
+                    <label asp-for="Date" class="form-label fw-bold"><i class="bi bi-calendar-date"></i> Date</label>
+                    <input type="date" asp-for="Date" class="form-control rounded-pill" />
+                    <span asp-validation-for="Date" class="text-danger"></span>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-success btn-lg rounded-pill w-100">
+                        <i class="bi bi-check-circle"></i> Create Payment
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<!-- Back to List Button -->
+<div class="text-center mt-4">
+    <a asp-action="Index" class="btn btn-outline-primary px-4 py-2 rounded-pill shadow-sm text-decoration-none">
+        <i class="bi bi-arrow-left"></i> Back to List
+    </a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
+
+<!-- Custom Styles -->
+<style>
+    .form-label {
+        font-weight: bold;
+    }
+
+    .btn-success {
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .btn-outline-primary {
+        font-weight: bold;
+    }
+
+    /* Optional: Adjust card style for better visuals */
+    .card {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    .btn-lg {
+        padding: 10px 15px;
+    }
+</style>
