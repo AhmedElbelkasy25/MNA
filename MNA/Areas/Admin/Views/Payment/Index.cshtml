@@ -1,74 +1,69 @@
 ﻿@model IEnumerable<Models.Payment>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Payments";
 }
 
-@section Scripts {
+<!-- Page Title -->
+<h1 class="text-center mb-4" style="color: #28a745; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); font-weight: bold;">
+    <i class="bi bi-wallet-fill"></i> Payments
+</h1>
 
-    @if (@TempData["success"] != null)
-    {
-        <script>
-            toastr.success('@TempData["success"]')
-        </script>
-    }
-    @if (TempData["error"] != null)
-    {
-        <script>
-            toastr.error('@TempData["error"]')
-        </script>
-    }
-}
-
-<div>
-    <a asp-action="Create" asp-controller="Payment" asp-area="Admin" class="btn btn-primary">
-        <i class="bi bi-plus-circle"></i> Create Coupon
+<!-- Create New Payment Button -->
+<div class="text-center mb-4">
+    <a asp-action="Create" asp-controller="Payment" asp-area="Admin" class="btn btn-success btn-lg rounded-pill shadow">
+        <i class="bi bi-plus-circle"></i> Add New Payment
     </a>
 </div>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TransactionId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Student)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Course)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TransactionId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Student.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Course.Title)
-            </td>
-            <td>
-                    <a class="btn btn-outline-info" asp-action="Edit" asp-route-id="@item.Id"> <i class="bi bi-gear"></i> Edit</a>
-                    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">  <i class="bi bi-trash"></i>  Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+<!-- Responsive Payment Grid -->
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var payment in Model)
+        {
+            <div class="col">
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden position-relative payment-card">
+                    <!-- Gradient Background -->
+                    <div class="card-header text-center text-white fw-bold" style="background: linear-gradient(135deg, #28a745, #17a2b8);">
+                        <h4>Payment: @payment.TransactionId</h4>
+                    </div>
+
+                    <!-- Payment Details -->
+                    <div class="card-body text-center">
+                        <i class="bi bi-credit-card-fill text-warning fs-1"></i>
+                        <p class="card-text text-muted">Amount: @payment.Amount</p>
+                        <p class="card-text text-muted">Date: @payment.Date.ToString("yyyy-MM-dd")</p>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="card-footer d-flex justify-content-between bg-light">
+                        <a asp-action="Edit" asp-route-id="@payment.Id" class="btn btn-outline-primary rounded-pill px-3">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@payment.Id" class="btn btn-outline-danger rounded-pill px-3">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+    /* Hover Effect */
+    .payment-card {
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+
+        .payment-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+    /* Button Styling */
+    .btn-outline-primary, .btn-outline-danger {
+        font-weight: bold;
+    }
+</style>

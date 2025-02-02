@@ -1,76 +1,89 @@
 ﻿@model IEnumerable<Models.Coupon>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Coupons";
 }
-@section Scripts {
 
-    @if (@TempData["success"] != null)
+@section Scripts {
+    @if (TempData["success"] != null)
     {
         <script>
-            toastr.success('@TempData["success"]')
+            toastr.success('@TempData["success"]');
         </script>
     }
     @if (TempData["error"] != null)
     {
         <script>
-            toastr.error('@TempData["error"]')
+            toastr.error('@TempData["error"]');
         </script>
     }
 }
-<div>
-    <a asp-action="Create" asp-controller="Coupon" asp-area="Admin" class="btn btn-primary">
+
+<!-- Page Title -->
+<h1 class="text-center mb-4" style="color: #17a2b8; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); font-weight: bold;">
+    <i class="bi bi-ticket-perforated"></i> Coupons
+</h1>
+
+<!-- Create New Button -->
+<div class="text-center mb-4">
+    <a asp-action="Create" asp-controller="Coupon" asp-area="Admin" class="btn btn-success btn-lg rounded-pill shadow">
         <i class="bi bi-plus-circle"></i> Create Coupon
     </a>
 </div>
 
-<div>
-    <form asp-action="SearchForCourse" asp-controller="Coupon" asp-area="Admin" method="post">
-        <div class="col-md-3 d-flex">
-            <input type="Text" class="form-control" placeholder="Course Name" name="CourseName" />
-            <button class="btn btn-primary m-1" type="submit"> Search </button>
-        </div>
+<!-- Search Bar -->
+<div class="container mb-4">
+    <form asp-action="SearchForCourse" asp-controller="Coupon" asp-area="Admin" method="post" class="d-flex justify-content-center">
+        <input type="text" class="form-control w-50 rounded-pill me-2" placeholder="Search by Course Name" name="CourseName">
+        <button class="btn btn-primary rounded-pill px-4" type="submit">
+            <i class="bi bi-search"></i> Search
+        </button>
     </form>
 </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ExpireDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Discount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Serial)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Course)
-            </th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExpireDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Discount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Serial)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Course.Title)
-            </td>
-            <td>
-                    <a class="btn btn-outline-info" asp-action="Edit" asp-route-id="@item.Id"> <i class="bi bi-gear"></i> Edit</a> 
-                    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">  <i class="bi bi-trash"></i>  Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<!-- Responsive Card Grid -->
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden position-relative">
+                    <!-- Gradient Background Header -->
+                    <div class="card-header text-center text-white fw-bold" style="background: linear-gradient(135deg, #28a745, #218838);">
+                        <h4><i class="bi bi-ticket-perforated-fill"></i> @item.Serial</h4>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="card-body text-center">
+                        <p class="card-text"><strong>Course:</strong> @item.Course.Title</p>
+                        <p class="card-text text-muted"><strong>Discount:</strong> @item.Discount%</p>
+                        <p class="card-text"><strong>Expires On:</strong> <span class="text-danger">@item.ExpireDate.ToShortDateString()</span></p>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="card-footer d-flex justify-content-between bg-light">
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-info rounded-pill px-3">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger rounded-pill px-3">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Custom Styling -->
+<style>
+    /* Hover Animation */
+    .card {
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+</style>
