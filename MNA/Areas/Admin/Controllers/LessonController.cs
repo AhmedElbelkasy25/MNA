@@ -38,9 +38,11 @@ namespace MNA.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Lesson lesson)
         {
+            ModelState.Remove("Section");
             if (ModelState.IsValid)
             {
                 _unitOfWork.Lessons.Create(lesson);
+                _unitOfWork.Commit();
                 return RedirectToAction(nameof(Index));
             }
 
@@ -75,7 +77,7 @@ namespace MNA.Areas.Admin.Controllers
             {
                 return BadRequest();
             }
-
+            ModelState.Remove("Section");
             if (ModelState.IsValid)
             {
                 _unitOfWork.Lessons.Alter(lesson);

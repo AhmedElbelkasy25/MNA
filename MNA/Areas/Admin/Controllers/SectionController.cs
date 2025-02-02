@@ -33,7 +33,7 @@ namespace MNA.Areas.Admin.Controllers
         public IActionResult Create()
         {
 
-
+            ViewBag.Courses = _unitOfWork.Courses.Get().ToList();
             //ViewBag.Courses = _unitOfWork.Sections.Get(includeProps:e=>e.Include(e=>e.Course)
             //.ThenInclude(e=>e.Instructor).ThenInclude(e=>e.),filter: e=>e.Course.Instructor. );
             return View();
@@ -43,6 +43,8 @@ namespace MNA.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult Create(Section section)
         {
+            ModelState.Remove("Course");
+            ModelState.Remove("Lessons");
             if (ModelState.IsValid)
             {
                 _unitOfWork.Sections.Create(section);
@@ -76,7 +78,8 @@ namespace MNA.Areas.Admin.Controllers
             {
                 return BadRequest();
             }
-
+            ModelState.Remove("Course");
+            ModelState.Remove("Lessons");
             if (ModelState.IsValid)
             {
                 _unitOfWork.Sections.Alter(section);

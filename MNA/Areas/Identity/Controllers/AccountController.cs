@@ -292,19 +292,13 @@ namespace MNA.Areas.Identity.Controllers
             return RedirectToAction("GetProfile", "Account", new { name = User.Identity.Name });
         }
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 85945e69b7c2c961efda3df2e152a3a85f91caaa
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login", "Account");
         }
-<<<<<<< HEAD
-=======
 
->>>>>>> 85945e69b7c2c961efda3df2e152a3a85f91caaa
         [HttpPost]
         [AllowAnonymous]
         public IActionResult ExternalLogin(string provider, string returnUrl = null)
