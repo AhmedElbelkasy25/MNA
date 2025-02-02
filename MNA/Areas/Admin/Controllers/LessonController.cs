@@ -29,7 +29,7 @@ namespace MNA.Areas.Admin.Controllers
         // GET: Lesson/Create
         public IActionResult Create()
         {
-            ViewBag.Courses = _unitOfWork.Courses.Get().ToList();
+            ViewBag.Sections = _unitOfWork.Sections.Get().ToList();
             return View();
         }
 
@@ -45,7 +45,7 @@ namespace MNA.Areas.Admin.Controllers
             }
 
             // Repopulate ViewBag in case of validation errors
-            ViewBag.Courses = _unitOfWork.Courses.Get().ToList();
+            ViewBag.Sections = _unitOfWork.Sections.Get().ToList();
             return View(lesson);
         }
 
@@ -62,7 +62,7 @@ namespace MNA.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            ViewBag.Courses = _unitOfWork.Courses.Get().ToList();
+            ViewBag.Sections = _unitOfWork.Sections.Get().ToList();
             return View(lesson);
         }
 
@@ -79,10 +79,11 @@ namespace MNA.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 _unitOfWork.Lessons.Alter(lesson);
+                _unitOfWork.Commit();
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Courses = _unitOfWork.Courses.Get().ToList();
+            ViewBag.Sections = _unitOfWork.Sections.Get().ToList();
             return View(lesson);
         }
 
