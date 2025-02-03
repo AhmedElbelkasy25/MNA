@@ -37,5 +37,12 @@ namespace MNA.Areas.Student.Controllers
 
             return View(model: coursePaginationVM);
         }
+
+        public IActionResult Details(int Id)
+        {
+            var course = _unitOfWork.Courses.GetOne( filter:e  => e.Id == Id ,
+                includeProps:e=>e.Include(e=>e.Instructor).Include(e=>e.Sections).ThenInclude(e=>e.Lessons));
+            return View(model: course);
+        }
     }
 }
