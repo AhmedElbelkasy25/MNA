@@ -15,10 +15,16 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
     <style>
-        /* ----- Background Image with Dark Overlay ----- */
+        
+        html{
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
         body {
             position: relative;
-            background-image: url("/images/background.jpg");
+            background-image: url("/images/backgrounds/3.jpg");
             
             background-size: cover;
             background-position: center;
@@ -27,8 +33,14 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+           
             margin: 0;
+            padding: 0;
+            overflow-x: hidden; 
+
         }
+
+
 
             /* Dark overlay effect */
             body::before {
@@ -47,6 +59,7 @@
             padding: 5px;
         }
 
+        
         /* ----- Navbar Styles ----- */
         .navbar {
             background: #2C3E50;
@@ -139,12 +152,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="Student" asp-controller="Courses" asp-action="Index">
+                            <a class="nav-link" asp-area="Student" asp-controller="Course" asp-action="Index">
                                 <i class="fas fa-book"></i> Courses
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="Student" asp-controller="Lessons" asp-action="Index">
+                            <a class="nav-link" asp-area="Student" asp-controller="Lesson" asp-action="Index">
                                 <i class="fas fa-chalkboard"></i> Lessons
                             </a>
                         </li>
@@ -184,7 +197,7 @@
 
     </div>
 
-    <div class="container mt-4">
+    <div class="container-fluid" style="margin-left:-12px;">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
