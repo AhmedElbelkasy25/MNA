@@ -8,6 +8,7 @@ using Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using MNA.Utility;
 using DataAccess.DbIntializer;
+using Stripe;
 
 
 
@@ -59,6 +60,9 @@ builder.Services.AddScoped<IDbIntializer, DbIntializer>();
 //builder.Services.AddScoped<ISectionRepository, SectionRepository>();
 //builder.Services.AddScoped<IStudentCategoriesRepository, StudentCategoriesRepository>();
 //builder.Services.AddScoped<IStudentCouponsRepository, StudentCouponsRepository>();
+
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
 
 var app = builder.Build();

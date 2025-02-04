@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models;
+using Stripe.Checkout;
 
 namespace MNA.Areas.Student.Controllers
 {
@@ -104,41 +105,45 @@ namespace MNA.Areas.Student.Controllers
             return RedirectToAction("Index");
         }
 
-        //public IActionResult Pay()
-        //{
-        //    var options = new SessionCreateOptions
-        //    {
-        //        PaymentMethodTypes = new List<string> { "card" },
-        //        LineItems = new List<SessionLineItemOptions>(),
-        //        Mode = "payment",
-        //        SuccessUrl = $"{Request.Scheme}://{Request.Host}/checkout/success",
-        //        CancelUrl = $"{Request.Scheme}://{Request.Host}/checkout/cancel",
-        //    };
+        public IActionResult Pay(Cart cart)
+        {
+            var options = new SessionCreateOptions
+            {
+                PaymentMethodTypes = new List<string> { "card" },
+                LineItems = new List<SessionLineItemOptions>(),
+                Mode = "payment",
+                SuccessUrl = $"{Request.Scheme}://{Request.Host}/checkout/success",
+                CancelUrl = $"{Request.Scheme}://{Request.Host}/checkout/cancel",
+            };
 
-        //    var applicationUserId = _userManager.GetUserId(User);
-        //    var shoppingCarts = _unitOfWork.Carts.Get(e => e.ApplicationUserId == applicationUserId, includeProps: e => e.Course).ToList();
+            var applicationUserId = _userManager.GetUserId(User);
+            var shoppingCarts = _unitOfWork.Carts.Get(
+       e => e.ApplicationUserId == applicationUserId,
+       includeProps: q => q.Include(c => c.Course)
+        ).ToList();
 
-        //    foreach (var item in shoppingCarts)
-        //    {
-        //        options.LineItems.Add(new SessionLineItemOptions
-        //        {
-        //            PriceData = new SessionLineItemPriceDataOptions
-        //            {
-        //                Currency = "egp",
-        //                ProductData = new SessionLineItemPriceDataProductDataOptions
-        //                {
-        //                    Name = item.Course.Name,
-        //                    Description = item.Course.Description,
-        //                },
-        //                UnitAmount = (long)item.Course.Price * 100,
-        //            },
-        //            Quantity = item.Count,
-        //        });
-        //    }
 
-        //    var service = new SessionService();
-        //    var session = service.Create(options);
-        //    return Redirect(session.Url);
-        //}
+            foreach (var item in shoppingCarts)
+            {
+                options.LineItems.Add(new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        Currency = "egp",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = item.Course.Title,
+                            Description = item.Course.Description,
+                        },
+                        UnitAmount = (long)item.Course.Price * 100,
+                    },
+                    Quantity = item.Count,
+                });
+            }
+
+            var service = new SessionService();
+            var session = service.Create(options);
+            return Redirect(session.Url);
+        }
     }
 }

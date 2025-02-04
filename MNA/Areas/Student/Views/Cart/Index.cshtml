@@ -1,47 +1,54 @@
 ﻿@model IEnumerable<Models.Cart>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Shopping Cart";
 }
 
-<h1>Index</h1>
+<h2 class="text-center my-4">🛒 Your Shopping Cart</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Student)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Course)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Count)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Student.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Course.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Count)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+@if (Model != null && Model.Any())
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Course Title</th>
+                <th>Price (EGP)</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><img src="@item.Course.ImgUrl" alt="@item.Course.Title" width="80" /></td>
+                    <td>@item.Course.Title</td>
+                    <td>@item.Course.Price.ToString("F2")</td>
+                    <td>
+                        <a asp-action="Decrement" asp-route-cartId="@item.Id" class="btn btn-warning btn-sm">➖</a>
+                        <span class="mx-2">@item.Count</span>
+                        <a asp-action="Increment" asp-route-cartId="@item.Id" class="btn btn-success btn-sm">➕</a>
+                    </td>
+                    <td>@(item.Course.Price * item.Count) EGP</td>
+                    <td>
+                        <a asp-action="Remove" asp-route-courseId="@item.Course.Id" class="btn btn-danger btn-sm">🗑 Remove</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="text-end">
+        <h4>Total: <strong>@ViewBag.TotalPrice EGP</strong></h4>
+        <a asp-action="Pay" class="btn btn-primary">Proceed to Checkout 💳</a>
+    </div>
 }
-    </tbody>
-</table>
+else
+{
+    <div class="alert alert-info text-center">
+        <h4>Your cart is empty 😞</h4>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Browse Courses 📚</a>
+    </div>
+}
