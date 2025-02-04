@@ -1,0 +1,125 @@
+﻿@model Course
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="course-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 text-white">
+                <h1>@Model.Title</h1>
+                <p>@Model.Description</p>
+                <p><strong>Instructor:</strong> @Model.Instructor.Name</p>
+                <p><strong>Rating:</strong> ⭐ @Model.Rating </p>
+                <p><strong>Price:</strong> £@Model.Price</p>
+                <button class="btn btn-primary">Enroll Now</button>
+            </div>
+            <div class="col-md-4">
+                <div class="course-preview">
+                    <img src="/images/Course/@Model.ImgUrl" class="img-fluid rounded" alt="Course Image">
+                    <p class="preview-text">Preview this course</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--  the section -->
+
+<div class="container-fluid mt-5" style="background:#FFF ; padding:45px">
+    @* <h5>23 sections • 453 lectures • 40h 20m total length</h5> *@
+    <a href="#" class="text-primary fw-bold float-end">Expand all sections</a>
+    <div class="accordion mt-3" id="courseAccordion">
+        <!-- Section 1 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#section1">
+                    Getting Started <span class="ms-2 text-muted">10 lectures • 22min</span>
+                </button>
+            </h2>
+            <div id="section1" class="accordion-collapse collapse show" data-bs-parent="#courseAccordion">
+                <div class="accordion-body">
+                    <ul class="list-unstyled">
+                        <li>📄 Using the Code Snapshots <span class="text-muted">00:07</span></li>
+                        <li>🎥 Module Introduction <span class="text-muted">01:08</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#section2">
+                    Optional: React Refresher <span class="ms-2 text-muted">75 lectures • 7hr 41min</span>
+                </button>
+            </h2>
+            <div id="section2" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
+                <div class="accordion-body">
+                    <ul class="list-unstyled">
+                        <li>📄 What Is React & Why Would You Use It? <span class="text-muted">05:37</span></li>
+                        <li>🎥 React Projects - Requirements <span class="text-muted">02:09</span></li>
+                        <li>🎥 Creating React Projects <span class="text-muted">03:27</span></li>
+                        <li>🎥 Our Starting Project <span class="text-muted">03:28</span></li>
+                        <li>🎥 Understanding How React Works <span class="text-muted">07:46</span></li>
+                        <li>🎥 Building A First Custom Component <span class="text-muted">11:15</span></li>
+                        <li>🎥 Outputting Dynamic Values <span class="text-muted">05:03</span></li>
+                        <li>🎥 Reusing Components <span class="text-muted">06:00</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+
+
+
+    .course-header {
+        background: #121212; /* خلفية داكنة */
+        padding: 40px 0;
+        color: white;
+    }
+
+    .container {
+        background: none; /* إزالة الخلفية البيضاء */
+    }
+
+    .course-preview {
+        background: #1c1c1c;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .preview-text {
+        color: #ccc;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+
+
+
+
+
+</style>

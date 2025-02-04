@@ -259,7 +259,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Carts", (string)null);
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("Models.Category", b =>
@@ -276,7 +276,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Models.Coupon", b =>
@@ -307,7 +307,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Coupons", (string)null);
+                    b.ToTable("Coupons");
                 });
 
             modelBuilder.Entity("Models.Course", b =>
@@ -351,7 +351,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("InstructorId");
 
-                    b.ToTable("Courses", (string)null);
+                    b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("Models.Degree", b =>
@@ -386,7 +386,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("LessonId");
 
-                    b.ToTable("Degree", (string)null);
+                    b.ToTable("Degree");
                 });
 
             modelBuilder.Entity("Models.Enrollment", b =>
@@ -413,7 +413,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Enrollments", (string)null);
+                    b.ToTable("Enrollments");
                 });
 
             modelBuilder.Entity("Models.Favourite", b =>
@@ -437,7 +437,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Favourites", (string)null);
+                    b.ToTable("Favourites");
                 });
 
             modelBuilder.Entity("Models.Instructor", b =>
@@ -464,7 +464,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Instructors", (string)null);
+                    b.ToTable("Instructors");
                 });
 
             modelBuilder.Entity("Models.Lesson", b =>
@@ -479,9 +479,6 @@ namespace DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
-
                     b.Property<int>("SectionId")
                         .HasColumnType("int");
 
@@ -493,7 +490,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("SectionId");
 
-                    b.ToTable("Lessons", (string)null);
+                    b.ToTable("Lessons");
                 });
 
             modelBuilder.Entity("Models.Payment", b =>
@@ -527,7 +524,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Payments", (string)null);
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("Models.Quiz", b =>
@@ -552,7 +549,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("LessonId");
 
-                    b.ToTable("Quizzes", (string)null);
+                    b.ToTable("Quizzes");
                 });
 
             modelBuilder.Entity("Models.Review", b =>
@@ -583,7 +580,12 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews", t =>
+                        {
+                            t.HasTrigger("triggerUpdateCourseRating");
+                        });
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("Models.Section", b =>
@@ -597,9 +599,6 @@ namespace DataAccess.Migrations
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -608,7 +607,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Sections", (string)null);
+                    b.ToTable("Sections");
                 });
 
             modelBuilder.Entity("Models.StudentCategories", b =>
@@ -632,7 +631,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("StudentCategories", (string)null);
+                    b.ToTable("StudentCategories");
                 });
 
             modelBuilder.Entity("Models.StudentCouPons", b =>
@@ -656,7 +655,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("CouponId");
 
-                    b.ToTable("StudentCouPons", (string)null);
+                    b.ToTable("StudentCouPons");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

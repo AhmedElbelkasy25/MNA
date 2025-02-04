@@ -39,7 +39,7 @@ namespace MNA.Areas.Student.Controllers
 
             var courses = _unitOfWork.Courses.Get().OrderByDescending(e=>e.Id).ToList();
             var featuredCourses = _unitOfWork.Courses.Get().OrderByDescending(e => e.Rating).Take(4).ToList();
-            var instructors = _unitOfWork.Instructors.Get().ToList();
+            var instructors = _unitOfWork.Instructors.Get().OrderByDescending(e => e.Rating).Take(3).ToList();
             var reviews = _unitOfWork.Reviews.Get(includeProps:e=>e.Include(e=>e.Course)
             .Include(e => e.Student)).ToList();
 

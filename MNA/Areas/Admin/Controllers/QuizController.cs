@@ -38,6 +38,7 @@ namespace MNA.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult Create(Quiz quiz)
         {
+            ModelState.Remove("Lesson");
             if (ModelState.IsValid)
             {
                 _unitOfWork.Quizs.Create(quiz);
@@ -60,6 +61,7 @@ namespace MNA.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+            ViewBag.lessons = _unitOfWork.Lessons.Get().ToList();
             return View(quiz);
         }
 
@@ -70,7 +72,7 @@ namespace MNA.Areas.Admin.Controllers
             {
                 return BadRequest();
             }
-
+            ModelState.Remove("Lesson");
             if (ModelState.IsValid)
             {
                 _unitOfWork.Quizs.Alter(quiz);

@@ -44,6 +44,7 @@ namespace MNA.Areas.Identity.Controllers
                 await _roleManager.CreateAsync(new("Admin"));
                 await _roleManager.CreateAsync(new("Instructor"));
                 await _roleManager.CreateAsync(new("student"));
+                ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             }
 
             //await _userManager.AddToRoleAsync(user, "Admin");
@@ -291,10 +292,29 @@ namespace MNA.Areas.Identity.Controllers
             return RedirectToAction("GetProfile", "Account", new { name = User.Identity.Name });
         }
 
-        public async Task<IActionResult> Logout()
-        {
-            await _signInManager.SignOutAsync();
-            return RedirectToAction("Login", "Account");
+            // Attempt to sign in the user
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+            if (result.Succeeded)
+            {
+                return LocalRedirect(returnUrl ?? "/");
+            }
+            else
+            {
+                // If the user does not have an account, we create one
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                if (email != null)
+                {
+                    var user = new ApplicationUser { UserName = email, Email = email };
+                    var createResult = await _userManager.CreateAsync(user);
+                    if (createResult.Succeeded)
+                    {
+                        await _userManager.AddLoginAsync(user, info);
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return LocalRedirect(returnUrl ?? "/");
+                    }
+                }
+                return RedirectToAction(nameof(Login));
+            }
         }
         [HttpPost]
         [AllowAnonymous]

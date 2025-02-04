@@ -1,54 +1,76 @@
 ﻿@model Models.Lesson
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Lesson";
 }
 
-<h1>Edit</h1>
+<!-- Page Title -->
+<h1 class="text-center mb-4" style="color: #007bff; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);">
+    <i class="bi bi-pencil-square"></i> Edit Lesson
+</h1>
 
-<h4>Lesson</h4>
-<hr />
-<div class="row">
-    <div class="col-md-12">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Content" class="control-label"></label>
-                <input asp-for="Content" class="form-control" />
-                <span asp-validation-for="Content" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Order" class="control-label"></label>
-                <input asp-for="Order" class="form-control" />
-                <span asp-validation-for="Order" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SectionId" class="control-label"></label>
-                <select asp-for="SectionId" class="form-control" >
-                    @foreach (var item in ViewBag.Courses)
-                    {
-                        <option value="@item.Id">@item.Title</option>
-                    }
-                </select>
-                <span asp-validation-for="SectionId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+<!-- Card Container for Form -->
+<div class="container d-flex justify-content-center">
+    <div class="card shadow-lg border-0 rounded-4 p-4" style="max-width: 500px; width: 100%;">
+        <div class="card-body">
+            <h4 class="text-center text-primary fw-bold mb-3">Lesson Details</h4>
+            <hr />
+
+            <!-- Form for Lesson Editing -->
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Hidden Id Field -->
+                <input type="hidden" asp-for="Id" />
+
+                <!-- Title -->
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label fw-bold"><i class="bi bi-file-earmark-text"></i> Title</label>
+                    <input asp-for="Title" class="form-control rounded-pill" placeholder="Enter lesson title" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <!-- Content -->
+                <div class="mb-3">
+                    <label asp-for="Content" class="form-label fw-bold"><i class="bi bi-file-earmark"></i> Content</label>
+                    <input asp-for="Content" class="form-control rounded-pill" placeholder="Enter lesson content" />
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+
+               
+
+                <!-- Section -->
+                <div class="mb-3">
+                    <label asp-for="SectionId" class="form-label fw-bold"><i class="bi bi-columns-gap"></i> Section</label>
+                    <select asp-for="SectionId" class="form-control rounded-pill">
+                        @foreach (var item in ViewBag.Sections)
+                        {
+                            <option value="@item.Id">@item.Title</option>
+                        }
+                    </select>
+                    <span asp-validation-for="SectionId" class="text-danger"></span>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg rounded-pill w-100">
+                        <i class="bi bi-check-circle"></i> Save Lesson
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index" class="btn ">Back to List</a>
+<!-- Back to List Button -->
+<div class="text-center mt-4">
+    <a asp-action="Index" class="btn btn-outline-primary px-4 py-2 rounded-pill shadow-sm text-decoration-none">
+        <i class="bi bi-arrow-left"></i> Back to List
+    </a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
