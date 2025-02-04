@@ -20,8 +20,8 @@ namespace MNA.Areas.Identity.Controllers
         private readonly IMapper _mapper;
         private readonly IEmailSender _emailSender;
 
-        public AccountController(UserManager<ApplicationUser> userManager ,
-            SignInManager<ApplicationUser> signInManager ,
+        public AccountController(UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
             RoleManager<IdentityRole> roleManager,
             IMapper mapper,
             IEmailSender emailSender
@@ -53,7 +53,7 @@ namespace MNA.Areas.Identity.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(UserRegiesterVm userLog /*, IFormFile? file*/)
         {
-           
+
             if (ModelState.IsValid)
             {
 
@@ -61,9 +61,9 @@ namespace MNA.Areas.Identity.Controllers
                 {
                     UserName = userLog.UserName,
                     Email = userLog.Email,
-                    
+
                 };
-                var usrTest= await _userManager.FindByEmailAsync(user.Email);
+                var usrTest = await _userManager.FindByEmailAsync(user.Email);
                 if (usrTest != null)
                 {
                     ModelState.AddModelError("Email", "this account is already exist");
@@ -75,7 +75,7 @@ namespace MNA.Areas.Identity.Controllers
                 {
                     await _userManager.AddToRoleAsync(user, "Student");
                     await _signInManager.SignInAsync(user, false);
-                    return RedirectToAction("Index", "Home" , new { area = "student" } );
+                    return RedirectToAction("Index", "Home", new { area = "student" });
                 }
                 else
                 {
@@ -169,7 +169,7 @@ namespace MNA.Areas.Identity.Controllers
             };
             return View(model: account);
 
-            
+
         }
 
         [HttpPost]

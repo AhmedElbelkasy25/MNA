@@ -73,9 +73,6 @@
                             <a href="/Admin/student/AddToRole?userId=@item.Id" class="btn btn-outline-primary btn-sm">
                                 <i class="bi bi-person-plus"></i> Add to Role
                             </a>
-                            <a href="/Admin/student/Edit?userId=@item.Id" class="btn btn-outline-warning btn-sm">
-                                <i class="bi bi-pencil"></i> Edit
-                            </a>
                             @if ((bool)item.IsLocked)
                             {
                                 <a href="/Admin/student/unblockUser?UserId=@item.Id" class="btn btn-outline-success btn-sm">

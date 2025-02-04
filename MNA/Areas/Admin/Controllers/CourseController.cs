@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models;
+using Models.ViewModels;
 
 namespace MNA.Areas.Admin.Controllers
 {
@@ -22,14 +23,25 @@ namespace MNA.Areas.Admin.Controllers
         }
 
         // GET: Course
-        public IActionResult Index()
+        public IActionResult Index(int pageNumber = 1, int numOfItems = 9)
         {
-            // Include related Category and Instructor data
-            var courses = _unitOfWork.Courses.Get(
-                includeProps: query => query.Include(c => c.Category).Include(c => c.Instructor)
-            ).ToList();
 
-            return View(courses);
+            var courses = _unitOfWork.Courses.Get(
+                includeProps: query => query.Include(c => c.Category).Include(c => c.Instructor).
+                Include(e => e.Sections).ThenInclude(e => e.Lessons).ThenInclude(e => e.Quizs)
+                .ThenInclude(e => e.Questions)
+            );
+
+            int pages = (int)Math.Ceiling((double)courses.Count() / numOfItems);
+            courses = courses.Skip((pageNumber - 1) * numOfItems).Take(numOfItems);
+            CoursePaginationVM coursePaginationVM = new CoursePaginationVM()
+            {
+                Courses = courses.ToList(),
+                Pages = pages,
+                PageNumber = pageNumber
+            };
+
+            return View(model: coursePaginationVM);
         }
 
         // GET: Course/Create

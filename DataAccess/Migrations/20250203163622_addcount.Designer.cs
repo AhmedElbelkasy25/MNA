@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250203163622_addcount")]
+    partial class addcount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -527,7 +530,7 @@ namespace DataAccess.Migrations
                     b.ToTable("Payments");
                 });
 
-            modelBuilder.Entity("Models.Question", b =>
+            modelBuilder.Entity("Models.Quiz", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -538,30 +541,12 @@ namespace DataAccess.Migrations
                     b.Property<bool>("CorrectAnswer")
                         .HasColumnType("bit");
 
-                    b.Property<string>("QuestionText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("QuizId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuizId");
-
-                    b.ToTable("Questions");
-                });
-
-            modelBuilder.Entity("Models.Quiz", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<int>("LessonId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Question")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -871,17 +856,6 @@ namespace DataAccess.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("Models.Question", b =>
-                {
-                    b.HasOne("Models.Quiz", "Quiz")
-                        .WithMany("Questions")
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Quiz");
-                });
-
             modelBuilder.Entity("Models.Quiz", b =>
                 {
                     b.HasOne("Models.Lesson", "Lesson")
@@ -1021,11 +995,6 @@ namespace DataAccess.Migrations
                     b.Navigation("Degrees");
 
                     b.Navigation("Quizs");
-                });
-
-            modelBuilder.Entity("Models.Quiz", b =>
-                {
-                    b.Navigation("Questions");
                 });
 
             modelBuilder.Entity("Models.Section", b =>

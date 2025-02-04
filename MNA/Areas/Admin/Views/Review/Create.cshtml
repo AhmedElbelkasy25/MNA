@@ -3,49 +3,77 @@
 @model Models.Review
 @inject UserManager<ApplicationUser> userManager;
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Review";
 }
 
+<!-- Page Title with Custom Styling -->
+<h1 class="text-center mb-4" style="color: #007bff; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);">
+    <i class="bi bi-pencil-fill"></i> Create Review
+</h1>
 
-<hr />
-<div class="row">
-    <div class="col-md-12">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Comment" class="control-label"></label>
-                <input asp-for="Comment" class="form-control" />
-                <span asp-validation-for="Comment" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="rating" class="control-label"></label>
-                <input asp-for="rating" class="form-control" />
-                <span asp-validation-for="rating" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ApplicationUserId" class="control-label"></label>
-                <input type="hidden" asp-for="ApplicationUserId"
-                value="@User.FindFirstValue(ClaimTypes.NameIdentifier)" />
-            </div>
-            <div class="form-group">
-                <label asp-for="CourseId" class="control-label"></label>
-                <select asp-for="CourseId" class ="form-control">
-                    @foreach (var item in ViewBag.Courses){
-                        <option value="@item.Id">@item.Title</option>
-                    }
-                </select>
-            </div>
-            <div class="form-group mt-">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<!-- Card Container for Form -->
+<div class="container d-flex justify-content-center">
+    <div class="card shadow-lg border-0 rounded-4 p-4" style="max-width: 500px; width: 100%;">
+        <div class="card-body">
+            <h4 class="text-center text-primary fw-bold mb-3">Review Details</h4>
+            <hr />
+
+            <!-- Form for Review Creation -->
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Comment -->
+                <div class="mb-3">
+                    <label asp-for="Comment" class="form-label fw-bold"><i class="bi bi-chat-left-text"></i> Comment</label>
+                    <textarea asp-for="Comment" class="form-control rounded-3" rows="3" placeholder="Enter your review"></textarea>
+                    <span asp-validation-for="Comment" class="text-danger"></span>
+                </div>
+
+                <!-- Rating -->
+                <div class="mb-3">
+                    <label asp-for="rating" class="form-label fw-bold"><i class="bi bi-star-fill"></i> Rating</label>
+                    <input asp-for="rating" class="form-control rounded-pill" type="number" min="0" max="5" step="0.1" placeholder="Enter rating (0-5)" />
+                    <span asp-validation-for="rating" class="text-danger"></span>
+                </div>
+
+                <!-- User ID (hidden field) -->
+                <div class="mb-3">
+                    <input type="hidden" asp-for="ApplicationUserId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)" />
+                </div>
+
+                <!-- Course -->
+                <div class="mb-3">
+                    <label asp-for="CourseId" class="form-label fw-bold"><i class="bi bi-book"></i> Course</label>
+                    <select asp-for="CourseId" class="form-control rounded-pill">
+                        <option value="">Select Course</option>
+                        @foreach (var item in ViewBag.Courses)
+                        {
+                            <option value="@item.Id">@item.Title</option>
+                        }
+                    </select>
+                    <span asp-validation-for="CourseId" class="text-danger"></span>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg rounded-pill w-100">
+                        <i class="bi bi-check-circle"></i> Create Review
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<!-- Back to List Button -->
+<div class="text-center mt-4">
+    <a asp-action="Index" class="btn btn-outline-primary px-4 py-2 rounded-pill shadow-sm text-decoration-none">
+        <i class="bi bi-arrow-left"></i> Back to List
+    </a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

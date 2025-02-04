@@ -22,6 +22,7 @@ namespace DataAccess.Repository.IRepository
         IQuizRepository Quizs { get; }
         IReviewRepository Reviews { get; }
         ISectionRepository Sections { get; }
+        IQuestionRepository Questions { get; }
         IStudentCategoriesRepository StudentCategories { get; }
         IStudentCouponsRepository StudentCoupons { get; }
 
