@@ -37,6 +37,7 @@ namespace DataAccess.Repository
         public IReviewRepository Reviews { get; private set; }
 
         public ISectionRepository Sections { get; private set; }
+        public IQuestionRepository Questions { get; private set; }
 
         public IStudentCategoriesRepository StudentCategories { get; private set; }
 
@@ -58,6 +59,7 @@ namespace DataAccess.Repository
             Quizs = new QuizRepository(_dbContext);
             Reviews = new ReviewRepository(_dbContext);
             Sections = new SectionRepository(_dbContext);
+            Questions = new QuestionRepository(_dbContext);
             StudentCategories = new StudentCategoriesRepository(_dbContext);
             StudentCoupons = new StudentCouponsRepository(_dbContext);
 

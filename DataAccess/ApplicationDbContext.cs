@@ -18,6 +18,7 @@ namespace DataAccess
         public DbSet<Lesson> Lessons { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Quiz> Quizzes { get; set; }
+        public DbSet<Question> Questions { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Section> Sections { get; set; }
         public DbSet<StudentCategories> StudentCategories { get; set; }

@@ -1,39 +1,50 @@
 ﻿@model Models.Quiz
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete Quiz";
 }
 
-<h1>Delete</h1>
+<h1 class="text-danger">Delete Quiz</h1>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Quiz</h4>
+<h1 class="text-danger">Are you sure you want to delete this quiz?</h1>
+<div class="card shadow-lg p-4 mt-3">
+    <h4 class="text-primary"><i class="bi bi-patch-question"></i> Quiz Details</h4>
     <hr />
+
+    <!-- Lesson Details -->
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Question)
+        <dt class="col-sm-3 fw-bold">
+            <i class="bi bi-book"></i> Lesson:
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Question)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CorrectAnswer)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CorrectAnswer)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Lesson)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Lesson.Content)
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Lesson.Title)
         </dd>
     </dl>
-    
-    <form asp-action="Delete">
+
+    <!-- Questions List -->
+    <h5 class="mt-4 text-secondary"><i class="bi bi-question-circle"></i> Questions:</h5>
+    <ul class="list-group">
+        @foreach (var question in Model.Questions)
+        {
+            <li class="list-group-item">
+                <p class="fw-bold mb-1">@question.QuestionText</p>
+                <p class="text-muted">Correct Answer: 
+                    <span class="fw-bold @(question.CorrectAnswer ? "text-success" : "text-danger")">
+                        @(question.CorrectAnswer ? "✅ True" : "❌ False")
+                    </span>
+                </p>
+            </li>
+        }
+    </ul>
+
+    <!-- Delete Form -->
+    <form asp-action="Delete" method="post" class="mt-4">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index" class="btn btn-primary">Back to List</a>
+        <button type="submit" class="btn btn-danger px-4">
+            <i class="bi bi-trash"></i> Delete
+        </button>
+        <a asp-action="Index" class="btn btn-secondary px-4 ms-2">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
     </form>
 </div>

@@ -1,47 +1,67 @@
 ﻿@model IEnumerable<Models.Quiz>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Quizzes List";
 }
 
-<h1>Index</h1>
+<h1 class="mb-4">Quizzes</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Create New Quiz
+    </a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Question)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CorrectAnswer)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Lesson)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Question)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CorrectAnswer)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Lesson.Content)
-            </td>
-                <td>
-                    <a class="btn btn-outline-info" asp-action="Edit" asp-route-id="@item.Id"> <i class="bi bi-gear"></i> Edit</a>
-                    
-                    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">  <i class="bi bi-trash"></i>  Delete</a>
-                </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+<div class="accordion" id="quizAccordion">
+    @if (Model.Any())
+    {
+        int count = 1;
+        @foreach (var quiz in Model)
+        {
+            string collapseId = $"collapse{quiz.Id}"; 
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading@quiz.Id">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#@collapseId" aria-expanded="false" aria-controls="@collapseId">
+                        <strong>#@count</strong> - @quiz.Lesson.Title (@(quiz.Questions?.Count ?? 0) Questions)
+                    </button>
+                </h2>
+
+                <div id="@collapseId" class="accordion-collapse collapse" aria-labelledby="heading@quiz.Id" data-bs-parent="#quizAccordion">
+                    <div class="accordion-body">
+                        @if (quiz.Questions?.Any() ?? false)
+                        {
+                            <ul class="list-group">
+                                @foreach (var question in quiz.Questions)
+                                {
+                                    <li class="list-group-item">
+                                        <strong>Q:</strong> @question.QuestionText <br>
+                                        <strong>Correct Answer:</strong> @(question.CorrectAnswer ? "✔ Yes" : "❌ No")
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p class="text-muted">No questions available.</p>
+                        }
+
+                        <div class="mt-3">
+                            <a class="btn btn-outline-info btn-sm" asp-action="Edit" asp-route-id="@quiz.Id">
+                                <i class="bi bi-gear"></i> Edit
+                            </a>
+                            <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@quiz.Id">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            count++;
+        }
+    }
+    else
+    {
+        <p class="text-center text-muted">No quizzes available.</p>
+    }
+</div>
