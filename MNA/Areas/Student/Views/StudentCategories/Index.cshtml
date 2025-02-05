@@ -1,0 +1,48 @@
+﻿@model List<Models.StudentCategories>
+
+@{
+    ViewData["Title"] = "My Interested Categories";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4" style="color: #007bff; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);">📚 My Interested Categories</h2>
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-info text-center">
+            <h5>You have not selected any categories yet.</h5>
+            <p>Explore and add categories that interest you!</p>
+            <a href="/Category/Index" class="btn btn-primary">Explore Categories</a>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-lg border-0 rounded-lg">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">
+                                <i class="fas fa-bookmark text-primary"></i> @item.Category.Name
+                            </h5>
+                            <p class="card-text text-muted">
+                                @item.Category.Name
+                            </p>
+                            <form asp-action="Remove" asp-controller="StudentCategories" method="post">
+                                <input type="hidden" name="categoryId" value="@item.Category.Id" />
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash-alt"></i> Remove
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+}

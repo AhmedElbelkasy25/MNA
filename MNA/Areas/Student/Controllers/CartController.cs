@@ -1,4 +1,5 @@
 ﻿using DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,11 +22,9 @@ namespace MNA.Areas.Student.Controllers
         public IActionResult Index()
         {
             var applicationUserId = _userManager.GetUserId(User);
-
-            // Include the Course navigation property
             var shoppingCarts = _unitOfWork.Carts.Get(
                 e => e.ApplicationUserId == applicationUserId,
-                includeProps: q => q.Include(c => c.Course) // Ensure proper Include
+                includeProps: q => q.Include(c => c.Course) 
             ).ToList();
 
             ViewBag.TotalPrice = shoppingCarts.Sum(e => e.Course.Price * e.Count);
