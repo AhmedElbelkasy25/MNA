@@ -1,58 +1,132 @@
-﻿@model IEnumerable<Models.Course>
+﻿@using Models.ViewModels
+@model CoursePaginationVM
 
-@{
-    ViewData["Title"] = "Courses";
-}
-
-<!-- Page Title with Custom Styling -->
-<h1 class="text-center mb-4" style="color: #007bff; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); font-weight: bold;">
-    <i class="bi bi-book-fill"></i> Courses
-</h1>
-
-<!-- Create New Course Button -->
-<div class="text-center mb-4">
-    <a asp-action="Create" class="btn btn-success btn-lg rounded-pill shadow">
-        <i class="bi bi-plus-circle"></i> Add New Course
-    </a>
-</div>
-
-<!-- Responsive Course Grid -->
-<div class="container">
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        @foreach (var course in Model)
+<div class="container mt-4">
+    <h2 class="mb-4">Courses</h2>
+    <div class="accordion" id="coursesAccordion">
+        @foreach (var course in Model.Courses)
         {
-            <div class="col">
-                <div class="card border-0 shadow-lg rounded-4 overflow-hidden position-relative course-card">
+            <div class="card course-card">
+                <div class="card-header" id="headingCourse-@course.Id">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link btn-block text-left" type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapseCourse-@course.Id"
+                                aria-expanded="false"
+                                aria-controls="collapseCourse-@course.Id">
+                            @course.Title
+                        </button>
+                    </h2>
+                    <a href="/admin/Course/Delete/@course.Id" class="btn rounded-3 btn-outline-danger"
+                       style="position:absolute;right:10%;top:20%;">Delete 🗑</a>
+                    <a href="/admin/Course/edit/@course.Id" class="btn rounded-3 btn-outline-dark"
+                       style="position:absolute;right:1%;top:20%;">Edit⚙</a>
+                </div>
 
-                    <!-- Course Image -->
-                    <img src="@(string.IsNullOrEmpty(course.ImgUrl) ? "/images/default.jpg" : "/images/Course/" + course.ImgUrl)"
-                         class="card-img-top course-img"
-                         alt="@course.Title">
+                <div id="collapseCourse-@course.Id" class="collapse"
+                     aria-labelledby="headingCourse-@course.Id"
+                     data-bs-parent="#coursesAccordion">
+                    <div class="card-body">
+                        <div class="accordion" id="sectionsAccordion-@course.Id">
+                            @foreach (var sec in course.Sections)
+                            {
+                                <div class="card section-card">
+                                    <div class="card-header" id="headingSection-@sec.Id">
+                                        <h3 class="mb-0">
+                                            <button class="btn btn-link btn-block text-left"
+                                                    type="button"
+                                                    data-bs-toggle="collapse"
+                                                    data-bs-target="#collapseSection-@sec.Id"
+                                                    aria-expanded="false"
+                                                    aria-controls="collapseSection-@sec.Id">
+                                                @sec.Title
+                                            </button>
+                                            <a href="/admin/Section/Delete/@sec.Id" class="btn rounded-3 btn-outline-danger"
+                                               style="position:absolute;right:10%">Delete 🗑</a>
+                                            <a href="/admin/Section/edit/@sec.Id" class="btn rounded-3 btn-outline-dark"
+                                               style="position:absolute;right:1%">Edit⚙</a>
+                                        </h3>
+                                    </div>
 
+                                    <div id="collapseSection-@sec.Id" class="collapse"
+                                         aria-labelledby="headingSection-@sec.Id"
+                                         data-bs-parent="#sectionsAccordion-@course.Id">
+                                        <div class="card-body">
+                                            <div class="accordion" id="lessonsAccordion-@sec.Id">
+                                                @foreach (var lesson in sec.Lessons)
+                                                {
+                                                    <div class="card lesson-card">
+                                                        <div class="card-header" id="headingLesson-@lesson.Id">
+                                                            <h4 class="mb-0">
+                                                                <button class="btn btn-link btn-block text-left"
+                                                                        type="button"
+                                                                        data-bs-toggle="collapse"
+                                                                        data-bs-target="#collapseLesson-@lesson.Id"
+                                                                        aria-expanded="false"
+                                                                        aria-controls="collapseLesson-@lesson.Id">
+                                                                    @lesson.Title
+                                                                </button>
+                                                                <a href="/admin/Lesson/Delete/@lesson.Id" class="btn rounded-3 btn-outline-danger"
+                                                                   style="position:absolute;right:10%">Delete 🗑</a>
+                                                                <a href="/admin/Lesson/edit/@lesson.Id" class="btn rounded-3 btn-outline-dark"
+                                                                   style="position:absolute;right:1%">Edit⚙</a>
+                                                            </h4>
+                                                        </div>
 
-                    <!-- Course Details -->
-                    <div class="card-body text-center">
-                        <h4 class="card-title">@course.Title</h4>
-                        <p class="card-text text-muted">@course.Description</p>
+                                                        <div id="collapseLesson-@lesson.Id" class="collapse"
+                                                             aria-labelledby="headingLesson-@lesson.Id"
+                                                             data-bs-parent="#lessonsAccordion-@sec.Id">
+                                                            <div class="card-body">
+                                                                <div class="accordion" id="quizzesAccordion-@lesson.Id">
+                                                                    @foreach (var quiz in lesson.Quizs)
+                                                                    {
+                                                                        <div class="card quiz-card">
+                                                                            <div class="card-header" id="headingQuiz-@quiz.Id">
+                                                                                <h5 class="mb-0">
+                                                                                    <button class="btn btn-link btn-block text-left"
+                                                                                            type="button"
+                                                                                            data-bs-toggle="collapse"
+                                                                                            data-bs-target="#collapseQuiz-@quiz.Id"
+                                                                                            aria-expanded="false"
+                                                                                            aria-controls="collapseQuiz-@quiz.Id">
+                                                                                        Quiz
+                                                                                    </button>
+                                                                                    <a href="/admin/Quiz/Delete/@quiz.Id" class="btn rounded-3 btn-outline-danger"
+                                                                                       style="position:absolute;right:10%">Delete 🗑</a>
+                                                                                    <a href="/admin/Quiz/edit/@quiz.Id" class="btn rounded-3 btn-outline-dark" 
+                                                                                    style="position:absolute;right:1%"
+                                                                                    >Edit⚙</a>
+                                                                                </h5>
+                                                                            </div>
 
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-warning text-dark fs-6">
-                                <i class="bi bi-currency-dollar"></i> @course.Price
-                            </span>
-                            <span class="badge bg-primary text-white fs-6">
-                                <i class="bi bi-person-fill"></i> @course.Instructor.Name
-                            </span>
+                                                                            <div id="collapseQuiz-@quiz.Id" class="collapse"
+                                                                                 aria-labelledby="headingQuiz-@quiz.Id"
+                                                                                 data-bs-parent="#quizzesAccordion-@lesson.Id">
+                                                                                <div class="card-body">
+                                                                                    <ul class="list-group">
+                                                                                        @foreach (var question in quiz.Questions)
+                                                                                        {
+                                                                                            <li class="list-group-item">
+                                                                                                <strong>@question.QuestionText</strong><br>
+                                                                                                Correct Answer: @question.CorrectAnswer
+                                                                                            </li>
+                                                                                        }
+                                                                                    </ul>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="card-footer d-flex justify-content-between bg-light">
-                        <a asp-action="Edit" asp-route-id="@course.Id" class="btn btn-outline-primary rounded-pill px-3">
-                            <i class="bi bi-pencil"></i> Edit
-                        </a>
-                        <a asp-action="Delete" asp-route-id="@course.Id" class="btn btn-outline-danger rounded-pill px-3">
-                            <i class="bi bi-trash"></i> Delete
-                        </a>
                     </div>
                 </div>
             </div>
@@ -62,20 +136,76 @@
 
 <!-- Custom Styling -->
 <style>
-    /* Hover Animation */
-    .course-card {
-        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    /* General Styles */
+    .card-header h2, .card-header h3, .card-header h4, .card-header h5 {
+        margin-bottom: 0;
     }
 
-        .course-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    .btn-link {
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+        .btn-link:hover {
+            text-decoration: underline;
         }
 
-    .course-img {
-        max-height: 250px; /* Ensures a max height */
-        width: 100%;
-        object-fit: scale-down; /* Prevents cropping */
+    .accordion > .card {
+        margin-bottom: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
+    .card-body .card-body {
+        margin-left: 20px;
+        border-left: 2px solid #eee;
+    }
+
+    .list-group-item {
+        border: none;
+        border-bottom: 1px solid rgba(0,0,0,0.125);
+    }
+
+    /* Colors */
+    .course-card {
+        background-color: #f8f9fa; /* Light gray */
+    }
+
+    .section-card {
+        background-color: #ffebcc; /* Light orange */
+    }
+
+    .lesson-card {
+        background-color: #d9edf7; /* Light blue */
+    }
+
+    .quiz-card {
+        background-color: #d4edda; /* Light green */
+    }
+
+    /* Text Colors */
+    .course-card .btn-link {
+        color: #343a40; /* Dark gray */
+    }
+
+    .section-card .btn-link {
+        color: #d97706; /* Dark orange */
+    }
+
+    .lesson-card .btn-link {
+        color: #007bff; /* Blue */
+    }
+
+    .quiz-card .btn-link {
+        color: #218838; /* Green */
+    }
 </style>
+
+@section Scripts {
+    <script>
+        // Ensure all collapses start closed
+        document.querySelectorAll('.collapse').forEach(collapse => {
+            collapse.classList.remove('show');
+        });
+    </script>
+}

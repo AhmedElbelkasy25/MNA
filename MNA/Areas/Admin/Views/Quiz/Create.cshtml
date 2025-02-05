@@ -4,17 +4,29 @@
     ViewData["Title"] = "Create Quiz";
 }
 
-<!-- Page Title -->
 <h1 class="text-center mb-4" style="color: #007bff; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); font-weight: bold;">
     <i class="bi bi-question-circle-fill"></i> Create a Quiz
 </h1>
 
-<!-- Quiz Form Card -->
 <div class="container d-flex justify-content-center">
     <div class="card shadow-lg border-0 rounded-4 p-4 w-75">
         <div class="card-body">
             <form asp-action="Create" id="quizForm">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Lesson Selection -->
+                <div class="form-group">
+                    <label asp-for="LessonId" class="form-label fw-bold">
+                        <i class="bi bi-book"></i> Select Lesson
+                    </label>
+                    <select asp-for="LessonId" class="form-control">
+                        @foreach (var item in ViewBag.Lessons)
+                        {
+                            <option value="@item.Id">@item.Title</option>
+                        }
+                    </select>
+                    <span asp-validation-for="LessonId" class="text-danger"></span>
+                </div>
 
                 <!-- Dynamic Questions List -->
                 <div id="questionsContainer">
@@ -23,10 +35,9 @@
                             <label class="form-label fw-bold">
                                 <i class="bi bi-chat-square-text"></i> Question
                             </label>
-                            <input name="Questions[0].Question" class="form-control" placeholder="Enter quiz question..." required />
+                            <input name="Questions[0].QuestionText" class="form-control" placeholder="Enter quiz question..." required />
                         </div>
 
-                        <!-- Correct Answer: True or False -->
                         <div class="form-group mb-3">
                             <label class="form-label fw-bold">
                                 <i class="bi bi-check2-circle"></i> Correct Answer
@@ -43,7 +54,6 @@
                             </div>
                         </div>
 
-                        <!-- Remove Button (Hidden for first question) -->
                         <button type="button" class="btn btn-danger btn-sm remove-question d-none">
                             <i class="bi bi-trash"></i> Remove Question
                         </button>
@@ -51,26 +61,10 @@
                     </div>
                 </div>
 
-                <!-- Add Question Button -->
                 <button type="button" class="btn btn-outline-success rounded-pill px-4" id="addQuestion">
                     <i class="bi bi-plus-circle"></i> Add Another Question
                 </button>
 
-                <!-- Lesson Selection -->
-                <div class="form-group mt-4">
-                    <label asp-for="LessonId" class="form-label fw-bold">
-                        <i class="bi bi-book"></i> Select Lesson
-                    </label>
-                    <select asp-for="LessonId" class="form-control">
-                        @foreach (var item in ViewBag.lessons)
-                        {
-                            <option value="@item.Id">@item.Title</option>
-                        }
-                    </select>
-                    <span asp-validation-for="LessonId" class="text-danger"></span>
-                </div>
-
-                <!-- Form Buttons -->
                 <div class="d-flex justify-content-between mt-4">
                     <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">
                         <i class="bi bi-arrow-left"></i> Back
@@ -84,7 +78,6 @@
     </div>
 </div>
 
-<!-- JavaScript for Adding More Questions -->
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -100,7 +93,7 @@
                                 <label class="form-label fw-bold">
                                     <i class="bi bi-chat-square-text"></i> Question
                                 </label>
-                                <input name="Questions[${questionCount}].Question" class="form-control" placeholder="Enter quiz question..." required />
+                                <input name="Questions[${questionCount}].QuestionText" class="form-control" placeholder="Enter quiz question..." required />
                             </div>
                             <div class="form-group mb-3">
                                 <label class="form-label fw-bold">
@@ -124,8 +117,6 @@
                         `;
                 container.appendChild(newQuestion);
                 questionCount++;
-
-                // Add remove functionality
                 newQuestion.querySelector(".remove-question").addEventListener("click", function () {
                     newQuestion.remove();
                 });
