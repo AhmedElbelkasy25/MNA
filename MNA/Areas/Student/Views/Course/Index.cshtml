@@ -13,7 +13,6 @@
                      data-reviews="@(course.Rating)"
                      data-price="£@course.Price"
                      data-description="@course.Description"
-                   
                      data-img="/images/Course/@course.ImgUrl">
                     <img src="/images/Course/@course.ImgUrl" class="card-img-top fixed-image" alt="@course.Title">
                     <div class="card-body d-flex flex-column">
@@ -25,7 +24,12 @@
                         <p class="card-text">
                             <strong>£@course.Price</strong>
                         </p>
-                        <a href="/student/Course/Details/@course.Id" class="btn btn-primary mt-auto">View Course</a>
+                        <a href="/student/Course/Details/@course.Id" class="btn btn-primary mt-auto w-100">View Course</a>
+                        <form method="post" asp-area="Student" asp-controller="Favorite" asp-action="AddToFavorites" class="w-100 mt-2">
+                            <input type="hidden" name="courseId" value="@course.Id" />
+                            <button type="submit" class="btn btn-outline-danger w-100">❤️ Add to Favorites</button>
+                        </form>
+
                     </div>
                 </div>
             </div>
@@ -118,10 +122,10 @@
                 $("#modal-reviews").text(reviews);
                 $("#modal-price").text(price);
                 $("#modal-description").text(description);
-                
+
                 $("#modal-img").attr("src", img);
 
-                // حدد مكان المودال بناءً على مكان الماوس
+                // Position modal based on mouse position
                 $("#courseModal").css({
                     top: event.pageY + 10 + "px",
                     left: event.pageX + 10 + "px",
@@ -132,5 +136,31 @@
                 $("#courseModal").hide();
             }
         );
+
+        $(".add-to-favorites").click(function () {
+            var courseId = $(this).data("course-id");
+            var button = $(this);
+
+            $.ajax({
+                url: "Student/AddToFavorites", // The action to add to favorites
+                type: "POST",
+                data: {
+                    courseId: courseId,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() // CSRF token
+                },
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        button.prop("disabled", true); // Disable button after adding
+                        button.text("❤️ Added to Favorites");
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert("Error adding to favorites!");
+                }
+            });
+        });
     });
 </script>

@@ -15,8 +15,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
     <style>
-        
-        html{
+        html {
             margin: 0;
             padding: 0;
             overflow-x: hidden;
@@ -25,24 +24,17 @@
         body {
             position: relative;
             background-image: url("/images/backgrounds/3.jpg");
-            
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-           
             margin: 0;
             padding: 0;
-            overflow-x: hidden; 
-
+            overflow-x: hidden;
         }
 
-
-
-            /* Dark overlay effect */
             body::before {
                 content: "";
                 position: absolute;
@@ -50,7 +42,7 @@
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: rgba(0, 0, 0, 0.5); /* Adjust opacity for darkness */
+                background: rgba(0, 0, 0, 0.5);
                 z-index: -1;
             }
 
@@ -59,8 +51,6 @@
             padding: 5px;
         }
 
-        
-        /* ----- Navbar Styles ----- */
         .navbar {
             background: #2C3E50;
             padding: 5px 5px;
@@ -83,7 +73,6 @@
                 color: #f39c12 !important;
             }
 
-        /* ----- User Profile Dropdown ----- */
         .user-profile img {
             width: 40px;
             height: 40px;
@@ -102,7 +91,6 @@
             background: #ecf0f1;
         }
 
-        /* ----- Buttons ----- */
         .btn-outline-light {
             border-color: #ecf0f1;
             color: #ecf0f1;
@@ -114,13 +102,12 @@
                 color: #2C3E50;
             }
 
-        /* ----- Dynamic Footer Styles ----- */
         footer {
             background: #2C3E50;
             color: white;
             padding: 15px 0;
             text-align: center;
-            margin-top: auto; /* Pushes the footer to the bottom */
+            margin-top: auto;
         }
 
         .footer-links a {
@@ -133,6 +120,28 @@
             .footer-links a:hover {
                 color: #ffffff;
             }
+
+        .cart-badge {
+            font-size: 12px;
+            background: red;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            position: absolute;
+            top: 8px;
+            right: 2px;
+        }
+
+        .nav-link i {
+            display: inline-block; /* Make sure the icon is inline */
+        }
+
+        .cart-badge {
+            margin-left: 5px; /* Adjust this value to control the space */
+            display: inline-block; /* Make sure the badge is inline */
+        }
+
+
     </style>
 </head>
 <body class="@((ViewData["BodyClass"] ?? "").ToString())">
@@ -156,14 +165,29 @@
                                 <i class="fas fa-book"></i> Courses
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="Student" asp-controller="Lesson" asp-action="Index">
-                                <i class="fas fa-chalkboard"></i> Lessons
-                            </a>
-                        </li>
                     </ul>
 
                     <ul class="navbar-nav">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <!-- Favorites Icon -->
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Student" asp-controller="Favorite" asp-action="Index">
+                                    <i class="fas fa-heart"></i> Favorites
+                                </a>
+                            </li>
+
+                            <!-- Cart Icon -->
+                            <li class="nav-item">
+                                <a class="nav-link position-relative" asp-area="Student" asp-controller="Cart" asp-action="Index">
+                                    <i class="fas fa-shopping-cart"></i> Cart
+                                    <span id="cartCount" class="cart-badge">0</span>
+                                </a>
+                            </li>
+                        }
+
+
+
                         @if (User.Identity.IsAuthenticated)
                         {
                             var user = await userManager.GetUserAsync(User);
@@ -175,7 +199,6 @@
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         <li><a class="dropdown-item" href="/Identity/account/GetProfile?name=@User.Identity.Name"><i class="fas fa-user-circle"></i> Profile</a></li>
-                                        <li><a class="dropdown-item" href="/Student/Course"><i class="fas fa-graduation-cap"></i> My Courses</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li><a class="dropdown-item text-danger" href="/Identity/Account/Logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                                     </ul>
@@ -187,38 +210,38 @@
                             <li class="nav-item"><a class="btn btn-outline-light me-2" href="/Identity/Account/Login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
                             <li class="nav-item"><a class="btn btn-warning" href="/Identity/Account/Register"><i class="fas fa-user-plus"></i> Register</a></li>
                         }
-
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div>
 
-    </div>
-
-    <div class="container-fluid" style="margin-left:-12px;">
+    <div class="container-fluid">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
     <footer>
-        <div class="container">
-            <div class="footer-links">
-                <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a> |
-                <a asp-area="Student" asp-controller="Course" asp-action="Index">Courses</a> |
-                <a asp-area="Student" asp-controller="Lesson" asp-action="Index">Lessons</a>
-            </div>
-            <p class="mt-3">&copy; @DateTime.Now.Year - MNA Academy | All Rights Reserved</p>
-        </div>
+        <p>&copy; @DateTime.Now.Year - MNA Academy</p>
     </footer>
-    <!-- Dynamic Footer -->
 
-    <!-- Scripts for Bootstrap Dropdown -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        $(document).ready(function () {
+            updateCartCount();
+        });
+
+        function updateCartCount() {
+            $.get("/Student/Cart/GetCartCount", function (count) {
+                $("#cartCount").text(count);
+            });
+        }
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

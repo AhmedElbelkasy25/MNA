@@ -1,0 +1,147 @@
+﻿@model List<Models.Course>
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center" style="font-weight: bold; color: orange;">My Favorite Courses ❤️</h2>
+
+
+    @if (Model.Count == 0)
+    {
+        <p class="mb-4 text-center" style="font-weight: bold; color: white;">No favorite courses yet. Start adding some!</p>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var course in Model)
+            {
+                <div class="col-md-4 mt-4 d-flex">
+                    <div class="card flex-fill course-card"
+                         data-title="@course.Title"
+                         data-instructor="@course.Instructor.Name"
+                         data-rating="@course.Rating"
+                         data-reviews="@(course.Rating)"
+                         data-price="£@course.Price"
+                         data-description="@course.Description"
+                         data-img="/images/Course/@course.ImgUrl">
+                        <img src="/images/Course/@course.ImgUrl" class="card-img-top fixed-image" alt="@course.Title">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@course.Title</h5>
+                            <p class="card-text">By @course.Instructor.Name</p>
+                            <p class="card-text">
+                                <span class="text-warning"><h5>⭐ (@course.Rating)</h5></span>
+                            </p>
+                            <p class="card-text">
+                                <strong>£@course.Price</strong>
+                            </p>
+                            <!-- Buttons with equal width -->
+                            <div class="d-grid gap-2 mt-auto">
+                                <a href="/student/Course/Details/@course.Id" class="btn btn-primary w-100">View Course</a>
+                                <form method="post" asp-area="Student" asp-controller="Favorite" asp-action="Remove" class="w-100 mt-2">
+                                    <input type="hidden" name="courseId" value="@course.Id" />
+                                    <button type="submit" class="btn btn-outline-danger w-100">❌ Remove from Favorites</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<!-- Bootstrap Modal for Course Details -->
+<div class="modal fade" id="courseModal" tabindex="-1" aria-labelledby="courseModalLabel" aria-hidden="true" style="position: fixed; top: 50px; left: 50px; display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="courseModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img id="modal-img" class="img-fluid mb-3" src="" alt="">
+                <p><strong>Instructor:</strong> <span id="modal-instructor"></span></p>
+                <p><strong>Rating:</strong> <span id="modal-rating"></span> ⭐ (<span id="modal-reviews"></span> reviews)</p>
+                <p><strong>Price:</strong> <span id="modal-price"></span></p>
+                <p><strong>Description:</strong> <span id="modal-description"></span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Styles -->
+<style>
+    .card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        transition: transform 0.3s ease-in-out;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+        .card:hover {
+            transform: scale(1.05);
+            cursor: pointer;
+        }
+
+    .card-body {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-img-top {
+        height: 180px;
+        object-fit: cover;
+    }
+
+    .fixed-image {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+    }
+
+    .modal-body p {
+        margin-bottom: 10px;
+    }
+
+    .modal-body img {
+        max-height: 300px;
+        object-fit: cover;
+    }
+</style>
+
+<!-- jQuery Script for Hover Effect -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".course-card").hover(
+            function (event) {
+                var title = $(this).data("title");
+                var instructor = $(this).data("instructor");
+                var rating = $(this).data("rating");
+                var reviews = $(this).data("reviews");
+                var price = $(this).data("price");
+                var description = $(this).data("description");
+                var img = $(this).data("img");
+
+                $("#courseModalLabel").text(title);
+                $("#modal-instructor").text(instructor);
+                $("#modal-rating").text(rating);
+                $("#modal-reviews").text(reviews);
+                $("#modal-price").text(price);
+                $("#modal-description").text(description);
+                $("#modal-img").attr("src", img);
+
+                // Position modal based on mouse position
+                $("#courseModal").css({
+                    top: event.pageY + 10 + "px",
+                    left: event.pageX + 10 + "px",
+                    display: "block"
+                });
+            },
+            function () {
+                $("#courseModal").hide();
+            }
+        );
+    });
+</script>

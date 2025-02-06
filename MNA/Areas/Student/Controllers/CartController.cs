@@ -34,15 +34,21 @@ namespace MNA.Areas.Student.Controllers
         }
 
 
-        public IActionResult AddToCart(int courseId, int count)
+        public IActionResult AddToCart(int courseId, int count = 1)
         {
             var applicationUserId = _userManager.GetUserId(User);
+
+            if (applicationUserId == null)
+            {
+                TempData["error"] = "You must be logged in to enroll in a course.";
+                return RedirectToAction("Index", "Home");
+            }
 
             var cartItem = _unitOfWork.Carts.GetOne(e => e.ApplicationUserId == applicationUserId && e.CourseId == courseId);
 
             if (cartItem != null)
             {
-                cartItem.Count += count;
+                cartItem.Count += count; // Ensure the count is updated
                 _unitOfWork.Carts.Alter(cartItem);
             }
             else
@@ -50,16 +56,19 @@ namespace MNA.Areas.Student.Controllers
                 var shoppingCart = new Cart
                 {
                     CourseId = courseId,
-                    Count = count,
+                    Count = count, // ✅ Ensure Count is at least 1
                     ApplicationUserId = applicationUserId
                 };
                 _unitOfWork.Carts.Create(shoppingCart);
             }
 
             _unitOfWork.Commit();
-            TempData["success"] = "Course added to cart successfully";
-            return RedirectToAction("Index", "Home");
+
+            TempData["success"] = "Course added to cart successfully!";
+
+            return RedirectToAction("Index");
         }
+
 
         public IActionResult Increment(int cartId)
         {
@@ -145,5 +154,46 @@ namespace MNA.Areas.Student.Controllers
             var session = service.Create(options);
             return Redirect(session.Url);
         }
+        [HttpGet]
+        public IActionResult GetCartCount()
+        {
+            var userId = _userManager.GetUserId(User);
+            if (userId == null)
+            {
+                return Json(0);
+            }
+
+            int cartCount = _unitOfWork.Carts.Get(c => c.ApplicationUserId == userId).Sum(c => c.Count);
+            return Json(cartCount);
+        }
+        [HttpPost]
+        public IActionResult AddToFavorites(int courseId)
+        {
+            var applicationUserId = _userManager.GetUserId(User);
+
+            if (applicationUserId == null)
+            {
+                return Json(new { success = false, message = "You must be logged in!" });
+            }
+
+            var existingFavorite = _unitOfWork.Favourites.GetOne(f => f.ApplicationUserId == applicationUserId && f.CourseId == courseId);
+
+            if (existingFavorite == null)
+            {
+                var favorite = new Favourite
+                {
+                    ApplicationUserId = applicationUserId,
+                    CourseId = courseId
+                };
+
+                _unitOfWork.Favourites.Create(favorite);
+                _unitOfWork.Commit();
+
+                return Json(new { success = true, message = "Added to favorites!" });
+            }
+
+            return Json(new { success = false, message = "Already in favorites!" });
+        }
+
     }
 }
