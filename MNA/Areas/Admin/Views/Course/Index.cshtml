@@ -1,9 +1,30 @@
 ﻿@using Models.ViewModels
 @model CoursePaginationVM
 
-<div class="container mt-4">
+
+@section Scripts {
+
+    @if (@TempData["success"] != null)
+    {
+        <script>
+            toastr.success('@TempData["success"]')
+        </script>
+    }
+
+    <script>
+        // Ensure all collapses start closed
+        document.querySelectorAll('.collapse').forEach(collapse => {
+            collapse.classList.remove('show');
+        });
+    </script>
+
+}
+
+
+<div class="container mt-4 text-white">
     <h2 class="mb-4">Courses</h2>
     <div class="accordion" id="coursesAccordion">
+        <a class="btn btn-outline-info rounded-3" asp-area="Admin" asp-controller="Course" asp-action="create"> create ➕ </a>
         @foreach (var course in Model.Courses)
         {
             <div class="card course-card">
@@ -28,6 +49,7 @@
                      data-bs-parent="#coursesAccordion">
                     <div class="card-body">
                         <div class="accordion" id="sectionsAccordion-@course.Id">
+                            <a class="btn btn-outline-info rounded-3" href="/admin/section/create?courseId=@course.Id" > create ➕ </a>
                             @foreach (var sec in course.Sections)
                             {
                                 <div class="card section-card">
@@ -53,6 +75,7 @@
                                          data-bs-parent="#sectionsAccordion-@course.Id">
                                         <div class="card-body">
                                             <div class="accordion" id="lessonsAccordion-@sec.Id">
+                                                <a class="btn btn-outline-info rounded-3" href="/admin/lesson/create?sectionId=@sec.Id"> create ➕ </a>
                                                 @foreach (var lesson in sec.Lessons)
                                                 {
                                                     <div class="card lesson-card">
@@ -78,6 +101,7 @@
                                                              data-bs-parent="#lessonsAccordion-@sec.Id">
                                                             <div class="card-body">
                                                                 <div class="accordion" id="quizzesAccordion-@lesson.Id">
+                                                                    <a class="btn btn-outline-info rounded-3" href="/admin/Quiz/create?lessonId=@lesson.Id"> create ➕ </a>
                                                                     @foreach (var quiz in lesson.Quizs)
                                                                     {
                                                                         <div class="card quiz-card">
@@ -133,6 +157,32 @@
         }
     </div>
 </div>
+
+
+
+
+<nav aria-label="...">
+    <ul class="pagination pagination-lg justify-content-center">
+        <li class="page-item @(Model.PageNumber <= 1 ? "disabled" : "")">
+            <a class="page-link" href="/Admin/course/index?pageNumber=@(Model.PageNumber - 1)">Previous</a>
+        </li>
+
+
+        @for (int i = 0; i < Model.Pages; i++)
+        {
+            <li class="page-item @(i + 1 == Model.PageNumber ? "active" : "")">
+                <a class="page-link" href="/Admin/course/index?pageNumber=@(i + 1)">@(i + 1)</a>
+            </li>
+
+        }
+        <li class="page-item @(Model.PageNumber >= Model.Pages ? "disabled" : "")">
+            <a class="page-link" href="/Admin/course/index?pageNumber=@(Model.PageNumber + 1)">Next</a>
+        </li>
+
+    </ul>
+</nav>
+
+
 
 <!-- Custom Styling -->
 <style>
@@ -201,11 +251,4 @@
     }
 </style>
 
-@section Scripts {
-    <script>
-        // Ensure all collapses start closed
-        document.querySelectorAll('.collapse').forEach(collapse => {
-            collapse.classList.remove('show');
-        });
-    </script>
-}
+

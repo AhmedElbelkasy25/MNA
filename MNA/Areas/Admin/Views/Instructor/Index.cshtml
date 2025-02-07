@@ -4,6 +4,17 @@
     ViewData["Title"] = "Instructors";
 }
 
+
+@section Scripts {
+
+    @if (@TempData["success"] != null)
+    {
+        <script>
+            toastr.success('@TempData["success"]')
+        </script>
+    }
+}
+
 <!-- Page Title with Custom Styling -->
 <h1 class="text-center mb-4" style="color: #007bff; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); font-weight: bold;">
     <i class="bi bi-person-badge-fill"></i> Instructors
@@ -39,11 +50,22 @@
                         <p class="card-text text-muted">@instructor.Bio</p>
                     </div>
 
+                    <!--  profile Button   -->
+                    <div class="text-center">
+                        <a asp-action="GetProfile" asp-route-id="@instructor.Id" class="btn btn-outline-primary rounded-pill px-3">
+                            <i class="bi bi-person-bounding-box"></i> Profile
+                        </a>
+                    </div>
+
                     <!-- Action Buttons -->
                     <div class="card-footer d-flex justify-content-between bg-light">
                         <a asp-action="Edit" asp-route-id="@instructor.Id" class="btn btn-outline-primary rounded-pill px-3">
                             <i class="bi bi-pencil"></i> Edit
                         </a>
+
+                        
+
+
                         <a asp-action="Delete" asp-route-id="@instructor.Id" class="btn btn-outline-danger rounded-pill px-3">
                             <i class="bi bi-trash"></i> Delete
                         </a>

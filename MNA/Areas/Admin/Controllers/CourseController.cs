@@ -88,16 +88,17 @@ namespace MNA.Areas.Admin.Controllers
                 }
                 _unitOfWork.Courses.Create(course);
                 _unitOfWork.Commit();
+                TempData["success"] = "Course has been Added Successfully";
                 return RedirectToAction(nameof(Index));
             }
 
-            // Repopulate ViewBag if validation fails
+            
             ViewBag.Categories = _unitOfWork.Categories.Get().ToList();
             ViewBag.Instructors = _unitOfWork.Instructors.Get().ToList();
             return View(course);
         }
 
-        // GET: Course/Edit/5
+        
         public IActionResult Edit(int id)
         {
             var course = _unitOfWork.Courses.GetOne(
@@ -116,7 +117,7 @@ namespace MNA.Areas.Admin.Controllers
             return View(course);
         }
 
-        // POST: Course/Edit/5
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Course course , IFormFile? file)
@@ -162,6 +163,7 @@ namespace MNA.Areas.Admin.Controllers
 
                 _unitOfWork.Courses.Alter(course);
                 _unitOfWork.Commit();
+                TempData["success"] = "Course has been Edited Successfully";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -170,7 +172,7 @@ namespace MNA.Areas.Admin.Controllers
             return View(course);
         }
 
-        // GET: Course/Delete/5
+        
         public IActionResult Delete(int id)
         {
             var course = _unitOfWork.Courses.GetOne(
@@ -186,7 +188,7 @@ namespace MNA.Areas.Admin.Controllers
             return View(course);
         }
 
-        // POST: Course/Delete/5
+        
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
@@ -200,6 +202,8 @@ namespace MNA.Areas.Admin.Controllers
 
             _unitOfWork.Courses.Delete(course);
             _unitOfWork.Commit();
+
+            TempData["success"] = "the Course has been Deleted Successfully";
             return RedirectToAction(nameof(Index));
         }
     }

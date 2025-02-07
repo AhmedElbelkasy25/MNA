@@ -18,20 +18,27 @@ namespace MNA.Areas.Admin.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        public IActionResult Index()
+        //public IActionResult Index()
+        //{
+        //    var quizzes = _unitOfWork.Quizs.Get(
+        //        includeProps: query => query.Include(q => q.Lesson)
+        //                                    .Include(q => q.Questions)
+        //    ).ToList();
+
+        //    return View(quizzes);
+        //}
+
+
+        public IActionResult Create(int? lessonId )
         {
-            var quizzes = _unitOfWork.Quizs.Get(
-                includeProps: query => query.Include(q => q.Lesson)
-                                            .Include(q => q.Questions)
-            ).ToList();
-
-            return View(quizzes);
-        }
-
-
-        public IActionResult Create()
-        {
-            ViewBag.Lessons = _unitOfWork.Lessons.Get().ToList();
+            if (lessonId == null)
+            {
+                ViewBag.Lessons = _unitOfWork.Lessons.Get().ToList();
+            }
+            else
+            {
+                ViewBag.Lessons = _unitOfWork.Lessons.Get(filter:e=>e.Id == lessonId).ToList();
+            }
             return View();
         }
 
@@ -59,7 +66,9 @@ namespace MNA.Areas.Admin.Controllers
                 _unitOfWork.Quizs.Create(quiz);
                 _unitOfWork.Commit();
 
-                return RedirectToAction(nameof(Index));
+                TempData["success"] = "Quiz has been Added successfully";
+                return RedirectToAction("Index", "Course");
+
             }
 
             ViewBag.Lessons = _unitOfWork.Lessons.Get().ToList();
@@ -146,8 +155,8 @@ namespace MNA.Areas.Admin.Controllers
 
                 _unitOfWork.Quizs.Alter(existingQuiz);
                 _unitOfWork.Commit();
-
-                return RedirectToAction("Index");
+                TempData["success"] = "Quiz has been Edited successfully";
+                return RedirectToAction("Index", "Course");
             }
 
             ViewBag.lessons = _unitOfWork.Lessons.Get().ToList();
@@ -183,6 +192,7 @@ namespace MNA.Areas.Admin.Controllers
 
             _unitOfWork.Quizs.Delete(quiz);
             _unitOfWork.Commit();
+            TempData["success"] = "Quiz has been Deleted successfully";
             return RedirectToAction(nameof(Index));
         }
     }

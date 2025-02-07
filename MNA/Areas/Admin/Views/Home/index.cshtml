@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Admin Dashboard";
 }
+@model AdminHome_User_course_money_payments_VM
 
 <h1 class="text-center fw-bold display-4 text-light" style="text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);">
     <i class="bi bi-speedometer2"></i> Admin Dashboard
@@ -12,19 +13,19 @@
         <div class="col-md-4">
             <div class="card shadow-lg text-center p-4 dashboard-card">
                 <h5 class="fw-bold"><i class="bi bi-people-fill"></i> Total Users</h5>
-                <h3 class="text-primary">@ViewBag.TotalUsers</h3>
+                <h3 class="text-primary">@Model.users</h3>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card shadow-lg text-center p-4 dashboard-card">
                 <h5 class="fw-bold"><i class="bi bi-book-fill"></i> Total Courses</h5>
-                <h3 class="text-success">@ViewBag.TotalCourses</h3>
+                <h3 class="text-success">@Model.courses</h3>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card shadow-lg text-center p-4 dashboard-card">
                 <h5 class="fw-bold"><i class="bi bi-currency-dollar"></i> Total Revenue</h5>
-                <h3 class="text-danger">$@ViewBag.TotalRevenue</h3>
+                <h3 class="text-danger">$@Model.revenue</h3>
             </div>
         </div>
     </div>
@@ -43,14 +44,14 @@
                 </tr>
             </thead>
             <tbody>
-                @if (ViewBag.RecentTransactions != null)
+                @if (Model.trans.Any())
                 {
-                    @foreach (var transaction in ViewBag.RecentTransactions)
+                    @foreach (var transaction in Model.trans)
                     {
                         <tr>
                             <td>@transaction.Id</td>
-                            <td>@transaction.UserName</td>
-                            <td>@transaction.CourseName</td>
+                            <td>@transaction.Student.Name</td>
+                            <td>@transaction.Course.Title</td>
                             <td>$@transaction.Amount</td>
                             <td>@transaction.Date.ToShortDateString()</td>
                         </tr>

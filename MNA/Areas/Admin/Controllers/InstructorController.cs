@@ -21,10 +21,10 @@ namespace MNA.Areas.Admin.Controllers
             this._userManager = userManager;
         }
 
-        // GET: Instructor
+        
         public IActionResult Index()
         {
-            // Use Include to load related courses
+            
             var instructors = _unitOfWork.Instructors.Get(
                 includeProps: query => query.Include(i => i.Courses)
             ).ToList();
@@ -32,18 +32,19 @@ namespace MNA.Areas.Admin.Controllers
             return View(instructors);
         }
 
-        // GET: Instructor/Create
+        
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Instructor/Create
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Instructor instructor , IFormFile? file)
         {
             ModelState.Remove("PicUrl");
+            ModelState.Remove("Rating");
             if (ModelState.IsValid)
             {
                 if (file != null && file.Length > 0)
@@ -65,13 +66,14 @@ namespace MNA.Areas.Admin.Controllers
 
                 _unitOfWork.Instructors.Create(instructor);
                 _unitOfWork.Commit();
+                TempData["success"] = "the Instructor has been Added successfully";
                 return RedirectToAction(nameof(Index));
             }
 
             return View(instructor);
         }
 
-        // GET: Instructor/Edit/5
+        
         public IActionResult Edit(int id)
         {
             var instructor = _unitOfWork.Instructors.GetOne(
@@ -87,7 +89,7 @@ namespace MNA.Areas.Admin.Controllers
             return View(instructor);
         }
 
-        // POST: Instructor/Edit/5
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Instructor instructor , IFormFile file)
@@ -97,6 +99,7 @@ namespace MNA.Areas.Admin.Controllers
                 return View(instructor);
             }
             ModelState.Remove("file");
+            ModelState.Remove("Rating");
             var oldInstructor = _unitOfWork.Instructors.GetOne(filter: e => e.Id == instructor.Id, tracked: false);
             if (ModelState.IsValid)
             {
@@ -130,13 +133,25 @@ namespace MNA.Areas.Admin.Controllers
 
                 _unitOfWork.Instructors.Alter(instructor);
                 _unitOfWork.Commit();
+                TempData["success"] = "the Instructor has been Edited successfully";
                 return RedirectToAction("Index");
             }
 
             return View(instructor);
         }
 
-        // GET: Instructor/Delete/5
+        
+        public IActionResult GetProfile(int Id)
+        {
+            if(Id== null)
+            {
+                RedirectToAction("NotFoundPage", "Home");
+            }
+            var instructor = _unitOfWork.Instructors.GetOne(e => e.Id == Id,
+                includeProps: e => e.Include(e => e.Courses));
+            return View(instructor);
+        }
+
         public IActionResult Delete(int id)
         {
             var instructor = _unitOfWork.Instructors.GetOne(
@@ -152,7 +167,7 @@ namespace MNA.Areas.Admin.Controllers
             return View(instructor);
         }
 
-        // POST: Instructor/Delete/5
+        
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
@@ -166,6 +181,7 @@ namespace MNA.Areas.Admin.Controllers
 
             _unitOfWork.Instructors.Delete(instructor);
             _unitOfWork.Commit();
+            TempData["success"] = "the Instructor has been Deleted successfully";
             return RedirectToAction(nameof(Index));
         }
     }

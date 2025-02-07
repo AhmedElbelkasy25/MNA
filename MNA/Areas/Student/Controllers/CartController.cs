@@ -48,7 +48,7 @@ namespace MNA.Areas.Student.Controllers
 
             if (cartItem != null)
             {
-                cartItem.Count += count; // Ensure the count is updated
+                cartItem.Count += count; 
                 _unitOfWork.Carts.Alter(cartItem);
             }
             else
@@ -56,7 +56,7 @@ namespace MNA.Areas.Student.Controllers
                 var shoppingCart = new Cart
                 {
                     CourseId = courseId,
-                    Count = count, // ✅ Ensure Count is at least 1
+                    Count = count, 
                     ApplicationUserId = applicationUserId
                 };
                 _unitOfWork.Carts.Create(shoppingCart);

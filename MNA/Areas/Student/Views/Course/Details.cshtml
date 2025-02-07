@@ -32,26 +32,31 @@
 
 <div class="container-fluid mt-5" style="background:#FFF ; padding:45px">
     @* <h5>23 sections • 453 lectures • 40h 20m total length</h5> *@
-    <a href="#" class="text-primary fw-bold float-end">Expand all sections</a>
+    @* <a href="#" class="text-primary fw-bold float-end">Expand all sections</a> *@
     <div class="accordion mt-3" id="courseAccordion">
         <!-- Section 1 -->
-        <div class="accordion-item">
-            <h2 class="accordion-header">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#section1">
-                    Getting Started <span class="ms-2 text-muted">10 lectures • 22min</span>
-                </button>
-            </h2>
-            <div id="section1" class="accordion-collapse collapse show" data-bs-parent="#courseAccordion">
-                <div class="accordion-body">
-                    <ul class="list-unstyled">
-                        <li>📄 Using the Code Snapshots <span class="text-muted">00:07</span></li>
-                        <li>🎥 Module Introduction <span class="text-muted">01:08</span></li>
+        @foreach(var sec in Model.Sections)
+        {
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#section1">
+                        @sec.Title <span class="ms-2 text-muted">@sec.Title</span>
+                    </button>
+                </h2>
+                <div id="section1" class="accordion-collapse collapse show" data-bs-parent="#courseAccordion">
+                    <div class="accordion-body">
+                        <ul class="list-unstyled">
+                            @foreach(var lesson in sec.Lessons)
+                            {
+                                <li>📄 @lesson.Title <span class="text-muted"></span></li>
+                            }
+
                     </ul>
                 </div>
             </div>
         </div>
-
-        <!-- Section 2 -->
+        }
+       @*  <!-- Section 2 -->
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#section2">
@@ -72,7 +77,7 @@
                     </ul>
                 </div>
             </div>
-        </div>
+        </div> *@
 
     </div>
 </div>

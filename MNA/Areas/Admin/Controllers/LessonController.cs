@@ -16,20 +16,27 @@ namespace MNA.Areas.Admin.Controllers
         }
 
         // GET: Lesson
-        public IActionResult Index()
-        {
-            // Include related Course data
-            var lessons = _unitOfWork.Lessons.Get(
-                includeProps: query => query.Include(l => l.Section)
-            ).ToList();
+        //public IActionResult Index()
+        //{
+        //    // Include related Course data
+        //    var lessons = _unitOfWork.Lessons.Get(
+        //        includeProps: query => query.Include(l => l.Section)
+        //    ).ToList();
 
-            return View(lessons);
-        }
+        //    return View(lessons);
+        //}
 
         // GET: Lesson/Create
-        public IActionResult Create()
+        public IActionResult Create(int? sectionId)
         {
-            ViewBag.Sections = _unitOfWork.Sections.Get().ToList();
+            if (sectionId == null)
+            {
+                ViewBag.Sections = _unitOfWork.Sections.Get().ToList();
+            }
+            else
+            {
+                ViewBag.Sections = _unitOfWork.Sections.Get(filter:e=>e.Id == sectionId).ToList();
+            }
             return View();
         }
 
@@ -43,15 +50,17 @@ namespace MNA.Areas.Admin.Controllers
             {
                 _unitOfWork.Lessons.Create(lesson);
                 _unitOfWork.Commit();
-                return RedirectToAction(nameof(Index));
+
+                TempData["success"] = "Lesson has been Created successfully";
+                return RedirectToAction("Index", "Course");
             }
 
-            // Repopulate ViewBag in case of validation errors
+           
             ViewBag.Sections = _unitOfWork.Sections.Get().ToList();
             return View(lesson);
         }
 
-        // GET: Lesson/Edit/5
+        
         public IActionResult Edit(int id)
         {
             var lesson = _unitOfWork.Lessons.GetOne(
@@ -82,7 +91,8 @@ namespace MNA.Areas.Admin.Controllers
             {
                 _unitOfWork.Lessons.Alter(lesson);
                 _unitOfWork.Commit();
-                return RedirectToAction(nameof(Index));
+                TempData["success"] = "Lesson has been Edited successfully";
+                return RedirectToAction("Index", "Course");
             }
 
             ViewBag.Sections = _unitOfWork.Sections.Get().ToList();
@@ -119,7 +129,8 @@ namespace MNA.Areas.Admin.Controllers
 
             _unitOfWork.Lessons.Delete(lesson);
             _unitOfWork.Commit();
-            return RedirectToAction(nameof(Index));
+            TempData["success"] = "Lesson has been Deleted successfully";
+            return RedirectToAction("Index", "Course");
         }
     }
 }

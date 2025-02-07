@@ -20,20 +20,28 @@ namespace MNA.Areas.Admin.Controllers
             this._roleManager = roleManager;
         }
 
-        public IActionResult Index()
+        //public IActionResult Index()
+        //{
+
+        //    var sections = _unitOfWork.Sections.Get(
+        //        includeProps: query => query.Include(l => l.Course)
+        //    ).ToList();
+
+        //    return View(sections);
+        //}
+
+        public IActionResult Create(int? courseId)
         {
 
-            var sections = _unitOfWork.Sections.Get(
-                includeProps: query => query.Include(l => l.Course)
-            ).ToList();
+            if (courseId == null)
+            {
+                ViewBag.Courses = _unitOfWork.Courses.Get().ToList();
+            }
+            else
+            {
 
-            return View(sections);
-        }
-
-        public IActionResult Create()
-        {
-
-            ViewBag.Courses = _unitOfWork.Courses.Get().ToList();
+                ViewBag.Courses = _unitOfWork.Courses.Get(filter:e=>e.Id== courseId).ToList();
+            }
             //ViewBag.Courses = _unitOfWork.Sections.Get(includeProps:e=>e.Include(e=>e.Course)
             //.ThenInclude(e=>e.Instructor).ThenInclude(e=>e.),filter: e=>e.Course.Instructor. );
             return View();
@@ -47,9 +55,10 @@ namespace MNA.Areas.Admin.Controllers
             ModelState.Remove("Lessons");
             if (ModelState.IsValid)
             {
+                
                 _unitOfWork.Sections.Create(section);
                 _unitOfWork.Commit();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index" , "Course");
             }
 
             ViewBag.Courses = _unitOfWork.Courses.Get().ToList();
@@ -84,7 +93,7 @@ namespace MNA.Areas.Admin.Controllers
             {
                 _unitOfWork.Sections.Alter(section);
                 _unitOfWork.Commit();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index" , "Course");
             }
 
             ViewBag.Courses = _unitOfWork.Courses.Get().ToList();
@@ -118,7 +127,7 @@ namespace MNA.Areas.Admin.Controllers
 
             _unitOfWork.Sections.Delete(section);
             _unitOfWork.Commit();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Course");
         }
     }
 }
