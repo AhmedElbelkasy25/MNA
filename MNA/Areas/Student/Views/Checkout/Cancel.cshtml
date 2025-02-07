@@ -1,0 +1,10 @@
+﻿@{
+    ViewData["Title"] = "Payment Canceled";
+}
+
+<div class="container text-center">
+    <h2 class="text-danger">Payment Canceled</h2>
+    <p>Your payment was not completed. If this was a mistake, please try again.</p>
+    <a href="@Url.Action("Index", "Cart")" class="btn btn-warning">Back to Cart</a>
+    <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Go to Home</a>
+</div>

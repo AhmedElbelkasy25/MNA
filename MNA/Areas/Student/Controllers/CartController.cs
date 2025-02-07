@@ -121,8 +121,9 @@ namespace MNA.Areas.Student.Controllers
                 PaymentMethodTypes = new List<string> { "card" },
                 LineItems = new List<SessionLineItemOptions>(),
                 Mode = "payment",
-                SuccessUrl = $"{Request.Scheme}://{Request.Host}/checkout/success",
-                CancelUrl = $"{Request.Scheme}://{Request.Host}/checkout/cancel",
+                SuccessUrl = $"{Request.Scheme}://{Request.Host}/student/checkout/success?session_id={{CHECKOUT_SESSION_ID}}",
+                CancelUrl = $"{Request.Scheme}://{Request.Host}/student/checkout/cancel",
+
             };
 
             var applicationUserId = _userManager.GetUserId(User);

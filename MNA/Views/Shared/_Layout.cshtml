@@ -180,11 +180,35 @@
                             <!-- Cart Icon -->
                             <li class="nav-item">
                                 <a class="nav-link position-relative" asp-area="Student" asp-controller="Cart" asp-action="Index">
-                                    <i class="fas fa-shopping-cart"></i> Cart
-                                    <span id="cartCount" class="cart-badge">0</span>
+                                    <i class="fas fa-shopping-cart"></i> Cart&nbsp;
+                                    <span id="cartCount" class="cart-badge d-none">0</span>
                                 </a>
                             </li>
+
                         }
+                    </ul>
+
+                    <script>
+                        function updateCartCount() {
+                            fetch('/student/cart/GetCartCount')
+                                .then(response => response.json())
+                                .then(cartCount => {
+                                    let cartCountElement = document.getElementById("cartCount");
+
+                                    if (cartCount > 0) {
+                                        cartCountElement.innerText = " " + cartCount; // Adds space before the number
+                                        cartCountElement.classList.remove("d-none"); // Show the count
+                                    } else {
+                                        cartCountElement.classList.add("d-none"); // Hide if cart is empty
+                                    }
+                                })
+                                .catch(error => console.error('Error fetching cart count:', error));
+                        }
+
+                        document.addEventListener("DOMContentLoaded", updateCartCount);
+                    </script>
+
+
 
 
 

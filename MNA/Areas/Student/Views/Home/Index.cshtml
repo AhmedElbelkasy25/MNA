@@ -103,7 +103,7 @@
         <div class="welcome-container floating">
             <h1>Welcome to <span style="color: #f39c12;">MNA Academy</span></h1>
             <p>Start your learning journey with expert instructors and interactive courses.</p>
-            <a href="/Student/Courses" class="btn-custom"><i class="fas fa-book"></i> Browse Courses</a>
+            <a href="/Student/Course" class="btn-custom"><i class="fas fa-book"></i> Browse Courses</a>
         </div>
 
         <div class="d-block">
@@ -224,13 +224,15 @@
             <div class="row">
                 @foreach (var instructor in Model.Instructors)
                 {
-                    <div class="col-md-4  align-items-stretch">
+                    <div class="col-md-4 align-items-stretch">
                         <div class="card h-100 d-flex flex-column">
                             <img class="instructor-img" src="/images/instructors/@instructor.PicUrl"
                                  class="card-img-top instructor-img" alt="Instructor">
                             <div class="card-body d-flex flex-column flex-grow-1">
                                 <h5 class="card-title">@instructor.Name</h5>
                                 <p class="card-text flex-grow-1">@instructor.Bio</p>
+                                <a asp-controller="Instructor" asp-action="GetProfile" asp-route-id="@instructor.Id"
+                                   class="btn btn-primary mt-auto">View Profile</a>
                             </div>
                         </div>
                     </div>
@@ -238,6 +240,7 @@
             </div>
         </div>
     }
+
     else
     {
         <p class="text-center text-muted">No Instructors available.</p>
