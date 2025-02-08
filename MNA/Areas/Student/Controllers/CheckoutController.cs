@@ -1,8 +1,8 @@
-﻿using DataAccess.Repository.IRepository;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+using DataAccess.Repository.IRepository;
 using Models;
-using Stripe.Checkout;
+using Stripe;
 
 namespace MNA.Areas.Student.Controllers
 {
@@ -17,10 +17,10 @@ namespace MNA.Areas.Student.Controllers
             _unitOfWork = unitOfWork;
             _userManager = userManager;
         }
+
         public IActionResult Success(string session_id)
         {
-
-            var service = new SessionService();
+            var service = new Stripe.Checkout.SessionService();
             var session = service.Get(session_id);
 
             if (session.PaymentStatus == "paid")
@@ -28,19 +28,24 @@ namespace MNA.Areas.Student.Controllers
                 var applicationUserId = _userManager.GetUserId(User);
 
                 // Get all items from the shopping cart
-                var shoppingCarts = _unitOfWork.Carts.Get(
-                    e => e.ApplicationUserId == applicationUserId
-                ).ToList();
+                var shoppingCarts = _unitOfWork.Carts.Get(e => e.ApplicationUserId == applicationUserId).ToList();
 
-                // Remove items from the cart after successful payment
                 foreach (var item in shoppingCarts)
                 {
+                    // Add courses to enrollment
+                    var enrollment = new Enrollment
+                    {
+                        ApplicationUserId = applicationUserId,
+                        CourseId = item.CourseId,
+                        ExpireDate = DateOnly.FromDateTime(DateTime.Now.AddMonths(6)) // Example expiration
+                    };
+
+                    _unitOfWork.Enrollments.Create(enrollment);
                     _unitOfWork.Carts.Delete(item);
                 }
 
                 _unitOfWork.Commit(); // Save changes
-
-                TempData["success"] = "Payment completed successfully! Your courses have been removed from the cart.";
+                TempData["success"] = "Payment completed successfully! Your courses have been added.";
             }
             else
             {
@@ -49,10 +54,42 @@ namespace MNA.Areas.Student.Controllers
 
             return View();
         }
+
         public IActionResult Cancel()
         {
             TempData["error"] = "Payment was canceled!";
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult Refund(string paymentIntentId)
+        {
+            try
+            {
+                var refundOptions = new RefundCreateOptions
+                {
+                    PaymentIntent = paymentIntentId,
+                    Reason = "requested_by_customer"
+                };
+
+                var refundService = new RefundService();
+                var refund = refundService.Create(refundOptions);
+
+                if (refund.Status == "succeeded")
+                {
+                    TempData["success"] = "Refund processed successfully!";
+                }
+                else
+                {
+                    TempData["error"] = "Refund failed!";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["error"] = $"Refund error: {ex.Message}";
+            }
+
+            return RedirectToAction("Index", "Course");
         }
     }
 }
