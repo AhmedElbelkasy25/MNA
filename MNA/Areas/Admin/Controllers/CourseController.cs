@@ -159,10 +159,14 @@ namespace MNA.Areas.Admin.Controllers
                 {
                     course.ImgUrl = oldCourse.ImgUrl;
                 }
+                // disable the trigger of courses table
+                _unitOfWork.ExecuteRawSql("DISABLE TRIGGER triggerUpdateInstructorRating ON Courses");
 
 
                 _unitOfWork.Courses.Alter(course);
                 _unitOfWork.Commit();
+                // enable the trigger of courses table
+                _unitOfWork.ExecuteRawSql("ENABLE TRIGGER triggerUpdateInstructorRating ON Courses");
                 TempData["success"] = "Course has been Edited Successfully";
                 return RedirectToAction(nameof(Index));
             }

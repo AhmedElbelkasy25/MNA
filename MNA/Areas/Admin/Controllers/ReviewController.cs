@@ -34,7 +34,9 @@ namespace MNA.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult Create(Review review)
         {
-            if (!ModelState.IsValid)
+            ModelState.Remove("Course");
+            ModelState.Remove("Student");
+            if (ModelState.IsValid)
             {
                 _unitOfWork.Reviews.Create(review);
                 _unitOfWork.Commit();

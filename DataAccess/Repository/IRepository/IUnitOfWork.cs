@@ -27,6 +27,7 @@ namespace DataAccess.Repository.IRepository
         IStudentCouponsRepository StudentCoupons { get; }
 
         public void Commit();
+        public void ExecuteRawSql(string sql);
 
     }
 }

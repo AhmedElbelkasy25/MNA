@@ -177,7 +177,7 @@ namespace MNA.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            return View(quiz);
+            return View(model:quiz);
         }
 
         [HttpPost, ActionName("Delete")]
@@ -193,7 +193,7 @@ namespace MNA.Areas.Admin.Controllers
             _unitOfWork.Quizs.Delete(quiz);
             _unitOfWork.Commit();
             TempData["success"] = "Quiz has been Deleted successfully";
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Course");
         }
     }
 }

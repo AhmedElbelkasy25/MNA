@@ -1,0 +1,51 @@
+﻿@model List<Degree>
+
+@{
+    ViewData["Title"] = "Exam Results";
+}
+
+
+
+<div class="container mt-2">
+    <div class="card shadow-lg p-4">
+        <h2 class="text-center mb-4">Exam Results</h2>
+
+        @if (Model.Any())
+        {
+                <div class="mb-4">
+                <h4>Student Degree: <span class="text-success">@Model.Sum(d => d.Marks) from @Model.Sum(d => d.FinalDegree) </span></h4>
+                </div>
+
+            @foreach (var degree in Model)
+            {
+                        <div class="card mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5>Lesson: @degree.Lesson.Title</h5>
+                            </div>
+                            <div class="card-body">
+                        @foreach (var quiz in degree.Lesson.Quizs)
+                        {
+                                        <h6 class="text-muted">Quiz Questions:</h6>
+                                        
+                                            @foreach (var question in quiz.Questions)
+                                            {
+                                                                <div>
+                                                                    <h3>@question.QuestionText</h3>
+                                                                    <br>
+                                                                    <span class="text-success">
+                                                                        ✅ Correct Answer: @(question.CorrectAnswer ? "True" : "False")
+                                                                    </span>
+                                                                </div>
+                                            }
+                                        
+                        }
+                            </div>
+                        </div>
+            }
+        }
+        else
+        {
+                <p class="text-danger text-center">No results found for this student.</p>
+        }
+    </div>
+</div>

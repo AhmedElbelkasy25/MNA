@@ -1,4 +1,5 @@
 ﻿using DataAccess.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,6 +74,11 @@ namespace DataAccess.Repository
         public void Dispose()
         {
             _dbContext.Dispose();
+        }
+
+        public void ExecuteRawSql(string sql)
+        {
+            _dbContext.Database.ExecuteSqlRaw(sql);
         }
     }
 }

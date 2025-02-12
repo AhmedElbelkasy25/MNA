@@ -19,7 +19,11 @@
                         <h5 class="card-title">@course.Title</h5>
                         <p class="card-text">By @course.Instructor.Name</p>
                         <p class="card-text">
-                            <span class="text-warning"><h5> ⭐ ( @course.Rating ) </h5></span>
+                            <span class="text-warning">
+                                <h5 >
+                                    ⭐ ( @(course.Rating.HasValue ? Math.Round((double)course.Rating.Value, 1).ToString() : " ") )
+                                </h5>
+                            </span>
                         </p>
                         <p class="card-text">
                             <strong>£@course.Price</strong>
@@ -137,9 +141,7 @@
                 var reviews = $(this).data("reviews");
                 var price = $(this).data("price");
                 var description = $(this).data("description");
-                var updated = $(this).data("updated");
-                var hours = $(this).data("hours");
-                var level = $(this).data("level");
+                
                 var img = $(this).data("img");
 
                 $("#courseModalLabel").text(title);

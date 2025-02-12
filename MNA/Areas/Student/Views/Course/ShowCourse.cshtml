@@ -1,0 +1,377 @@
+﻿@using Models.ViewModels
+@using System.Security.Claims
+@model Course_ReviewsVM
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
+<script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+@{
+    ViewData["Title"] = Model.Course.Title;
+}
+
+
+
+<style>
+    .video-container {
+        width: 100%;
+        background: #000;
+        padding: 10px;
+        border-radius: 0;
+    }
+
+    .lesson-item {
+        cursor: pointer;
+        padding: 12px;
+        transition: background 0.3s;
+    }
+
+        .lesson-item:hover {
+            background: #007bff;
+            color: white;
+        }
+
+    .content-section {
+        width: 100%;
+    }
+
+
+    .lesson-item.active {
+        background: #007bff;
+        color: white;
+        font-weight: bold;
+    }
+
+
+
+
+    .custom-tabs {
+        border-bottom: 2px solid #ddd;
+        justify-content: center;
+        display: flex;
+        gap: 20px;
+        background: white;
+        padding: 10px 0;
+    }
+
+        .custom-tabs .nav-link {
+            font-weight: bold;
+            color: #555;
+            padding: 10px 15px;
+            border: none;
+        }
+
+            .custom-tabs .nav-link.active {
+                border-bottom: 3px solid #000;
+                color: black;
+            }
+
+
+    /*--------------------Review Section-------------*/
+
+    .rating-summary {
+        display: flex;
+        align-items: center;
+    }
+
+    .rating-score {
+        min-width: 120px;
+    }
+
+    .progress {
+        background: #e0e0e0;
+    }
+
+    .search-bar input {
+        border-radius: 20px;
+        padding: 10px;
+    }
+
+    .review {
+        background: #f8f9fa;
+    }
+
+</style>
+
+
+
+
+<div class="container-fluid  p-0">
+    <!--Video-->
+    <div class="video-container">
+        @if (Model.Course.Sections.First().Lessons.Any())
+        {
+        <video id="courseVideo" class="w-100 rounded shadow plyr" controls controlsList="nodownload"
+               poster="/images/Course/@Model.Course.ImgUrl " playsinline>
+            @if (Model.Course?.Sections?.Any() == true && Model.Course.Sections.First().Lessons.Any())
+            {
+                <source src="/videos/@Model.Course.Sections.First().Lessons.First().Content" type="video/mp4">
+            }
+        </video>
+        }
+        else
+        {
+             <h1 class="text-warning">No video available.</h1>
+         }
+    </div>
+
+    <!-- the center navbar------------------------------------------------------------------------>
+    
+    <ul class="nav container-fluid nav-tabs custom-tabs" id="courseTabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#content">📚 Course Content</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#overview">📄 Overview</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#qna">❓ Q&A</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#notes">📝 Notes</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#announcements">📢 Announcements</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#reviews">⭐ Reviews</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#learning-tools">🛠️ Learning Tools</a>
+        </li>
+    </ul>
+
+    <!-- tubes -->
+    <div class="tab-content container-fluid p-0 ">
+       
+
+        <div class="content-section bg-light rounded shadow tab-pane fade show active" id="content">
+            <h4 class="fw-bold">📚 Course Content</h4>
+            <div class="accordion mt-3" id="courseAccordion">
+                @for (int i = 0; i < Model.Course.Sections.Count; i++)
+                {
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#section@(i)">
+                                📂 @Model.Course.Sections.ToList()[i].Title
+                            </button>
+                        </h2>
+                        <div id="section@(i)" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
+                            <div class="accordion-body">
+                                <ul class="list-group">
+                                    @foreach (var lesson in Model.Course.Sections.ToList()[i].Lessons)
+                                    {
+                                        <li class="list-group-item lesson-item"
+                                            data-src="/videos/@lesson.Content"
+                                            data-lesson-id="@lesson.Id"
+                                            data-section-id="section@(i)">
+                                            🎥 @lesson.Title
+                                            <a href="/student/course/getquizQuestions?LessonId=@lesson.Id"
+                                             class="btn btn-primary rounded"
+                                            > Test Your Self</a>
+                                        </li>
+                                    }
+                                </ul>
+
+                               
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+
+
+        <!--     OverView      -->
+        <div class="tab-pane fade bg-light container-fluid" id="overview">
+
+            <h2 class="fw-bold"> @Model.Course.Title  </h2>
+
+
+            <div class="d-flex align-items-center gap-3">
+                <span class="rating">
+                    ⭐ @(Model.Course.Rating.HasValue ? Math.Round((double)Model.Course.Rating, 1):" ")@* <small class="text-muted">(35 ratings)</small> *@
+                </span>
+                @* <span class="fw-bold">👨‍🎓 2,220 Students</span> *@
+
+            </div>
+            <div class="stats-section mt-4 p-3 border rounded">
+                <h4> @Model.Course.Description</h4>
+            </div>
+
+            <div class="stats-section mt-4 p-3 border rounded">
+                <h5 class="fw-bold">📊 By the numbers</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p>🎓 Skill level: <strong>Beginner Level</strong></p>
+                        <p>👨‍🏫 Students: <strong> @Model.StdNums</strong></p>
+                        @* <p>🌍 Languages: <strong>Arabic</strong></p>
+                        <p>📝 Captions: <strong>No</strong></p> *@
+                    </div>
+                    <div class="col-md-6">
+                        <p>📚 Lectures: <strong> @Model.LsnNums </strong></p>
+                        <p>⏳ Video: <strong id="totalDuration">calculating...</strong></p>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!--    Review -->
+        <div class="tab-pane container-fluid bg-light fade" id="reviews">
+
+
+            <h3 class="fw-bold">📢 Student Feedback</h3>
+            <a href="/student/Course/CreateReview?CourseId=@Model.Course.Id" class="btn btn-primary" > Add Review</a>
+       
+            <div class="rating-summary d-flex align-items-center">
+                <div class="rating-score text-center">
+                    <h1 class="display-4 fw-bold text-warning"> @(Model.Course.Rating.HasValue ? Math.Round((double)Model.Course.Rating, 1) : " ")</h1>
+                    <p class="text-warning fs-5">★★★★★</p>
+
+
+                </div>
+                <div class="rating-bars ms-4 w-100">
+                    <div class="progress mb-2" style="height: 20px;">
+                        <div class="progress-bar bg-primary" style="width: @(Model.Course.Rating*20)%;"></div>
+                    </div>
+
+                </div>
+            </div>
+
+            
+ 
+            <!--Reviews -->
+            @foreach(var review in Model.Reviews)
+            {
+                <div class="review  p-3 border rounded">
+                    <div class="d-flex align-items-center">
+                        <img src="/images/AdminImg/@review.Student.ImgUrl" class="rounded-circle me-3" width="50" alt="@review.Student.Name">
+                        <div>
+                            <h5 class="mb-0">@review.Student.Name</h5>
+                            @* <small class="text-muted">5 months ago</small> *@
+                        </div>
+                    </div>
+                    <div class="rating-bars ms-4 w-100">
+                        <h4 class="text-warning mt-2"> @Math.Round(review.rating,1) ★</h4>
+                        @* <div class="progress mb-2" style="height: 20px;">
+                            <div class="progress-bar bg-primary" style="width: @(review.rating*20)%;"></div>
+                        </div> *@
+
+                    </div>
+                    <h5> @review.Comment   </h5>
+                </div>
+            }
+
+        </div>
+        <div class="tab-pane fade container-fluid bg-light" id="qna">
+
+        </div>
+        <div class="tab-pane fade" id="notes">📝 Your Notes...</div>
+        <div class="tab-pane fade" id="announcements">📢 Latest Announcements...</div>
+        <div class="tab-pane fade" id="learning-tools">🛠️ Additional Learning Tools...</div>
+    </div>  
+</div>
+
+
+<script>
+
+    const player = new Plyr('#courseVideo', {
+        controls: ['play','play-large', 'rewind','fast-forward' , 'progress', 'current-time', 'mute', 'volume', 'fullscreen', 'settings'],
+        settings: ['speed'],
+        speed: { selected: 1.0, options: [0.5, 0.75 , 1 , 1.25 , 1.5, 2] }
+        ,disableContextMenu: true // to prevent the right click
+    });
+
+    function loadVideoAndQuiz(lessonElement) {
+
+        section.addEventListener('shown.bs.collapse', () => {
+
+            
+            const videoSrc = lessonElement.getAttribute("data-src");
+            currentLessonId = lessonElement.getAttribute("data-lesson-id");
+            player.source = { type: 'video', sources: [{ src: videoSrc, type: 'video/mp4' }] };
+             player.play(); 
+        });
+    }
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+        
+        let lessonItems = document.querySelectorAll(".lesson-item");
+
+        
+        lessonItems.forEach(item => {
+            item.addEventListener("click", function () {
+                let videoSrc = this.getAttribute("data-src"); 
+                let courseVideo = document.querySelector("#courseVideo");
+
+                if (videoSrc) {
+                    
+                    courseVideo.src = videoSrc;
+                    courseVideo.load();
+                    courseVideo.play();
+
+                    
+                    lessonItems.forEach(lesson => lesson.classList.remove("active"));
+                    this.classList.add("active");
+                }
+            });
+        });
+    });
+
+
+
+    /*the content ---------------------------*/
+        document.addEventListener("DOMContentLoaded", function () {
+        var firstTabEl = document.querySelector('#courseTabs .nav-link.active');
+        var firstTab = new bootstrap.Tab(firstTabEl);
+        firstTab.show();
+    });
+
+    /* java script code to calculate the duration of all videos */
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        let totalDuration = 0;
+        let videoElements = document.querySelectorAll(".lesson-item");
+
+        let videoPromises = Array.from(videoElements).map(item => {
+            return new Promise((resolve, reject) => {
+                let video = document.createElement("video");
+                video.src = item.getAttribute("data-src");
+                video.preload = "metadata"; // Load metadata only
+
+                video.onloadedmetadata = function () {
+                    totalDuration += video.duration;
+                    resolve();
+                };
+
+                video.onerror = function () {
+                    console.error("Failed to load video:", video.src);
+                    resolve(); // Resolve even if there's an error (skip that video)
+                };
+            });
+        });
+
+        Promise.all(videoPromises).then(() => {
+            let totalMinutes = Math.floor(totalDuration / 60);
+            let totalSeconds = Math.floor(totalDuration % 60);
+
+            let durationText = `${totalMinutes} min ${totalSeconds} sec`;
+
+            document.getElementById("totalDuration").innerText = durationText;
+        });
+    });
+
+
+
+
+</script>
+
+    
+
+
+

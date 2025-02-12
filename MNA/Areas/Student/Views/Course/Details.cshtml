@@ -1,26 +1,27 @@
-﻿@model Course
+﻿@using Models.ViewModels
+@model Course_ReviewsVM
 
 @{
-    ViewData["Title"] = Model.Title;
+    ViewData["Title"] = Model.Course.Title;
 }
 
 <div class="course-header">
     <div class="container">
         <div class="row">
             <div class="col-md-8 text-white">
-                <h1>@Model.Title</h1>
-                <p>@Model.Description</p>
-                <p><strong>Instructor:</strong> @Model.Instructor.Name</p>
-                <p><strong>Rating:</strong> ⭐ @Model.Rating </p>
-                <p><strong>Price:</strong> £@Model.Price</p>
-                <a asp-area="Student" asp-controller="Cart" asp-action="AddToCart" asp-route-courseId="@Model.Id" class="btn btn-primary">
+                <h1>@Model.Course.Title</h1>
+                <p>@Model.Course.Description</p>
+                <p><strong>Instructor:</strong> @Model.Course.Instructor.Name</p>
+                <p><strong>Rating:</strong> ⭐@(Model.Course.Rating.HasValue ? Math.Round((double)Model.Course.Rating, 1) : " ") </p>
+                <p><strong>Price:</strong> £@Model.Course.Price</p>
+                <a asp-area="Student" asp-controller="Cart" asp-action="AddToCart" asp-route-courseId="@Model.Course.Id" class="btn btn-primary">
                     Enroll Now
                 </a>
 
             </div>
             <div class="col-md-4">
                 <div class="course-preview">
-                    <img src="/images/Course/@Model.ImgUrl" class="img-fluid rounded" alt="Course Image">
+                    <img src="/images/Course/@Model.Course.ImgUrl" class="img-fluid rounded" alt="Course Image">
                     <p class="preview-text">Preview this course</p>
                 </div>
             </div>
@@ -30,23 +31,24 @@
 
 <!--  the section -->
 
-<div class="container-fluid mt-5" style="background:#FFF ; padding:45px">
+<div class="container-fluid" style="background:#FFF ; padding:45px">
     @* <h5>23 sections • 453 lectures • 40h 20m total length</h5> *@
     @* <a href="#" class="text-primary fw-bold float-end">Expand all sections</a> *@
     <div class="accordion mt-3" id="courseAccordion">
         <!-- Section 1 -->
-        @foreach(var sec in Model.Sections)
+        @* @foreach(var sec in Model.Sections) *@
+        @for (int i = 0; i < Model.Course.Sections.ToList().Count; i++)
         {
             <div class="accordion-item">
                 <h2 class="accordion-header">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#section1">
-                        @sec.Title <span class="ms-2 text-muted">@sec.Title</span>
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#section@(i)">
+                       @Model.Course.Sections.ToList()[i].Title <span class="ms-2 text-muted">@Model.Course.Sections.ToList()[i].Title</span>
                     </button>
                 </h2>
-                <div id="section1" class="accordion-collapse collapse show" data-bs-parent="#courseAccordion">
+                <div id="section@(i)" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
                     <div class="accordion-body">
                         <ul class="list-unstyled">
-                            @foreach(var lesson in sec.Lessons)
+                           @foreach (var lesson in @Model.Course.Sections.ToList()[i].Lessons)
                             {
                                 <li>📄 @lesson.Title <span class="text-muted"></span></li>
                             }
@@ -56,33 +58,60 @@
             </div>
         </div>
         }
-       @*  <!-- Section 2 -->
-        <div class="accordion-item">
-            <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#section2">
-                    Optional: React Refresher <span class="ms-2 text-muted">75 lectures • 7hr 41min</span>
-                </button>
-            </h2>
-            <div id="section2" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
-                <div class="accordion-body">
-                    <ul class="list-unstyled">
-                        <li>📄 What Is React & Why Would You Use It? <span class="text-muted">05:37</span></li>
-                        <li>🎥 React Projects - Requirements <span class="text-muted">02:09</span></li>
-                        <li>🎥 Creating React Projects <span class="text-muted">03:27</span></li>
-                        <li>🎥 Our Starting Project <span class="text-muted">03:28</span></li>
-                        <li>🎥 Understanding How React Works <span class="text-muted">07:46</span></li>
-                        <li>🎥 Building A First Custom Component <span class="text-muted">11:15</span></li>
-                        <li>🎥 Outputting Dynamic Values <span class="text-muted">05:03</span></li>
-                        <li>🎥 Reusing Components <span class="text-muted">06:00</span></li>
-                    </ul>
-                </div>
-            </div>
-        </div> *@
-
     </div>
 </div>
 
+<div class="container-fluid " style="background-color:beige;">
+    <div class="row">
+        <!--  The Comments -->
+        <div class="col-md-8">
+            <h3 class="fw-bold">Student Reviews</h3>
+            @foreach (var review in Model.Reviews)
+            {
+                <div class="card p-3 shadow-lg mb-3">
+                    <div class="d-flex align-items-center">
+                        <img src="/images/AdminImg/@review.Student.ImgUrl" alt="User Avatar" class="rounded-circle" width="50">
+                        <div class="ms-3">
+                            <h5 class="fw-bold mb-0">@review.Student.Name</h5>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="text-warning">'★', @review.rating</span>
+                    </div>
+                    <p class="mt-2">@review.Comment</p>
+                    <div class="d-flex justify-content-between">
+                        <p class="fw-bold">Course: <span class="text-primary">@review.Course.Title</span></p>
+                        <div>
+                            <button class="btn btn-outline-primary btn-sm">👍</button>
+                            <button class="btn btn-outline-secondary btn-sm">👎</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
 
+        <!-- the Coupon Section -->
+        <div class="col-md-4">
+            <div class="card p-3 shadow-lg">
+                <h4 class="fw-bold">Apply Coupon</h4>
+                <p>Use a coupon code to get a discount on this course.</p>
+                <input type="text" class="form-control mb-2" placeholder="Enter Coupon">
+                <button class="btn btn-primary w-100">Apply</button>
+
+                <hr>
+
+                <h5 class="fw-bold">30-Day Money-Back Guarantee</h5>
+                <p>Full lifetime access to this course.</p>
+
+                <hr>
+
+                <h5 class="fw-bold">Subscribe to Top Courses</h5>
+                <p>Get this course, plus 12,000+ top-rated courses with a Personal Plan.</p>
+                <a href="#" class="btn btn-outline-dark w-100">Learn More</a>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
