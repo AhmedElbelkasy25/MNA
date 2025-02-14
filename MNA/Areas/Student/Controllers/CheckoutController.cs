@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using DataAccess.Repository.IRepository;
 using Models;
 using Stripe;
+using Stripe.Checkout;
 
 namespace MNA.Areas.Student.Controllers
 {
@@ -20,24 +21,36 @@ namespace MNA.Areas.Student.Controllers
 
         public IActionResult Success(string session_id)
         {
-            var service = new Stripe.Checkout.SessionService();
+            var service = new SessionService();
             var session = service.Get(session_id);
+
+            if (session == null)
+            {
+                TempData["error"] = "Session not found.";
+                return RedirectToAction("Index", "Course");
+            }
 
             if (session.PaymentStatus == "paid")
             {
                 var applicationUserId = _userManager.GetUserId(User);
 
-                // Get all items from the shopping cart
+                if (string.IsNullOrEmpty(applicationUserId))
+                {
+                    TempData["error"] = "User not found.";
+                    return RedirectToAction("Index", "Course");
+                }
+
                 var shoppingCarts = _unitOfWork.Carts.Get(e => e.ApplicationUserId == applicationUserId).ToList();
 
                 foreach (var item in shoppingCarts)
                 {
-                    // Add courses to enrollment
+                    // Add courses to enrollment with PaymentIntentId
                     var enrollment = new Enrollment
                     {
                         ApplicationUserId = applicationUserId,
                         CourseId = item.CourseId,
-                        ExpireDate = DateOnly.FromDateTime(DateTime.Now.AddMonths(6)) // Example expiration
+                        ExpireDate = DateOnly.FromDateTime(DateTime.Now.AddMonths(6)), // Example expiration
+                        PaymentIntentId = session.PaymentIntentId // Assign PaymentIntentId
                     };
 
                     _unitOfWork.Enrollments.Create(enrollment);
@@ -66,6 +79,12 @@ namespace MNA.Areas.Student.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(paymentIntentId))
+                {
+                    TempData["error"] = "Invalid PaymentIntentId.";
+                    return RedirectToAction("Index", "Course");
+                }
+
                 var refundOptions = new RefundCreateOptions
                 {
                     PaymentIntent = paymentIntentId,

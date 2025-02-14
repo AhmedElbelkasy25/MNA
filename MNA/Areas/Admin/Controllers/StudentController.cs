@@ -117,21 +117,34 @@ namespace MNA.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> AddToRole(AddToRoleVM userfrmVM)
         {
-
             var user = await _userManager.FindByIdAsync(userfrmVM.Id);
             if (user != null)
             {
                 var oldRoles = await _userManager.GetRolesAsync(user);
                 await _userManager.RemoveFromRolesAsync(user, oldRoles);
+
                 var result = await _userManager.AddToRoleAsync(user, userfrmVM.Role);
                 if (result.Succeeded)
                 {
+                    if (userfrmVM.Role == "Instructor")
+                    {
+                        // Ensure the user is linked to an Instructor
+                        var instructor = _unitOfWork.Instructors.GetOne(i => i.UserId == user.Id);
+                        if (instructor == null)
+                        {
+                            instructor = new Models.Instructor { UserId = user.Id };
+                            _unitOfWork.Instructors.Create(instructor);
+                            _unitOfWork.Commit();
+                        }
+                    }
+
                     TempData["success"] = "The User Role Has Been Changed";
                 }
-                return View("index", _userManager.Users.ToList());
+                return View("Index", _userManager.Users.ToList());
             }
-            return RedirectToAction("NotFoundPage","Home" , new {Area = "Student"});
+            return RedirectToAction("NotFoundPage", "Home", new { Area = "Student" });
         }
+
 
 
 

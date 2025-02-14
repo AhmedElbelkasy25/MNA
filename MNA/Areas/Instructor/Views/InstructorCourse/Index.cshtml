@@ -1,0 +1,104 @@
+﻿@using Models.ViewModels
+@model CoursePaginationVM
+
+@section Scripts {
+    @if (@TempData["success"] != null)
+    {
+        <script>
+            toastr.success('@TempData["success"]')
+        </script>
+    }
+}
+
+<div class="container mt-4 text-white">
+    <h2 class="mb-4">My Courses</h2>
+    <div class="accordion" id="coursesAccordion">
+        <a class="btn btn-outline-info rounded-3" asp-area="Instructor" asp-controller="InstructorCourse" asp-action="Create">Create ➕</a>
+        @foreach (var course in Model.Courses)
+        {
+            <div class="card course-card">
+                <div class="card-header" id="headingCourse-@course.Id">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link btn-block text-left" type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapseCourse-@course.Id"
+                                aria-expanded="false"
+                                aria-controls="collapseCourse-@course.Id">
+                            @course.Title
+                        </button>
+                    </h2>
+                    <a href="/Instructor/InstructorCourse/Delete/@course.Id" class="btn rounded-3 btn-outline-danger" style="position:absolute;right:10%;top:20%;">Delete 🗑</a>
+                    <a href="/Instructor/InstructorCourse/Edit/@course.Id" class="btn rounded-3 btn-outline-dark" style="position:absolute;right:1%;top:20%;">Edit⚙</a>
+                </div>
+
+                <div id="collapseCourse-@course.Id" class="collapse" aria-labelledby="headingCourse-@course.Id" data-bs-parent="#coursesAccordion">
+                    <div class="card-body">
+                        <div class="accordion" id="sectionsAccordion-@course.Id">
+                            <a class="btn btn-outline-info rounded-3" href="/Instructor/Section/Create?courseId=@course.Id">Create Section ➕</a>
+                            @foreach (var sec in course.Sections)
+                            {
+                                <div class="card section-card">
+                                    <div class="card-header" id="headingSection-@sec.Id">
+                                        <h3 class="mb-0">
+                                            <button class="btn btn-link btn-block text-left" type="button"
+                                                    data-bs-toggle="collapse"
+                                                    data-bs-target="#collapseSection-@sec.Id"
+                                                    aria-expanded="false"
+                                                    aria-controls="collapseSection-@sec.Id">
+                                                @sec.Title
+                                            </button>
+                                            <a href="/Instructor/Section/Delete/@sec.Id" class="btn rounded-3 btn-outline-danger" style="position:absolute;right:10%">Delete 🗑</a>
+                                            <a href="/Instructor/Section/Edit/@sec.Id" class="btn rounded-3 btn-outline-dark" style="position:absolute;right:1%">Edit⚙</a>
+                                        </h3>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<nav aria-label="...">
+    <ul class="pagination pagination-lg justify-content-center">
+        <li class="page-item @(Model.PageNumber <= 1 ? "disabled" : "")">
+            <a class="page-link" href="/Instructor/InstructorCourse/Index?pageNumber=@(Model.PageNumber - 1)">Previous</a>
+        </li>
+        @for (int i = 0; i < Model.Pages; i++)
+        {
+            <li class="page-item @(i + 1 == Model.PageNumber ? "active" : "")">
+                <a class="page-link" href="/Instructor/InstructorCourse/Index?pageNumber=@(i + 1)">@(i + 1)</a>
+            </li>
+        }
+        <li class="page-item @(Model.PageNumber >= Model.Pages ? "disabled" : "")">
+            <a class="page-link" href="/Instructor/InstructorCourse/Index?pageNumber=@(Model.PageNumber + 1)">Next</a>
+        </li>
+    </ul>
+</nav>
+
+<style>
+    .course-card {
+        background-color: #f8f9fa;
+    }
+
+    .section-card {
+        background-color: #ffebcc;
+    }
+
+    .btn-link {
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+        .btn-link:hover {
+            text-decoration: underline;
+        }
+
+    .accordion > .card {
+        margin-bottom: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+</style>

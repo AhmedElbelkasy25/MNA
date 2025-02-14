@@ -13,36 +13,59 @@ namespace MNA.Areas.Student.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public CourseController(IUnitOfWork unitOfWork,
-            UserManager<ApplicationUser> userManager)
-            {
-            this._unitOfWork = unitOfWork;
-            this._userManager = userManager;
-        }
-        public IActionResult Index(int pageNumber = 1, int numOfItems = 9)
+        public CourseController(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
         {
-            
-            var courses = _unitOfWork.Courses.Get(
-                includeProps: query => query.Include(c => c.Category).Include(c => c.Instructor)
+            _unitOfWork = unitOfWork;
+            _userManager = userManager;
+        }
+
+        public IActionResult Index(int? categoryId, int pageNumber = 1, int numOfItems = 9)
+        {
+            var query = _unitOfWork.Courses.Get(
+                includeProps: q => q.Include(c => c.Category).Include(c => c.Instructor)
             );
 
-            int pages = (int)Math.Ceiling((double)courses.Count() / numOfItems);
-            courses = courses.Skip((pageNumber - 1) * numOfItems).Take(numOfItems);
-            CoursePaginationVM coursePaginationVM = new CoursePaginationVM()
+            // Apply Category Filter
+            if (categoryId.HasValue)
             {
-                Courses = courses.ToList(),
-                Pages = pages,
+                query = query.Where(c => c.CategoryId == categoryId);
+                ViewBag.CategoryName = _unitOfWork.Categories.GetOne(c => c.Id == categoryId)?.Name ?? "All Courses";
+            }
+            else
+            {
+                ViewBag.CategoryName = "All Courses";
+            }
+
+            // Pagination
+            int totalItems = query.Count();
+            int totalPages = (int)Math.Ceiling((double)totalItems / numOfItems);
+            var courses = query.Skip((pageNumber - 1) * numOfItems).Take(numOfItems).ToList();
+
+            var coursePaginationVM = new CoursePaginationVM
+            {
+                Courses = courses,
+                Pages = totalPages,
                 PageNumber = pageNumber
             };
 
-            return View(model: coursePaginationVM);
+            return View(coursePaginationVM);
         }
 
         public IActionResult Details(int Id)
         {
-            var course = _unitOfWork.Courses.GetOne( filter:e  => e.Id == Id ,
-                includeProps:e=>e.Include(e=>e.Instructor).Include(e=>e.Sections).ThenInclude(e=>e.Lessons));
-            return View(model: course);
+            var course = _unitOfWork.Courses.GetOne(
+                filter: e => e.Id == Id,
+                includeProps: e => e.Include(e => e.Instructor)
+                                    .Include(e => e.Sections)
+                                    .ThenInclude(e => e.Lessons)
+            );
+
+            if (course == null)
+            {
+                return NotFound();
+            }
+
+            return View(course);
         }
     }
 }

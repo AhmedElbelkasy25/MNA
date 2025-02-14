@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models;
+using Models.ViewModels;
 
 namespace MNA.Areas.Admin.Controllers
 {
@@ -41,7 +42,7 @@ namespace MNA.Areas.Admin.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Instructor instructor , IFormFile? file)
+        public IActionResult Create(Models.Instructor instructor , IFormFile? file)
         {
             ModelState.Remove("PicUrl");
             ModelState.Remove("Rating");
@@ -92,7 +93,7 @@ namespace MNA.Areas.Admin.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Instructor instructor , IFormFile file)
+        public IActionResult Edit(int id, Models.Instructor instructor , IFormFile file)
         {
             if (id != instructor.Id)
             {

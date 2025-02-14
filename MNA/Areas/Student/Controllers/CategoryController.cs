@@ -22,11 +22,21 @@ namespace MNA.Areas.Student.Controllers
         {
             var applicationUserId = _userManager.GetUserId(User);
 
-            // Get all categories the student is interested in
+            if (applicationUserId == null)
+            {
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
+
+            // Fetch student categories with related category data
             var studentCategories = _unitOfWork.StudentCategories.Get(
                 sc => sc.ApplicationUserId == applicationUserId,
-                includeProps: q => q.Include(sc => sc.Category) // Include the Category navigation property
+                includeProps: q => q.Include(sc => sc.Category)
             ).ToList();
+
+            if (!studentCategories.Any())
+            {
+                ViewBag.Message = "You have not selected any categories yet.";
+            }
 
             return View(studentCategories);
         }
