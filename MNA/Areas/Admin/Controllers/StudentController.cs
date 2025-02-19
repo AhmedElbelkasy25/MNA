@@ -35,7 +35,9 @@ namespace MNA.Areas.Admin.Controllers
 
                 return View(model: students);
             }
-            return View();
+
+            var alStudent = _unitOfWork.ApplicationUsers.Get();
+            return View(alStudent.ToList());
         }
 
         [HttpPost]

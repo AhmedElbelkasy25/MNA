@@ -27,6 +27,13 @@
                     <span asp-validation-for="Title" class="text-danger"></span>
                 </div>
 
+                <!-- preview -->
+                <div class="mb-3">
+                    <label asp-for="preview" class="form-label fw-bold"><i class="bi bi-pencil"></i> Preview</label>
+                    <input name="file2" type="file" class="form-control rounded-pill" accept="video/*" placeholder="Enter course Preview" />
+                    <span asp-validation-for="preview" class="text-danger"></span>
+                </div>
+
                 <!-- Description -->
                 <div class="mb-3">
                     <label asp-for="Description" class="form-label fw-bold"><i class="bi bi-file-text"></i> Description</label>

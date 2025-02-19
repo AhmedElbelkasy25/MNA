@@ -6,6 +6,8 @@ using Models;
 using Models.ViewModels;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Stripe;
+using Azure;
 
 namespace MNA.Areas.Student.Controllers
 {
@@ -21,6 +23,10 @@ namespace MNA.Areas.Student.Controllers
             this._unitOfWork = unitOfWork;
             this._userManager = userManager;
         }
+
+
+
+
         public IActionResult Index(int pageNumber = 1, int numOfItems = 9)
         {
             
@@ -39,6 +45,10 @@ namespace MNA.Areas.Student.Controllers
 
             return View(model: coursePaginationVM);
         }
+
+
+
+
 
         public IActionResult Details(int Id)
         {
@@ -59,6 +69,86 @@ namespace MNA.Areas.Student.Controllers
 
             return View(model: course_ReviewsVM);
         }
+
+
+
+
+
+        [HttpPost]
+        public IActionResult GetCoupon(string serial, int courseId)
+        {
+            if (serial==null || courseId == null)
+            {
+                return Json(new { Success = false, Message = "Invalid input." });
+            }
+
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                //return Unauthorized();
+                return Challenge();
+            }
+
+
+            var course = _unitOfWork.Courses.GetOne(e => e.Id == courseId);
+            if (course == null)
+            {
+                return Json(new { Success = false, Message = "Course not found." });
+            }
+
+            var coupon = _unitOfWork.Coupons.GetOne(e => e.Serial == serial && e.CourseId == courseId);
+            if (coupon == null)
+            {
+                return Json(new { Success = false, Message = "Coupon not found or invalid for this course." });
+            }
+
+            if (DateOnly.FromDateTime(DateTime.Now) > coupon.ExpireDate)
+            {
+                _unitOfWork.Coupons.Delete(coupon);
+                _unitOfWork.Commit();
+                return Json(new { Success = false, Message = "Coupon has expired." });
+            }
+
+            if (coupon.NumOfUsing <= 0)
+            {
+                _unitOfWork.Coupons.Delete(coupon);
+                _unitOfWork.Commit();
+                return Json(new { Success = false, Message = "Coupon has expired " });
+            }
+
+            var studentCoupon = _unitOfWork.StudentCoupons.GetOne(
+                filter: e => e.ApplicationUserId == userId && e.CouponId == coupon.Id);
+
+            if (studentCoupon != null)
+            {
+                return Json(new { Success = false, Message = "You have already used this coupon." });
+            }
+
+            
+            double discountAmount = course.Price * (coupon.Discount);
+            double discountedPrice = course.Price - discountAmount;
+
+            _unitOfWork.StudentCoupons.Create(new StudentCouPons()
+            {
+                CouponId = coupon.Id,
+                AmountOfDiscount = discountAmount,
+                ApplicationUserId = userId,
+
+            });
+            _unitOfWork.Commit();
+            return Json(new
+            {
+                Success = true,
+                DiscountedPrice = discountedPrice,
+                OriginalPrice = course.Price,
+                Discount = Math.Round(discountAmount,1),
+                CouponSerial = coupon.Serial
+            });
+        }
+
+
+
+
         public IActionResult ShowCourse(int Id)
         {
             var course = _unitOfWork.Courses.GetOne(filter: e => e.Id == Id,
@@ -131,7 +221,7 @@ namespace MNA.Areas.Student.Controllers
             var degree = new Degree
             {
                 ApplicationUserId = userId,
-                CourseId = lesson.SectionId, // تأكد من أن الـ CourseId مرتبط بشكل صحيح
+                CourseId = lesson.SectionId, 
                 LessonId = lessonId,
                 Marks = marks,
                 FinalDegree = totalMarks ,
@@ -168,7 +258,7 @@ namespace MNA.Areas.Student.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public IActionResult CreateReview(Review review)
+        public IActionResult CreateReview(Models.Review review)
         {
             ModelState.Remove("Course");
             ModelState.Remove("Student");

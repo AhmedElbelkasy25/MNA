@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models;
+using Stripe;
+using static System.Collections.Specialized.BitVector32;
 
 namespace MNA.Areas.Admin.Controllers
 {
@@ -40,14 +42,36 @@ namespace MNA.Areas.Admin.Controllers
             return View();
         }
 
-        // POST: Lesson/Create
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Lesson lesson)
+        public IActionResult Create(Lesson lesson, IFormFile? file)
         {
             ModelState.Remove("Section");
+            ModelState.Remove("Content");
             if (ModelState.IsValid)
             {
+                if (file != null && file.Length > 0)
+                {
+                    // Genereate name
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+
+                    // Save in wwwroot
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Videos", fileName);
+
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        file.CopyTo(stream);
+                    }
+
+                    // Save in db
+                    lesson.Content = fileName;
+                }
+                else
+                {
+                    ViewBag.Sections = _unitOfWork.Sections.Get(filter: e => e.Id == lesson.SectionId).ToList();
+                    return View(lesson);
+                }
                 _unitOfWork.Lessons.Create(lesson);
                 _unitOfWork.Commit();
 
@@ -80,15 +104,44 @@ namespace MNA.Areas.Admin.Controllers
         // POST: Lesson/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Lesson lesson)
+        public IActionResult Edit(int id, Lesson lesson , IFormFile? file)
         {
             if (id != lesson.Id)
             {
                 return BadRequest();
             }
             ModelState.Remove("Section");
+            ModelState.Remove("Content");
+            var oldLesson = _unitOfWork.Lessons.GetOne(e => e.Id == lesson.Id, tracked: false);
             if (ModelState.IsValid)
             {
+                if (file != null && file.Length > 0)
+                {
+                    // Genereate name
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+
+                    // Save in wwwroot
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Videos", fileName);
+
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        file.CopyTo(stream);
+                    }
+                    //delete old img
+                    var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Videos", oldLesson.Content);
+                    if (System.IO.File.Exists(oldPath))
+                    {
+                        System.IO.File.Delete(oldPath);
+                    }
+
+                    // Save in db
+                    lesson.Content = fileName;
+                }
+                else
+                {
+                    lesson.Content = oldLesson.Content; 
+                }
+
                 _unitOfWork.Lessons.Alter(lesson);
                 _unitOfWork.Commit();
                 TempData["success"] = "Lesson has been Edited successfully";
@@ -99,7 +152,7 @@ namespace MNA.Areas.Admin.Controllers
             return View(lesson);
         }
 
-        // GET: Lesson/Delete/5
+       
         public IActionResult Delete(int id)
         {
             var lesson = _unitOfWork.Lessons.GetOne(

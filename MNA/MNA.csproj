@@ -60,5 +60,6 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Areas\Admin\Views\Shared\" />
+	  <Folder Include="wwwroot\Videos\Previews\" />
 	</ItemGroup>
 </Project>

@@ -253,6 +253,9 @@ namespace DataAccess.Migrations
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
+                    b.Property<double>("DiscountedPrice")
+                        .HasColumnType("float");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");
@@ -672,6 +675,9 @@ namespace DataAccess.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<double?>("AmountOfDiscount")
+                        .HasColumnType("float");
 
                     b.Property<string>("ApplicationUserId")
                         .IsRequired()

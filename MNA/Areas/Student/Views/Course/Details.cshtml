@@ -5,23 +5,31 @@
     ViewData["Title"] = Model.Course.Title;
 }
 
+<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
+<script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+
+
 <div class="course-header">
     <div class="container">
         <div class="row">
-            <div class="col-md-8 text-white">
+            <div class="col-md-6 text-white">
                 <h1>@Model.Course.Title</h1>
                 <p>@Model.Course.Description</p>
                 <p><strong>Instructor:</strong> @Model.Course.Instructor.Name</p>
                 <p><strong>Rating:</strong> ⭐@(Model.Course.Rating.HasValue ? Math.Round((double)Model.Course.Rating, 1) : " ") </p>
-                <p><strong>Price:</strong> £@Model.Course.Price</p>
+                <p><strong>Price:</strong> <p id="coursePrice"> £@Model.Course.Price  </p></p>
                 <a asp-area="Student" asp-controller="Cart" asp-action="AddToCart" asp-route-courseId="@Model.Course.Id" class="btn btn-primary">
                     Enroll Now
                 </a>
 
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="course-preview">
-                    <img src="/images/Course/@Model.Course.ImgUrl" class="img-fluid rounded" alt="Course Image">
+                    @* <img src="/images/Course/@Model.Course.ImgUrl" class="img-fluid rounded" alt="Course Image"> *@
+                    <video id="coursePreview" style="width:100%" rounded shadow plyr" controls controlsList="nodownload"
+                           poster="/images/Course/@Model.Course.ImgUrl " playsinline">
+                        <source src="/Videos/Previews/@Model.Course.preview">
+                    </video>
                     <p class="preview-text">Preview this course</p>
                 </div>
             </div>
@@ -76,35 +84,42 @@
                         </div>
                     </div>
                     <div class="mt-2">
-                        <span class="text-warning">'★', @review.rating</span>
+                        <h3 class="text-warning">★ @review.rating</h3>
                     </div>
                     <p class="mt-2">@review.Comment</p>
                     <div class="d-flex justify-content-between">
                         <p class="fw-bold">Course: <span class="text-primary">@review.Course.Title</span></p>
-                        <div>
-                            <button class="btn btn-outline-primary btn-sm">👍</button>
-                            <button class="btn btn-outline-secondary btn-sm">👎</button>
-                        </div>
+                        
                     </div>
                 </div>
             }
         </div>
 
-        <!-- the Coupon Section -->
+        <!-- The Coupon Section -->
         <div class="col-md-4">
             <div class="card p-3 shadow-lg">
                 <h4 class="fw-bold">Apply Coupon</h4>
                 <p>Use a coupon code to get a discount on this course.</p>
-                <input type="text" class="form-control mb-2" placeholder="Enter Coupon">
-                <button class="btn btn-primary w-100">Apply</button>
+
+                
+                <input type="text" id="couponSerial" class="form-control mb-2" placeholder="Enter Coupon">
+                <button id="applyCouponBtn" class="btn btn-primary w-100">Apply</button>
+
+
+
+                <div id="couponFeedback" class="mt-2"></div>
 
                 <hr>
+                <h5 class="fw-bold">Original Price:</h5>
+                <p id="originalPrice" class="fw-bold">£@Model.Course.Price</p>
 
+                <h5 class="fw-bold">Discounted Price:</h5>
+                <p id="discountedPrice" class="fw-bold text-success">@Model.Course.Price</p>
+
+                <hr>
                 <h5 class="fw-bold">30-Day Money-Back Guarantee</h5>
                 <p>Full lifetime access to this course.</p>
-
                 <hr>
-
                 <h5 class="fw-bold">Subscribe to Top Courses</h5>
                 <p>Get this course, plus 12,000+ top-rated courses with a Personal Plan.</p>
                 <a href="#" class="btn btn-outline-dark w-100">Learn More</a>
@@ -117,29 +132,18 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 <style>
 
 
 
     .course-header {
-        background: #121212; /* خلفية داكنة */
+        background: #121212; 
         padding: 40px 0;
         color: white;
     }
 
     .container {
-        background: none; /* إزالة الخلفية البيضاء */
+        background: none; 
     }
 
     .course-preview {
@@ -160,3 +164,60 @@
 
 
 </style>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        
+        $('#applyCouponBtn').on('click', function () {
+            
+            const couponSerial = $('#couponSerial').val();
+            const courseId = @Model.Course.Id;
+
+           
+            $('#couponFeedback').empty();
+
+          
+            if (!couponSerial || !courseId) {
+                $('#couponFeedback').append('<p class="text-danger">Please enter a valid coupon code.</p>');
+                return;
+            }
+
+           
+                $.ajax({
+                        url: '/student/course/GetCoupon',
+                        method: 'POST',        
+                        data: { serial: couponSerial, courseId: courseId }, 
+                        success: function (data) {
+                             console.log("Response from server:", data); 
+                            if (data.success) {
+                                $('#discountedPrice').text(`£${data.discountedPrice.toFixed(2)}`);
+                                $('#coursePrice').text(`£${data.discountedPrice.toFixed(2)}`);
+                                $('#couponFeedback').append(`<p class="text-success">Coupon applied successfully! You saved ${data.discount} EGP.</p>`);
+                            } else {
+                                console.log("Response from server:", data);
+                                $('#couponFeedback').append(`<p class="text-danger">${data.message}</p>`);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                                console.log("Response from server:", data);
+                                console.error('Error:', error);
+                                $('#couponFeedback').append('<p class="text-danger">An error occurred while applying the coupon. Please try again later.</p>');
+                        }
+                });
+
+        });
+    });
+
+
+    const player = new Plyr('#coursePreview', {
+        controls: ['play','play-large', 'rewind','fast-forward' , 'progress', 'current-time', 'mute', 'volume', 'fullscreen', 'settings'],
+        settings: ['speed'],
+        speed: { selected: 1.0, options: [0.5, 0.75 , 1 , 1.25 , 1.5, 2] }
+        ,disableContextMenu: true // to prevent the right click
+    });
+</script>
+
+

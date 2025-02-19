@@ -63,15 +63,12 @@ namespace MNA.Areas.Admin.Controllers
             {
                 if (crtCoupon.Discount > 1)
                     crtCoupon.Discount /= 100;
-                
 
-                if(crtCoupon.NumOfCoupon > 1)
+                if (crtCoupon.Serial == null)
                 {
-                    for(int i = 0; i < crtCoupon.NumOfCoupon; i++)
-                    {
-                        
-                        crtCoupon.Serial = Guid.NewGuid().ToString().Substring(0, 16);
-                        
+                    crtCoupon.Serial = Guid.NewGuid().ToString().Substring(0, 16);
+                }
+
                         _unitOfWork.Coupons.Create(new Coupon()
                         {
                             ExpireDate = crtCoupon.ExpireDate,
@@ -81,25 +78,8 @@ namespace MNA.Areas.Admin.Controllers
 
                         });
                         _unitOfWork.Commit();
-                    }
 
-                }
-                else
-                {
-                    if (crtCoupon.Serial == null)
-                    {
-                        crtCoupon.Serial = Guid.NewGuid().ToString().Substring(0, 16);
-                    }
-                    _unitOfWork.Coupons.Create(new Coupon()
-                    {
-                        ExpireDate = crtCoupon.ExpireDate,
-                        Discount = crtCoupon.Discount,
-                        Serial = crtCoupon.Serial,
-                        CourseId = crtCoupon.CourseId
-
-                    });
-                    _unitOfWork.Commit();
-                }
+                
                 TempData["success"] = "coupon Added successfuly";
                 return RedirectToAction("Index");
 
