@@ -1,0 +1,12 @@
+﻿@{
+    
+    if (User.IsInRole("Admin"))
+    {
+        Layout = "NewAdminDashboard";
+    }
+    else
+    {
+
+        Layout = "_Layout";
+    }
+}
