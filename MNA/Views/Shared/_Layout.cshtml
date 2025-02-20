@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity
+﻿﻿@using Microsoft.AspNetCore.Identity
 @inject UserManager<ApplicationUser> userManager;
 
 <!DOCTYPE html>
@@ -133,12 +133,12 @@
         }
 
         .nav-link i {
-            display: inline-block; /* Make sure the icon is inline */
+            display: inline-block; 
         }
 
         .cart-badge {
-            margin-left: 5px; /* Adjust this value to control the space */
-            display: inline-block; /* Make sure the badge is inline */
+            margin-left: 5px; 
+            display: inline-block; 
         }
 
     </style>
@@ -184,7 +184,7 @@
                                     .then(response => response.json())
                                     .then(categories => {
                                         let categoriesList = document.getElementById("categoriesList");
-                                        categoriesList.innerHTML = ""; // Clear placeholder
+                                        categoriesList.innerHTML = ""; 
 
                                         categories.forEach(category => {
                                             let listItem = document.createElement("li");
@@ -250,10 +250,10 @@
                                     let cartCountElement = document.getElementById("cartCount");
 
                                     if (cartCount > 0) {
-                                        cartCountElement.innerText = " " + cartCount; // Adds space before the number
-                                        cartCountElement.classList.remove("d-none"); // Show the count
+                                        cartCountElement.innerText = " " + cartCount; 
+                                        cartCountElement.classList.remove("d-none"); 
                                     } else {
-                                        cartCountElement.classList.add("d-none"); // Hide if cart is empty
+                                        cartCountElement.classList.add("d-none"); 
                                     }
                                 })
                                 .catch(error => console.error('Error fetching cart count:', error));

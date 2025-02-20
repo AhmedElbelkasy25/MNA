@@ -67,5 +67,12 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Areas\Admin\Views\Shared\" />
+	  <Folder Include="wwwroot\Videos\Previews\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Update="Areas\Instructor\Views\_ViewImports.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
 	</ItemGroup>
 </Project>

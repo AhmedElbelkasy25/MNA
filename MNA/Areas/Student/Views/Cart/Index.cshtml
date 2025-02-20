@@ -20,18 +20,39 @@
                         <div class="col-md-6">
                             <div class="card-body">
                                 <h5 class="card-title">@item.Course.Title</h5>
-                                <p class="card-text">
-                                    Price: <strong>@item.Course.Price.ToString("F2") EGP</strong><br>
+                                @if(item.DiscountedPrice !=0)
+                                {
+                                    <p class="card-text">
 
-                                </p>
-                             
+                                        Price: <strong>@((Math.Round(item.DiscountedPrice,2)).ToString("F2")) EGP</strong><br>
+
+                                    </p>
+                                }
+                                else{
+                                    <p class="card-text">
+
+                                        Price: <strong>@item.Course.Price.ToString("F2") EGP</strong><br>
+
+                                    </p>
+                                }
+
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="card-body">
-                                <p class="text-center">
-                                    <strong style="color: #ff5722;">@(item.Course.Price * item.Count) EGP</strong>
-                                </p>
+                                @if (item.DiscountedPrice != 0){
+                                    <p class="text-center">
+                                        <strong style="color: #ff5722;">@Math.Round((item.DiscountedPrice * item.Count),2) EGP</strong>
+                                    </p>
+                                    <hidden>  @(ViewBag.TotalPrice += (item.DiscountedPrice * item.Count))  </hidden>
+                                }
+                                else
+                                {
+                                    <p class="text-center">
+                                        <strong style="color: #ff5722;">@(item.Course.Price * item.Count) EGP</strong>
+                                    </p>
+                                    <hidden> @(ViewBag.TotalPrice += item.Course.Price * item.Count) </hidden>
+                                }
                                 <div class="text-center">
                                     <a asp-action="Remove" asp-route-courseId="@item.Course.Id" class="btn btn-primary btn-sm">🗑 Remove</a>
                                 </div>
@@ -43,7 +64,7 @@
         </div>
 
         <div class="cart-summary sticky-footer">
-            <h4>Total: <strong style="color: #4caf50;">@ViewBag.TotalPrice EGP</strong></h4>
+            <h4>Total: <strong style="color: #4caf50;">@(Math.Round(ViewBag.TotalPrice,2)) EGP</strong></h4>
             <a asp-action="Pay" class="btn btn-warning btn-lg">Proceed to Checkout 💳</a>
         </div>
     </div>

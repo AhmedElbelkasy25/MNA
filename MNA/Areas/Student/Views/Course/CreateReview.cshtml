@@ -1,0 +1,35 @@
+﻿@using Models
+@using System.Security.Claims
+@model Review
+
+
+
+<div class="container-fluid bg-light p-5 mt-5">
+    <h3 class="fw-bold">📝 Add a Review</h3>
+
+    <form asp-action="CreateReview" method="post">
+        <!--  Rating Field  -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">⭐ Rating</label>
+            <select asp-for="rating" class="form-select">
+                <option value="5">★★★★★ (5 Stars)</option>
+                <option value="4">★★★★☆ (4 Stars)</option>
+                <option value="3">★★★☆☆ (3 Stars)</option>
+                <option value="2">★★☆☆☆ (2 Stars)</option>
+                <option value="1">★☆☆☆☆ (1 Star)</option>
+            </select>
+        </div>
+
+        <!--  Comment Field -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">💬 Comment</label>
+            <textarea asp-for="Comment" class="form-control" rows="4" placeholder="Write your review here..."></textarea>
+        </div>
+        <!--  the hidden field  ( course id , student id)  -->
+        <input type="hidden" readonly asp-for="CourseId" value="@ViewBag.Course.Id">
+        <input type="hidden" readonly asp-for="ApplicationUserId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)" />
+
+        <!--  Submit Button -->
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+    </form>
+</div>

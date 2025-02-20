@@ -15,7 +15,7 @@ namespace Models
         public string? PicUrl { get; set; }
         public Double? Rating { get; set; }
         public ICollection<Course> Courses { get; set; } = new List<Course>();
-        public string? UserId { get; set; } // This links Instructor to ApplicationUser
-        public ApplicationUser User { get; set; } // Navigation property
+        public string? UserId { get; set; } 
+        public ApplicationUser User { get; set; } 
     }
 }

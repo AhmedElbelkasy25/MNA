@@ -1,4 +1,5 @@
 ﻿using DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models;
@@ -8,6 +9,7 @@ namespace MNA.Areas.Admin.Controllers
 
 
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
 
     public class QuizController : Controller
     {
@@ -177,7 +179,7 @@ namespace MNA.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            return View(quiz);
+            return View(model:quiz);
         }
 
         [HttpPost, ActionName("Delete")]
@@ -193,7 +195,7 @@ namespace MNA.Areas.Admin.Controllers
             _unitOfWork.Quizs.Delete(quiz);
             _unitOfWork.Commit();
             TempData["success"] = "Quiz has been Deleted successfully";
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Course");
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Models
         public string Description { get; set; }
         public double Price { get; set; }
         public string ImgUrl { get; set; }
+        public string? preview { get; set; }
         public DateOnly Date { get; set; }    
         public double? Rating { get; set; }
         public int InstructorId { get; set; }
@@ -26,7 +27,7 @@ namespace Models
         public ICollection<Payment> Payments { get; set; } = new List<Payment>();
         public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
         public ICollection<Favourite> Favourites { get; set; } = new List<Favourite>();
-        public ICollection<Review> REviews { get; set; } = new List<Review>();
+        public ICollection<Review> Reviews { get; set; } = new List<Review>();
         public ICollection<Degree> Degrees { get; set; } = new List<Degree>();
 
     }

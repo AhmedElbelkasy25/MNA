@@ -253,6 +253,9 @@ namespace DataAccess.Migrations
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
+                    b.Property<double>("DiscountedPrice")
+                        .HasColumnType("float");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");
@@ -345,6 +348,9 @@ namespace DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("preview")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
@@ -371,6 +377,9 @@ namespace DataAccess.Migrations
 
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date");
+
+                    b.Property<int>("FinalDegree")
+                        .HasColumnType("int");
 
                     b.Property<int>("LessonId")
                         .HasColumnType("int");
@@ -669,6 +678,9 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<double?>("AmountOfDiscount")
+                        .HasColumnType("float");
+
                     b.Property<string>("ApplicationUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -920,7 +932,7 @@ namespace DataAccess.Migrations
                         .IsRequired();
 
                     b.HasOne("Models.Course", "Course")
-                        .WithMany("REviews")
+                        .WithMany("Reviews")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1024,7 +1036,7 @@ namespace DataAccess.Migrations
 
                     b.Navigation("Payments");
 
-                    b.Navigation("REviews");
+                    b.Navigation("Reviews");
 
                     b.Navigation("Sections");
                 });

@@ -4,10 +4,12 @@ using DataAccess.Repository.IRepository;
 using Models;
 using Stripe;
 using Stripe.Checkout;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MNA.Areas.Student.Controllers
 {
     [Area("student")]
+    [Authorize]
     public class CheckoutController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

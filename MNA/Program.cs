@@ -31,7 +31,7 @@ builder.Services.AddAuthentication().AddGoogle(googleOptions =>
     googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
     googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
 });
- builder.Services.AddAuthorization(options =>
+builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("InstructorOnly", policy => policy.RequireRole("Instructor"));
 });

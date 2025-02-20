@@ -1,4 +1,5 @@
 ﻿using DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ namespace MNA.Areas.Admin.Controllers
 {
 
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
 
     public class InstructorController : Controller
     {
@@ -22,10 +24,10 @@ namespace MNA.Areas.Admin.Controllers
             this._userManager = userManager;
         }
 
-        
+
         public IActionResult Index()
         {
-            
+
             var instructors = _unitOfWork.Instructors.Get(
                 includeProps: query => query.Include(i => i.Courses)
             ).ToList();
@@ -33,16 +35,16 @@ namespace MNA.Areas.Admin.Controllers
             return View(instructors);
         }
 
-        
+
         public IActionResult Create()
         {
             return View();
         }
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Models.Instructor instructor , IFormFile? file)
+        public IActionResult Create(Models.Instructor instructor, IFormFile? file)
         {
             ModelState.Remove("PicUrl");
             ModelState.Remove("Rating");
@@ -74,7 +76,7 @@ namespace MNA.Areas.Admin.Controllers
             return View(instructor);
         }
 
-        
+
         public IActionResult Edit(int id)
         {
             var instructor = _unitOfWork.Instructors.GetOne(
@@ -90,10 +92,10 @@ namespace MNA.Areas.Admin.Controllers
             return View(instructor);
         }
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Models.Instructor instructor , IFormFile file)
+        public IActionResult Edit(int id, Models.Instructor instructor, IFormFile file)
         {
             if (id != instructor.Id)
             {
@@ -122,7 +124,7 @@ namespace MNA.Areas.Admin.Controllers
                     {
                         System.IO.File.Delete(oldPath);
                     }
-                    
+
                     // Save in db
                     instructor.PicUrl = fileName;
                 }
@@ -141,10 +143,10 @@ namespace MNA.Areas.Admin.Controllers
             return View(instructor);
         }
 
-        
+
         public IActionResult GetProfile(int Id)
         {
-            if(Id== null)
+            if (Id == null)
             {
                 RedirectToAction("NotFoundPage", "Home");
             }
@@ -168,7 +170,7 @@ namespace MNA.Areas.Admin.Controllers
             return View(instructor);
         }
 
-        
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)

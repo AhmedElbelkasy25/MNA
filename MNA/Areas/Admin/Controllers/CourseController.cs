@@ -1,4 +1,5 @@
 ﻿using DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,7 @@ namespace MNA.Areas.Admin.Controllers
 {
 
     [Area("Admin")]
-
+    [Authorize(Roles = "Admin")]
     public class CourseController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -22,7 +23,7 @@ namespace MNA.Areas.Admin.Controllers
             this._userManager = userManager;
         }
 
-        // GET: Course
+        
         public IActionResult Index(int pageNumber = 1, int numOfItems = 9)
         {
 
@@ -44,40 +45,48 @@ namespace MNA.Areas.Admin.Controllers
             return View(model: coursePaginationVM);
         }
 
-        // GET: Course/Create
+        
         public IActionResult Create()
         {
-            // Pass related Category and Instructor data for dropdowns
+            
             ViewBag.Categories = _unitOfWork.Categories.Get().ToList();
             ViewBag.Instructors = _unitOfWork.Instructors.Get().ToList();
             return View();
         }
 
-        // POST: Course/Create
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Course course, IFormFile? file)
+        public IActionResult Create(Course course, IFormFile? file , IFormFile? file2)
         {
             ModelState.Remove("ImgUrl");
             ModelState.Remove("Category");
             ModelState.Remove("Instructor");
+            ModelState.Remove("Preview");
             if (ModelState.IsValid)
             {
-                if (file != null && file.Length > 0)
+                if (file != null && file.Length > 0 && file2 != null && file2.Length > 0)
                 {
                     // Genereate name
                     var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    var file2Name = Guid.NewGuid().ToString() + Path.GetExtension(file2.FileName);
 
                     // Save in wwwroot
                     var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\Course", fileName);
+                    var file2Path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Videos\\Previews", file2Name);
 
                     using (var stream = System.IO.File.Create(filePath))
                     {
                         file.CopyTo(stream);
                     }
+                    using (var stream = System.IO.File.Create(file2Path))
+                    {
+                        file2.CopyTo(stream);
+                    }
 
                     // Save in db
                     course.ImgUrl = fileName;
+                    course.preview = file2Name;
                 }
                 else
                 {
@@ -86,8 +95,15 @@ namespace MNA.Areas.Admin.Controllers
                     return View(course);
 
                 }
+                // disable the trigger of courses table
+                _unitOfWork.ExecuteRawSql("DISABLE TRIGGER triggerUpdateInstructorRating ON Courses");
+
                 _unitOfWork.Courses.Create(course);
                 _unitOfWork.Commit();
+
+                // enable the trigger of courses table
+                _unitOfWork.ExecuteRawSql("ENABLE TRIGGER triggerUpdateInstructorRating ON Courses");
+
                 TempData["success"] = "Course has been Added Successfully";
                 return RedirectToAction(nameof(Index));
             }
@@ -120,7 +136,7 @@ namespace MNA.Areas.Admin.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Course course , IFormFile? file)
+        public IActionResult Edit(int id, Course course , IFormFile? file , IFormFile? file2)
         {
             if (id != course.Id)
             {
@@ -129,6 +145,7 @@ namespace MNA.Areas.Admin.Controllers
             ModelState.Remove("ImgUrl");
             ModelState.Remove("Category");
             ModelState.Remove("Instructor");
+            ModelState.Remove("Preview");
 
             var oldCourse = _unitOfWork.Courses.GetOne(e => e.Id == course.Id, tracked: false);
             if (ModelState.IsValid)
@@ -160,9 +177,44 @@ namespace MNA.Areas.Admin.Controllers
                     course.ImgUrl = oldCourse.ImgUrl;
                 }
 
+                // preview
+
+                if (file2 != null && file2.Length > 0)
+                {
+                    // Genereate name
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file2.FileName);
+
+                    // Save in wwwroot
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Videos\\Previews", fileName);
+
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        file2.CopyTo(stream);
+                    }
+                    //delete old img
+                    var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Videos\\Previews", oldCourse.preview);
+                    if (System.IO.File.Exists(oldPath))
+                    {
+                        System.IO.File.Delete(oldPath);
+                    }
+
+                    // Save in db
+                    course.preview = fileName;
+                }
+                else
+                {
+                    course.preview = oldCourse.preview;
+                }
+
+
+                // disable the trigger of courses table
+                _unitOfWork.ExecuteRawSql("DISABLE TRIGGER triggerUpdateInstructorRating ON Courses");
+
 
                 _unitOfWork.Courses.Alter(course);
                 _unitOfWork.Commit();
+                // enable the trigger of courses table
+                _unitOfWork.ExecuteRawSql("ENABLE TRIGGER triggerUpdateInstructorRating ON Courses");
                 TempData["success"] = "Course has been Edited Successfully";
                 return RedirectToAction(nameof(Index));
             }
@@ -199,9 +251,14 @@ namespace MNA.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+            // disable the trigger of courses table
+            _unitOfWork.ExecuteRawSql("DISABLE TRIGGER triggerUpdateInstructorRating ON Courses");
 
             _unitOfWork.Courses.Delete(course);
             _unitOfWork.Commit();
+
+            // enable the trigger of courses table
+            _unitOfWork.ExecuteRawSql("ENABLE TRIGGER triggerUpdateInstructorRating ON Courses");
 
             TempData["success"] = "the Course has been Deleted Successfully";
             return RedirectToAction(nameof(Index));

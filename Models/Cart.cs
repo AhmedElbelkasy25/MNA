@@ -14,6 +14,7 @@ namespace Models
         public ApplicationUser Student { get; set; }
         public Course Course { get; set; }
         public int Count { get; set; }
+        public double DiscountedPrice { get; set; }
 
     }
 }

@@ -1,4 +1,5 @@
 ﻿using DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -7,6 +8,7 @@ using Models.ViewModels;
 namespace MNA.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class StudentController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -35,7 +37,9 @@ namespace MNA.Areas.Admin.Controllers
 
                 return View(model: students);
             }
-            return View();
+
+            var alStudent = _unitOfWork.ApplicationUsers.Get();
+            return View(alStudent.ToList());
         }
 
         [HttpPost]
@@ -56,7 +60,7 @@ namespace MNA.Areas.Admin.Controllers
             {
                 await _userManager.SetLockoutEnabledAsync(user, true);
                 var result = await _userManager.SetLockoutEndDateAsync(user, DateTime.Now.AddYears(100));
-                
+
                 if (result.Succeeded)
                 {
                     user.IsLocked = true;
@@ -69,7 +73,7 @@ namespace MNA.Areas.Admin.Controllers
                 var allUser2 = _userManager.Users.ToList();
                 return View("Index", allUser2);
             }
-            return RedirectToAction("NotFoundPage","Home" , new {Area = "Student"});
+            return RedirectToAction("NotFoundPage", "Home", new { Area = "Student" });
         }
 
         public async Task<IActionResult> unBlockUser(string userId)
@@ -77,7 +81,7 @@ namespace MNA.Areas.Admin.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
-                
+
                 var result = await _userManager.SetLockoutEndDateAsync(user, null);
                 await _userManager.SetLockoutEnabledAsync(user, false);
 
@@ -94,7 +98,7 @@ namespace MNA.Areas.Admin.Controllers
                 var allUser2 = _userManager.Users.ToList();
                 return View("Index", allUser2);
             }
-            return RedirectToAction("NotFoundPage","Home" , new {Area = "Student"});
+            return RedirectToAction("NotFoundPage", "Home", new { Area = "Student" });
         }
 
         [HttpGet]
@@ -110,7 +114,7 @@ namespace MNA.Areas.Admin.Controllers
                 Role = string.Join("", role),
                 Roles = roles
             };
-            
+
 
             return View(model: userToFrm);
         }

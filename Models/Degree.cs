@@ -13,6 +13,7 @@ namespace Models
         public int CourseId { get; set; }
         public int LessonId { get; set; }
         public int Marks { get; set; }
+        public int FinalDegree { get; set; }
         public DateOnly Date { get; set; }
         public Course Course { get; set; }
         public Lesson Lesson { get; set; }
