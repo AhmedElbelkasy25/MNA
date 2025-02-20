@@ -190,11 +190,12 @@ namespace MNA.Areas.Identity.Controllers
             }
             return View(newpass);
         }
-
+        [Authorize]
         public async Task<IActionResult> ChangePassword()
         {
             return View();
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordVM newpass)
         {
@@ -213,13 +214,13 @@ namespace MNA.Areas.Identity.Controllers
             }
             return View(newpass);
         }
-
+        [Authorize]
         public async Task<IActionResult> GetProfile(string name)
         {
             var user = await _userManager.FindByNameAsync(name);
             return View(model: user);
         }
-
+        [Authorize]
         public async Task<IActionResult> Edit(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -229,6 +230,7 @@ namespace MNA.Areas.Identity.Controllers
             }
             return RedirectToAction("NotFoundPage", "Home");
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Edit(ApplicationUser user)
         {
@@ -250,11 +252,13 @@ namespace MNA.Areas.Identity.Controllers
             }
             return View(user);
         }
+        [Authorize]
         public IActionResult ChangePhoto()
         {
             return View();
         }
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> ChangePhoto(IFormFile? file)
         {
             var userId = _userManager.GetUserId(User);

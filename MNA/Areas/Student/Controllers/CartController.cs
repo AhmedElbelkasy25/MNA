@@ -10,6 +10,7 @@ using Stripe.Checkout;
 namespace MNA.Areas.Student.Controllers
 {
     [Area("student")]
+    [Authorize]
     public class CartController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity
+﻿﻿@using Microsoft.AspNetCore.Identity
 @inject UserManager<ApplicationUser> userManager;
 
 <!DOCTYPE html>
@@ -133,14 +133,13 @@
         }
 
         .nav-link i {
-            display: inline-block; /* Make sure the icon is inline */
+            display: inline-block; 
         }
 
         .cart-badge {
-            margin-left: 5px; /* Adjust this value to control the space */
-            display: inline-block; /* Make sure the badge is inline */
+            margin-left: 5px; 
+            display: inline-block; 
         }
-
 
     </style>
 </head>
@@ -160,11 +159,66 @@
                                 <i class="fas fa-home"></i> Home
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="Student" asp-controller="Course" asp-action="Index">
-                                <i class="fas fa-book"></i> Courses
+                        @inject DataAccess.Repository.IRepository.IUnitOfWork _unitOfWork
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-list"></i> Categories
                             </a>
+                            <ul class="dropdown-menu" id="categoriesList">
+                                @foreach (var category in _unitOfWork.Categories.Get())
+                                {
+                                    <li>
+                                        <a class="dropdown-item" href="/Student/Course/Index?categoryId=@category.Id">
+                                            @category.Name
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
                         </li>
+
+
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                fetch('/Student/StudentCategories/GetCategories')
+                                    .then(response => response.json())
+                                    .then(categories => {
+                                        let categoriesList = document.getElementById("categoriesList");
+                                        categoriesList.innerHTML = ""; 
+
+                                        categories.forEach(category => {
+                                            let listItem = document.createElement("li");
+                                            let link = document.createElement("a");
+                                            link.classList.add("dropdown-item");
+                                            link.href = `/Student/Course/Index?categoryId=${category.id}`;
+                                            link.textContent = category.name;
+                                            listItem.appendChild(link);
+                                            categoriesList.appendChild(listItem);
+                                        });
+                                    })
+                                    .catch(error => console.error('Error fetching categories:', error));
+                            });
+
+                            document.getElementById("categoriesDropdown").addEventListener("mouseover", function () {
+                                let dropdownMenu = document.getElementById("categoriesList");
+                                dropdownMenu.classList.add("show");
+                            });
+
+                            document.getElementById("categoriesDropdown").addEventListener("mouseleave", function () {
+                                let dropdownMenu = document.getElementById("categoriesList");
+                                setTimeout(() => {
+                                    dropdownMenu.classList.remove("show");
+                                }, 300);
+                            });
+                        </script>
+
+                        <style>
+                            .dropdown:hover .dropdown-menu {
+                                display: block;
+                            }
+                        </style>
+
+
                     </ul>
 
                     <ul class="navbar-nav">
@@ -196,10 +250,10 @@
                                     let cartCountElement = document.getElementById("cartCount");
 
                                     if (cartCount > 0) {
-                                        cartCountElement.innerText = " " + cartCount; // Adds space before the number
-                                        cartCountElement.classList.remove("d-none"); // Show the count
+                                        cartCountElement.innerText = " " + cartCount; 
+                                        cartCountElement.classList.remove("d-none"); 
                                     } else {
-                                        cartCountElement.classList.add("d-none"); // Hide if cart is empty
+                                        cartCountElement.classList.add("d-none"); 
                                     }
                                 })
                                 .catch(error => console.error('Error fetching cart count:', error));
@@ -207,39 +261,53 @@
 
                         document.addEventListener("DOMContentLoaded", updateCartCount);
                     </script>
+                    @{
+                        var user1 = await userManager.GetUserAsync(User);
+                        var isInstructor = user1 != null && await userManager.IsInRoleAsync(user1, "Instructor");
+                    }
+
+                    @if (isInstructor)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-warning text-dark" asp-area="Instructor" asp-controller="InstructorCourse" asp-action="Index">
+                                <i class="fas fa-chalkboard-teacher"></i> My Courses
+                            </a>
+                        </li>
+                    }
 
 
 
 
 
-                        @if (User.Identity.IsAuthenticated)
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        var user = await userManager.GetUserAsync(User);
+                        if (user != null)
                         {
-                            var user = await userManager.GetUserAsync(User);
-                            if (user != null)
-                            {
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle user-profile" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                        <img src="@(string.IsNullOrEmpty(user.ImgUrl) ? "/images/AdminImg/Basic_Ui__28186_29.jpg" : $"/images/AdminImg/{user.ImgUrl}")" alt="User">
-                                    </a>
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        <li><a class="dropdown-item" href="/Identity/account/GetProfile?name=@User.Identity.Name"><i class="fas fa-user-circle"></i> Profile</a></li>
-                                        <li><hr class="dropdown-divider"></li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle user-profile" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                    <img src="@(string.IsNullOrEmpty(user.ImgUrl) ? "/images/AdminImg/Basic_Ui__28186_29.jpg" : $"/images/AdminImg/{user.ImgUrl}")" alt="User">
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="/Identity/account/GetProfile?name=@User.Identity.Name"><i class="fas fa-user-circle"></i> Profile</a></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <a class="dropdown-item" asp-area="Student" asp-controller="Enrollment" asp-action="MyCourses">
                                             <i class="fas fa-graduation-cap"></i> My Courses
                                         </a>
                                     </li>
 
-                                        <li><a class="dropdown-item text-danger" href="/Identity/Account/Logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                                    </ul>
-                                </li>
-                            }
+                                    <li><a class="dropdown-item text-danger" href="/Identity/Account/Logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                                </ul>
+                            </li>
                         }
-                        else
-                        {
-                            <li class="nav-item"><a class="btn btn-outline-light me-2" href="/Identity/Account/Login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-                            <li class="nav-item"><a class="btn btn-warning" href="/Identity/Account/Register"><i class="fas fa-user-plus"></i> Register</a></li>
-                        }
+                    }
+                    else
+                    {
+                        <li class="nav-item"><a class="btn btn-outline-light me-2" href="/Identity/Account/Login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                        <li class="nav-item"><a class="btn btn-warning" href="/Identity/Account/Register"><i class="fas fa-user-plus"></i> Register</a></li>
+                    }
                     </ul>
                 </div>
             </div>
@@ -274,4 +342,4 @@
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
-</html>
+</html> it is my layout add in the nav bar if the user is instructor to add button to see the courses

@@ -1,4 +1,5 @@
 ﻿using DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -7,6 +8,7 @@ using Models.ViewModels;
 namespace MNA.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class StudentController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -58,7 +60,7 @@ namespace MNA.Areas.Admin.Controllers
             {
                 await _userManager.SetLockoutEnabledAsync(user, true);
                 var result = await _userManager.SetLockoutEndDateAsync(user, DateTime.Now.AddYears(100));
-                
+
                 if (result.Succeeded)
                 {
                     user.IsLocked = true;
@@ -71,7 +73,7 @@ namespace MNA.Areas.Admin.Controllers
                 var allUser2 = _userManager.Users.ToList();
                 return View("Index", allUser2);
             }
-            return RedirectToAction("NotFoundPage","Home" , new {Area = "Student"});
+            return RedirectToAction("NotFoundPage", "Home", new { Area = "Student" });
         }
 
         public async Task<IActionResult> unBlockUser(string userId)
@@ -79,7 +81,7 @@ namespace MNA.Areas.Admin.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
-                
+
                 var result = await _userManager.SetLockoutEndDateAsync(user, null);
                 await _userManager.SetLockoutEnabledAsync(user, false);
 
@@ -96,7 +98,7 @@ namespace MNA.Areas.Admin.Controllers
                 var allUser2 = _userManager.Users.ToList();
                 return View("Index", allUser2);
             }
-            return RedirectToAction("NotFoundPage","Home" , new {Area = "Student"});
+            return RedirectToAction("NotFoundPage", "Home", new { Area = "Student" });
         }
 
         [HttpGet]
@@ -112,28 +114,41 @@ namespace MNA.Areas.Admin.Controllers
                 Role = string.Join("", role),
                 Roles = roles
             };
-            
+
 
             return View(model: userToFrm);
         }
         [HttpPost]
         public async Task<IActionResult> AddToRole(AddToRoleVM userfrmVM)
         {
-
             var user = await _userManager.FindByIdAsync(userfrmVM.Id);
             if (user != null)
             {
                 var oldRoles = await _userManager.GetRolesAsync(user);
                 await _userManager.RemoveFromRolesAsync(user, oldRoles);
+
                 var result = await _userManager.AddToRoleAsync(user, userfrmVM.Role);
                 if (result.Succeeded)
                 {
+                    if (userfrmVM.Role == "Instructor")
+                    {
+                        // Ensure the user is linked to an Instructor
+                        var instructor = _unitOfWork.Instructors.GetOne(i => i.UserId == user.Id);
+                        if (instructor == null)
+                        {
+                            instructor = new Models.Instructor { UserId = user.Id };
+                            _unitOfWork.Instructors.Create(instructor);
+                            _unitOfWork.Commit();
+                        }
+                    }
+
                     TempData["success"] = "The User Role Has Been Changed";
                 }
-                return View("index", _userManager.Users.ToList());
+                return View("Index", _userManager.Users.ToList());
             }
-            return RedirectToAction("NotFoundPage","Home" , new {Area = "Student"});
+            return RedirectToAction("NotFoundPage", "Home", new { Area = "Student" });
         }
+
 
 
 

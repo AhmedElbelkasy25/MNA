@@ -14,6 +14,6 @@ namespace Models
         public DateOnly ExpireDate { get; set; }
         public ApplicationUser Student { get; set; }
         public Course Course { get; set; }
-        public string PaymentIntentId { get; set; }
+        public string? PaymentIntentId { get; set; }
     }
 }

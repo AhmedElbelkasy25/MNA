@@ -8,6 +8,8 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using Stripe;
 using Azure;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MNA.Areas.Student.Controllers
 {
@@ -26,13 +28,23 @@ namespace MNA.Areas.Student.Controllers
 
 
 
-
-        public IActionResult Index(int pageNumber = 1, int numOfItems = 9)
+        [AllowAnonymous]
+        public IActionResult Index(int? categoryId, int pageNumber = 1, int numOfItems = 9)
         {
             
             var courses = _unitOfWork.Courses.Get(
                 includeProps: query => query.Include(c => c.Category).Include(c => c.Instructor)
             );
+
+            if (categoryId.HasValue)
+            {
+                courses = courses.Where(c => c.CategoryId == categoryId);
+                ViewBag.CategoryName = _unitOfWork.Categories.GetOne(c => c.Id == categoryId).Name;
+            }
+            else
+            {
+                ViewBag.CategoryName = "All Courses";
+            }
 
             int pages = (int)Math.Ceiling((double)courses.Count() / numOfItems);
             courses = courses.Skip((pageNumber - 1) * numOfItems).Take(numOfItems);
@@ -46,10 +58,7 @@ namespace MNA.Areas.Student.Controllers
             return View(model: coursePaginationVM);
         }
 
-
-
-
-
+        [AllowAnonymous]
         public IActionResult Details(int Id)
         {
             var course = _unitOfWork.Courses.GetOne( filter:e  => e.Id == Id ,
@@ -73,7 +82,7 @@ namespace MNA.Areas.Student.Controllers
 
 
 
-
+        [Authorize]
         [HttpPost]
         public IActionResult GetCoupon(string serial, int courseId)
         {
@@ -148,13 +157,13 @@ namespace MNA.Areas.Student.Controllers
 
 
 
-
+        [Authorize]
         public IActionResult ShowCourse(int Id)
         {
-            var course = _unitOfWork.Courses.GetOne(filter: e => e.Id == Id,
-                includeProps: e => e.Include(e => e.Instructor).Include(e => e.Reviews).Include(e => e.Sections).ThenInclude(e => e.Lessons)
+            var enroll = _unitOfWork.Enrollments.GetOne(filter: e => e.CourseId == Id,
+                includeProps: e => e.Include(e => e.Course).ThenInclude(e => e.Reviews).Include(e => e.Course.Sections).ThenInclude(e => e.Lessons)
                 .ThenInclude(e => e.Quizs).ThenInclude(e=>e.Questions));
-            var reviews = _unitOfWork.Reviews.Get(filter: e => e.CourseId == course.Id,
+            var reviews = _unitOfWork.Reviews.Get(filter: e => e.CourseId == enroll.Course.Id,
                 includeProps: e => e.Include(e => e.Student).Include(e => e.Course));
             var stdNum = _unitOfWork.Enrollments.Get(filter: e => e.CourseId == Id).Count();
             var lsnNum = _unitOfWork.Lessons.Get(filter:e=>e.Section.CourseId == Id ,
@@ -162,7 +171,7 @@ namespace MNA.Areas.Student.Controllers
 
             Course_ReviewsVM course_ReviewsVM = new Course_ReviewsVM()
             {
-                Course = course,
+                Course = enroll.Course,
                 Reviews = reviews.ToList(),
                 StdNums = stdNum,
                 LsnNums = lsnNum
@@ -179,7 +188,7 @@ namespace MNA.Areas.Student.Controllers
                 return Unauthorized();
             }
 
-            var degrees = _unitOfWork.Degrees.Get(filter: e=>e.ApplicationUserId == userId);
+            var degrees = _unitOfWork.Degrees.Get(filter: e=>e.ApplicationUserId == userId && e.LessonId == lessonId);
 
             if (degrees.Any())
             {
