@@ -1,0 +1,54 @@
+﻿@using Models;
+@model Instructor;
+
+
+
+<div class="container">
+    <div class="card shadow-sm">
+        <img src="/images/instructors/@Model.PicUrl" class="card-img-top" alt="Profile Picture"
+             style="width:200px; height:auto;">
+        <div class="card-body">
+            <h3 class="card-title">@Model.Name</h3>
+            <h3 class="card-title"> ⭐ (@Model.Rating)</h3>
+            <p class="card-text"><strong>Email:</strong> @Model.Email</p>
+            <p class="card-text">@Model.Bio</p>
+        </div>
+    </div>
+</div>
+
+
+<div class="container mt-4">
+    <div class="row">
+        @foreach (var course in Model.Courses)
+        {
+            <div class="col-md-4 mt-4 d-flex">
+                <div class="card flex-fill course-card"
+                     data-title="@course.Title"
+                     data-instructor="@course.Instructor.Name"
+                     data-rating="@course.Rating"
+                     data-reviews="@(course.Rating)"
+                     data-price="£@course.Price"
+                     data-description="@course.Description"
+                     data-img="/images/Course/@course.ImgUrl">
+                    <img src="/images/Course/@course.ImgUrl" class="card-img-top fixed-image" alt="@course.Title">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@course.Title</h5>
+                        <p class="card-text">By @course.Instructor.Name</p>
+                        <p class="card-text">
+                            <span class="text-warning"><h5> ⭐ ( @course.Rating ) </h5></span>
+                        </p>
+                        <p class="card-text">
+                            <strong>£@course.Price</strong>
+                        </p>
+                        <a href="/student/Course/Details/@course.Id" class="btn btn-primary mt-auto w-100">View Course</a>
+                        <form method="post" asp-area="Student" asp-controller="Favorite" asp-action="AddToFavorites" class="w-100 mt-2">
+                            <input type="hidden" name="courseId" value="@course.Id" />
+                            <button type="submit" class="btn btn-outline-danger w-100">❤️ Add to Favorites</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
