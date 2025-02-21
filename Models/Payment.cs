@@ -12,7 +12,6 @@ namespace Models
         public string ApplicationUserId { get; set; }
         public int CourseId { get; set; }
         public double Amount { get; set; }
-        public string TransactionId { get; set; }
         public DateOnly Date { get; set; }
         public ApplicationUser Student { get; set; }
         public Course Course { get; set; }

@@ -5,7 +5,7 @@ using Models;
 using Stripe;
 using Stripe.Checkout;
 using Microsoft.AspNetCore.Authorization;
-using Stripe.V2;
+using Microsoft.EntityFrameworkCore;
 
 namespace MNA.Areas.Student.Controllers
 {
@@ -43,7 +43,8 @@ namespace MNA.Areas.Student.Controllers
                     return RedirectToAction("Index", "Course");
                 }
 
-                var shoppingCarts = _unitOfWork.Carts.Get(e => e.ApplicationUserId == applicationUserId).ToList();
+                var shoppingCarts = _unitOfWork.Carts.Get(e => e.ApplicationUserId == applicationUserId,
+                    includeProps: e => e.Include(e => e.Course)).ToList();
 
                 foreach (var item in shoppingCarts)
                 {
@@ -55,15 +56,25 @@ namespace MNA.Areas.Student.Controllers
                         ExpireDate = DateOnly.FromDateTime(DateTime.Now.AddMonths(6)), // Example expiration
                         PaymentIntentId = session.PaymentIntentId // Assign PaymentIntentId
                     };
+                    double newPrice = 0;
+                    if (item.DiscountedPrice > 0)
+                    {
+                        newPrice = item.DiscountedPrice;
+                    }
+                    else
+                    {
+                        newPrice = item.Course.Price;
+                    }
                     var payment = new Payment
                     {
                         ApplicationUserId = applicationUserId,
-                        CourseId=item.CourseId,
-                        TransactionId =
-                    }
+                        CourseId = item.CourseId,
+                        Amount = newPrice,
+                        Date = DateOnly.FromDateTime(DateTime.Now)
+                    };
 
                     _unitOfWork.Enrollments.Create(enrollment);
-                    _unitOfWork.Payments.Create()
+                    _unitOfWork.Payments.Create(payment);
                     _unitOfWork.Carts.Delete(item);
                 }
 
