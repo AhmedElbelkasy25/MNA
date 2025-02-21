@@ -24,7 +24,7 @@ namespace DataAccess
         public DbSet<StudentCategories> StudentCategories { get; set; }
         public DbSet<StudentCouPons> StudentCouPons { get; set; }
         
-        
+        public DbSet<InstructorApplication> InstructorApplications { get; set; }
         
 
 

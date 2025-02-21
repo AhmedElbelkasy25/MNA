@@ -5,6 +5,7 @@ using Models;
 using Stripe;
 using Stripe.Checkout;
 using Microsoft.AspNetCore.Authorization;
+using Stripe.V2;
 
 namespace MNA.Areas.Student.Controllers
 {
@@ -54,8 +55,15 @@ namespace MNA.Areas.Student.Controllers
                         ExpireDate = DateOnly.FromDateTime(DateTime.Now.AddMonths(6)), // Example expiration
                         PaymentIntentId = session.PaymentIntentId // Assign PaymentIntentId
                     };
+                    var payment = new Payment
+                    {
+                        ApplicationUserId = applicationUserId,
+                        CourseId=item.CourseId,
+                        TransactionId =
+                    }
 
                     _unitOfWork.Enrollments.Create(enrollment);
+                    _unitOfWork.Payments.Create()
                     _unitOfWork.Carts.Delete(item);
                 }
 
