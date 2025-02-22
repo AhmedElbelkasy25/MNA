@@ -136,7 +136,7 @@ namespace MNA.Areas.Admin.Controllers
                         var instructor = _unitOfWork.Instructors.GetOne(i => i.UserId == user.Id);
                         if (instructor == null)
                         {
-                            instructor = new Models.Instructor { UserId = user.Id };
+                            instructor = new Models.Instructor { UserId = user.Id,Name= user.Name,PicUrl=user.ImgUrl };
                             _unitOfWork.Instructors.Create(instructor);
                             _unitOfWork.Commit();
                         }

@@ -1,0 +1,37 @@
+﻿@model IEnumerable<Models.InstructorApplication>
+
+@{
+    ViewData["Title"] = "Instructor Applications";
+}
+
+<h2>Instructor Applications</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Bio</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var app in Model)
+        {
+            <tr>
+                <td>@app.FullName</td>
+                <td>@app.Email</td>
+                <td>@app.Bio</td>
+                <td>@(app.IsApproved ? "Approved" : "Pending")</td>
+                <td>
+                    @if (!app.IsApproved)
+                    {
+                        <a asp-action="Approve" asp-route-id="@app.Id" class="btn btn-success btn-sm">Approve</a>
+                        <a asp-action="Reject" asp-route-id="@app.Id" class="btn btn-danger btn-sm">Reject</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

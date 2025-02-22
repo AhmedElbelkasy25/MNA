@@ -14,7 +14,7 @@ namespace Models
         public string? Bio { get; set; }
         public string? PicUrl { get; set; }
         public Double? Rating { get; set; }
-        public ICollection<Course> Courses { get; set; } = new List<Course>();
+        public ICollection<Course> Courses { get; set; } 
         public string? UserId { get; set; } 
         public ApplicationUser User { get; set; } 
     }

@@ -25,6 +25,7 @@ namespace DataAccess.Repository.IRepository
         IQuestionRepository Questions { get; }
         IStudentCategoriesRepository StudentCategories { get; }
         IStudentCouponsRepository StudentCoupons { get; }
+        IInstructorApplicationRepository InstructorApplications { get; }
 
         public void Commit();
         public void ExecuteRawSql(string sql);

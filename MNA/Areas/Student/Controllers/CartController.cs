@@ -164,9 +164,9 @@ namespace MNA.Areas.Student.Controllers
             foreach (var item in shoppingCarts)
             {
                 double coursePrice;
-                if(item.DiscountedPrice != null)
+                if (item.DiscountedPrice != null && item.DiscountedPrice != 0)
                 {
-                    coursePrice = Math.Round((double) item.DiscountedPrice ,2);
+                    coursePrice = Math.Round((double)item.DiscountedPrice, 2);
                 }
                 else { coursePrice = (double)item.Course.Price; }
                 options.LineItems.Add(new SessionLineItemOptions
@@ -179,7 +179,7 @@ namespace MNA.Areas.Student.Controllers
                             Name = item.Course.Title,
                             Description = item.Course.Description,
                         },
-                        
+
                         UnitAmount = (long)coursePrice * 100,
                     },
                     Quantity = item.Count,
@@ -266,15 +266,16 @@ namespace MNA.Areas.Student.Controllers
             int cartCount = _unitOfWork.Carts.Get(c => c.ApplicationUserId == userId).Sum(c => c.Count);
             return Json(cartCount);
         }
+        [Authorize]
         [HttpPost]
         public IActionResult AddToFavorites(int courseId)
         {
             var applicationUserId = _userManager.GetUserId(User);
 
-            if (applicationUserId == null)
-            {
-                return Json(new { success = false, message = "You must be logged in!" });
-            }
+            //if (applicationUserId == null)
+            //{
+            //    return Json(new { success = false, message = "You must be logged in!" });
+            //}
 
             var existingFavorite = _unitOfWork.Favourites.GetOne(f => f.ApplicationUserId == applicationUserId && f.CourseId == courseId);
 

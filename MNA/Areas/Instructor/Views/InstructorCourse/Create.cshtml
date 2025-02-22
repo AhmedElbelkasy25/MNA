@@ -1,0 +1,121 @@
+﻿@model Models.Course
+
+@{
+    ViewData["Title"] = "Create Course";
+}
+
+<h1 class="text-center mb-4" style="color: #007bff; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);">
+    <i class="bi bi-book"></i> Create Course
+</h1>
+
+<!-- Card Container for Form -->
+<div class="container d-flex justify-content-center">
+    <div class="card shadow-lg border-0 rounded-4 p-4" style="max-width: 500px; width: 100%;">
+        <div class="card-body">
+            <h4 class="text-center text-primary fw-bold mb-3">Course Details</h4>
+            <hr />
+
+            <!-- Form for Course Creation -->
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Title -->
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label fw-bold"><i class="bi bi-pencil"></i> Title</label>
+                    <input asp-for="Title" class="form-control rounded-pill" placeholder="Enter course title" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <!-- Preview -->
+                <div class="mb-3">
+                    <label asp-for="preview" class="form-label fw-bold"><i class="bi bi-camera-video"></i> Preview</label>
+                    <input name="file2" type="file" class="form-control rounded-pill" accept="video/*" />
+                    <span asp-validation-for="preview" class="text-danger"></span>
+                </div>
+
+                <!-- Description -->
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label fw-bold"><i class="bi bi-file-text"></i> Description</label>
+                    <textarea asp-for="Description" class="form-control rounded-3" rows="3" placeholder="Enter course description"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <!-- Price -->
+                <div class="mb-3">
+                    <label asp-for="Price" class="form-label fw-bold"><i class="bi bi-currency-dollar"></i> Price</label>
+                    <input asp-for="Price" type="number" class="form-control rounded-pill" placeholder="Enter course price" step="0.01" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+
+
+                <!-- Image Upload -->
+                <div class="mb-3">
+                    <label asp-for="ImgUrl" class="form-label fw-bold"><i class="bi bi-image"></i> Upload Course Image</label>
+                    <input type="file" name="file" onchange="previewImage(event)" class="form-control rounded-pill" accept="image/*" />
+                    <span asp-validation-for="ImgUrl" class="text-danger"></span>
+
+                    <!-- Image Preview -->
+                    <div class="text-center mt-3">
+                        <img id="imgPreview" src="#" alt="Image Preview" class="img-thumbnail shadow" style="display: none; max-width: 100%; height: auto; border-radius: 10px;" />
+                    </div>
+                </div>
+                <!-- Date -->
+                <div class="mb-3">
+                    <label asp-for="Date" class="form-label fw-bold"><i class="bi bi-calendar"></i> Date</label>
+                    <input type="date" asp-for="Date" class="form-control rounded-pill" />
+                    <span asp-validation-for="Date" class="text-danger"></span>
+                </div>
+
+                <!-- Category Selection -->
+                <div class="mb-3">
+                    <label asp-for="CategoryId" class="form-label fw-bold"><i class="bi bi-tags"></i> Category</label>
+                    <select asp-for="CategoryId" class="form-control rounded-pill" >
+                        @foreach (var item in ViewBag.Categories)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg rounded-pill w-100">
+                        <i class="bi bi-check-circle"></i> Create Course
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Back to List Button -->
+<div class="text-center mt-4">
+    <a asp-action="Index" class="btn btn-outline-primary px-4 py-2 rounded-pill shadow-sm text-decoration-none">
+        <i class="bi bi-arrow-left"></i> Back to List
+    </a>
+</div>
+
+@section Scripts {
+    <script>
+        // Function to preview image
+        function previewImage(event) {
+            var input = event.target;
+            var preview = document.getElementById('imgPreview');
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

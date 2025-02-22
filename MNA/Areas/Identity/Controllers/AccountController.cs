@@ -327,30 +327,56 @@ namespace MNA.Areas.Identity.Controllers
                 return RedirectToAction(nameof(Login));
             }
 
-            // Attempt to sign in the user
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
-            if (result.Succeeded)
+            // Try signing in with an external login
+            var signInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+            if (signInResult.Succeeded)
             {
                 return LocalRedirect(returnUrl ?? "/");
             }
-            else
+
+            // If the user cannot log in, try finding them by email
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            if (email != null)
             {
-                // If the user does not have an account, we create one
-                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-                if (email != null)
+                var user = await _userManager.FindByEmailAsync(email);
+                if (user == null)
                 {
-                    var user = new ApplicationUser { UserName = email, Email = email };
-                    var createResult = await _userManager.CreateAsync(user);
-                    if (createResult.Succeeded)
+                    // Create a new user if they do not exist
+                    user = new ApplicationUser
                     {
-                        await _userManager.AddLoginAsync(user, info);
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl ?? "/");
+                        UserName = email,
+                        Email = email
+                    };
+                    var createUserResult = await _userManager.CreateAsync(user);
+                    if (!createUserResult.Succeeded)
+                    {
+                        ModelState.AddModelError(string.Empty, "Error creating user.");
+                        return RedirectToAction(nameof(Login));
                     }
                 }
-                return RedirectToAction(nameof(Login));
+
+                // Ensure the external login is linked
+                var existingLogins = await _userManager.GetLoginsAsync(user);
+                var hasGoogleLogin = existingLogins.Any(l => l.LoginProvider == info.LoginProvider);
+
+                if (!hasGoogleLogin)
+                {
+                    var addLoginResult = await _userManager.AddLoginAsync(user, info);
+                    if (!addLoginResult.Succeeded)
+                    {
+                        ModelState.AddModelError(string.Empty, "Error linking external login.");
+                        return RedirectToAction(nameof(Login));
+                    }
+                }
+
+                // Sign in the user
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                return LocalRedirect(returnUrl ?? "/");
             }
+
+            return RedirectToAction(nameof(Login));
         }
+
 
     }
 }

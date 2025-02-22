@@ -43,6 +43,7 @@ namespace DataAccess.Repository
         public IStudentCategoriesRepository StudentCategories { get; private set; }
 
         public IStudentCouponsRepository StudentCoupons { get; private set; }
+        public IInstructorApplicationRepository InstructorApplications { get; private set; }
 
         public UnitOfWork(ApplicationDbContext dbContext ) {
             this._dbContext = dbContext;
@@ -63,7 +64,7 @@ namespace DataAccess.Repository
             Questions = new QuestionRepository(_dbContext);
             StudentCategories = new StudentCategoriesRepository(_dbContext);
             StudentCoupons = new StudentCouponsRepository(_dbContext);
-
+            InstructorApplications = new InstructorApplicationRepository(_dbContext);
         }
 
         public void Commit()
