@@ -134,24 +134,15 @@ namespace MNA.Areas.Instructor.Controllers
             return View(course);
         }
 
-        // Delete - Show confirmation page
-        public IActionResult Delete(int id)
-        {
-            var course = _unitOfWork.Courses.GetOne(c => c.Id == id, includeProps: query => query.Include(c => c.Category));
-            if (course == null) return NotFound();
-
-            return View(course);
-        }
-
-        // Delete - Confirm deletion
-        [HttpPost, ActionName("Delete")]
+        // Delete - Delete the course directly with a confirmation prompt
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public IActionResult Delete(int id)
         {
             var course = _unitOfWork.Courses.GetOne(c => c.Id == id);
             if (course == null) return NotFound();
 
-            // disable the trigger of courses table
+            // Disable the trigger before deleting
             _unitOfWork.ExecuteRawSql("DISABLE TRIGGER triggerUpdateInstructorRating ON Courses");
 
             _unitOfWork.Courses.Delete(course);
@@ -161,6 +152,7 @@ namespace MNA.Areas.Instructor.Controllers
             TempData["success"] = "Course has been deleted successfully";
             return RedirectToAction(nameof(Index));
         }
+
 
 
 

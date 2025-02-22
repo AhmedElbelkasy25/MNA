@@ -141,6 +141,10 @@
             display: inline-block; 
         }
 
+
+
+
+
     </style>
 </head>
 <body class="@((ViewData["BodyClass"] ?? "").ToString())">
@@ -269,7 +273,7 @@
                     @if (isInstructor)
                     {
                         <li class="nav-item">
-                            <a class="nav-link btn btn-warning text-dark" asp-area="Instructor" asp-controller="InstructorCourse" asp-action="Index">
+                            <a class=" btn text-light" asp-area="Instructor" asp-controller="InstructorCourse" asp-action="Index">
                                 <i class="fas fa-chalkboard-teacher"></i> My Courses
                             </a>
                         </li>

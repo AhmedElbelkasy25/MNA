@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models;
+using System.Security.Claims;
 
 namespace MNA.Areas.Admin.Controllers
 {
@@ -32,22 +33,21 @@ namespace MNA.Areas.Admin.Controllers
         //    return View(sections);
         //}
 
-        public IActionResult Create(int? courseId)
+        public IActionResult Create()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var instructor = _unitOfWork.Instructors.GetOne(i => i.UserId == userId);
 
-            if (courseId == null)
+            if (instructor == null)
             {
-                ViewBag.Courses = _unitOfWork.Courses.Get().ToList();
+                return NotFound("Instructor profile not found.");
             }
-            else
-            {
 
-                ViewBag.Courses = _unitOfWork.Courses.Get(filter:e=>e.Id== courseId).ToList();
-            }
-            //ViewBag.Courses = _unitOfWork.Sections.Get(includeProps:e=>e.Include(e=>e.Course)
-            //.ThenInclude(e=>e.Instructor).ThenInclude(e=>e.),filter: e=>e.Course.Instructor. );
+            ViewBag.Courses = _unitOfWork.Courses.Get(c => c.InstructorId == instructor.Id).ToList();
+
             return View();
         }
+
 
 
         [HttpPost]

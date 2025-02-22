@@ -22,7 +22,6 @@ else
                         </a>
                         <form asp-area="Student" asp-controller="Checkout" asp-action="Refund" method="post">
                             <input type="hidden" name="paymentIntentId" value="@course.Enrollments.FirstOrDefault()?.PaymentIntentId" />
-                            <button type="submit" class="btn btn-danger mt-2">Request Refund</button>
                         </form>
                     </div>
                 </div>

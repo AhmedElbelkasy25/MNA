@@ -27,14 +27,29 @@
                             @course.Title
                         </button>
                     </h2>
-                    <a href="/Instructor/InstructorCourse/Delete/@course.Id" class="btn rounded-3 btn-outline-danger" style="position:absolute;right:10%;top:20%;">Delete 🗑</a>
+                    <form asp-action="Delete" asp-controller="InstructorCourse" method="post" class="d-inline" onsubmit="return confirmDelete();">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@course.Id" />
+                        <button type="submit" class="btn rounded-3 btn-outline-danger">Delete 🗑</button>
+                    </form>
                     <a href="/Instructor/InstructorCourse/Edit/@course.Id" class="btn rounded-3 btn-outline-dark" style="position:absolute;right:1%;top:20%;">Edit⚙</a>
                 </div>
-
+                <script>
+                    function confirmDelete() {
+                        return confirm("Are you sure you want to delete this course?");
+                    }
+                </script>
                 <div id="collapseCourse-@course.Id" class="collapse" aria-labelledby="headingCourse-@course.Id" data-bs-parent="#coursesAccordion">
                     <div class="card-body">
                         <div class="accordion" id="sectionsAccordion-@course.Id">
-                            <a class="btn btn-outline-info rounded-3" href="/Instructor/Section/Create?courseId=@course.Id">Create Section ➕</a>
+                            <a class="btn btn-outline-info rounded-3"
+                               asp-area="Instructor"
+                               asp-controller="InstructorSection"
+                               asp-action="Create"
+                               asp-route-courseId="@course.Id">
+                                Create Section ➕
+                            </a>
+
                             @foreach (var sec in course.Sections)
                             {
                                 <div class="card section-card">
@@ -47,8 +62,8 @@
                                                     aria-controls="collapseSection-@sec.Id">
                                                 @sec.Title
                                             </button>
-                                            <a href="/Instructor/Section/Delete/@sec.Id" class="btn rounded-3 btn-outline-danger" style="position:absolute;right:10%">Delete 🗑</a>
-                                            <a href="/Instructor/Section/Edit/@sec.Id" class="btn rounded-3 btn-outline-dark" style="position:absolute;right:1%">Edit⚙</a>
+                                            <a href="/Instructor/InstructorSection/Delete/@sec.Id" class="btn rounded-3 btn-outline-danger" style="position:absolute;right:10%">Delete 🗑</a>
+                                            <a href="/Instructor/InstructorSection/Edit/@sec.Id" class="btn rounded-3 btn-outline-dark" style="position:absolute;right:1%">Edit⚙</a>
                                         </h3>
                                     </div>
                                 </div>
