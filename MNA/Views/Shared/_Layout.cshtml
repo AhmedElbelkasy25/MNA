@@ -323,12 +323,13 @@
     <footer>
         <p>&copy; @DateTime.Now.Year - MNA Academy</p>
             <p>&copy; @DateTime.Now.Year - MNA Academy</p>
-            @if (!User.IsInRole("Instructor") && User.Identity.IsAuthenticated)
-            {
-                <a class="btn btn-warning mt-2" asp-area="Student" asp-controller="InstructorApplication" asp-action="Apply">
-                    Become an Instructor
-                </a>
-            }
+        @if (!User.IsInRole("Instructor") && User.Identity.IsAuthenticated)
+        {
+            <a class="btn btn-warning mt-2" asp-area="Student" asp-controller="InstructorApplication" asp-action="Apply">
+                Become an Instructor
+            </a>
+        }
+
 
     </footer>
 

@@ -19,12 +19,14 @@ namespace MNA.Areas.Student.Controllers
             _unitOfWork = unitOfWork;
             _userManager = userManager;
         }
-
         [Authorize]
         public async Task<IActionResult> Apply()
         {
             var user = await _userManager.GetUserAsync(User);
-            var existingApplication = _unitOfWork.InstructorApplications.GetOne(a => a.UserId == user.Id);
+
+            // Check if an application already exists for the current user
+            var existingApplication = _unitOfWork.InstructorApplications
+                .GetOne(a => a.UserId == user.Id);
 
             if (existingApplication != null)
             {
@@ -32,8 +34,15 @@ namespace MNA.Areas.Student.Controllers
                 return View("ApplicationStatus");
             }
 
-            return View();
+            // Populate the view model with current user data
+            var model = new InstructorApplication
+            {
+                Email = user.Email
+            };
+
+            return View(model);
         }
+
 
         [HttpPost]
         [Authorize]
@@ -42,7 +51,9 @@ namespace MNA.Areas.Student.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             if (!ModelState.IsValid)
-                return View(model);
+            {
+                return View(model); // Return with validation errors
+            }
 
             var newApplication = new InstructorApplication
             {
@@ -58,5 +69,6 @@ namespace MNA.Areas.Student.Controllers
             ViewBag.Message = "Your application has been submitted.";
             return View("ApplicationStatus");
         }
+
     }
 }
