@@ -21,7 +21,7 @@ namespace MNA.Areas.Instructor.Controllers
             this._userManager = userManager;
         }
 
-        // Index - List courses created by the instructor
+        
         public async Task<IActionResult> Index(int pageNumber = 1, int numOfItems = 9)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -30,7 +30,7 @@ namespace MNA.Areas.Instructor.Controllers
 
             var courses = _unitOfWork.Courses.Get(
                 c => c.InstructorId == instructor.Id,
-                includeProps: query => query.Include(c => c.Category).Include(c => c.Sections)
+                includeProps: query => query.Include(c => c.Category).Include(c => c.Sections).ThenInclude(e=>e.Lessons).ThenInclude(e=>e.Quizs)
             );
 
             int pages = (int)Math.Ceiling((double)courses.Count() / numOfItems);
@@ -46,14 +46,14 @@ namespace MNA.Areas.Instructor.Controllers
             return View(coursePaginationVM);
         }
 
-        // Create - Show form to create a new course
+        
         public IActionResult Create()
         {
             ViewBag.Categories = _unitOfWork.Categories.Get().ToList();
             return View();
         }
 
-        // Create - Save new course to database
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Course course, IFormFile? file, IFormFile? file2)
@@ -61,6 +61,7 @@ namespace MNA.Areas.Instructor.Controllers
             ModelState.Remove("ImgUrl");
             ModelState.Remove("Category");
             ModelState.Remove("Instructor");
+            ModelState.Remove("InstructorId");
             ModelState.Remove("Preview");
 
             var user = await _userManager.GetUserAsync(User);
@@ -71,15 +72,24 @@ namespace MNA.Areas.Instructor.Controllers
             {
                 if (file != null && file.Length > 0 && file2 != null && file2.Length > 0)
                 {
+                    // Genereate name
                     var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                     var file2Name = Guid.NewGuid().ToString() + Path.GetExtension(file2.FileName);
 
-                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/Course", fileName);
-                    var file2Path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Videos/Previews", file2Name);
+                    // Save in wwwroot
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\Course", fileName);
+                    var file2Path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Videos\\Previews", file2Name);
 
-                    using (var stream = System.IO.File.Create(filePath)) { file.CopyTo(stream); }
-                    using (var stream = System.IO.File.Create(file2Path)) { file2.CopyTo(stream); }
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        file.CopyTo(stream);
+                    }
+                    using (var stream = System.IO.File.Create(file2Path))
+                    {
+                        file2.CopyTo(stream);
+                    }
 
+                    // Save in db
                     course.ImgUrl = fileName;
                     course.preview = file2Name;
                 }
@@ -105,7 +115,7 @@ namespace MNA.Areas.Instructor.Controllers
             return View(course);
         }
 
-        // Edit - Show edit form
+        
         public IActionResult Edit(int id)
         {
             var course = _unitOfWork.Courses.GetOne(c => c.Id == id, includeProps: query => query.Include(c => c.Category));
@@ -115,7 +125,7 @@ namespace MNA.Areas.Instructor.Controllers
             return View(course);
         }
 
-        // Edit - Update course details
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Course course, IFormFile? file, IFormFile? file2)
@@ -124,31 +134,67 @@ namespace MNA.Areas.Instructor.Controllers
             ModelState.Remove("ImgUrl");
             ModelState.Remove("Category");
             ModelState.Remove("Instructor");
+            
             ModelState.Remove("Preview");
 
             var user = await _userManager.GetUserAsync(User);
             var instructor = _unitOfWork.Instructors.GetOne(i => i.UserId == user.Id);
             if (instructor == null) return Unauthorized();
-
+            course.InstructorId= instructor.Id;
             var oldCourse = _unitOfWork.Courses.GetOne(c => c.Id == course.Id, tracked: false);
             if (ModelState.IsValid)
             {
                 if (file != null && file.Length > 0)
                 {
+                    // Genereate name
                     var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/Course", fileName);
 
-                    using (var stream = System.IO.File.Create(filePath)) { file.CopyTo(stream); }
+                    // Save in wwwroot
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\Course", fileName);
 
-                    if (!string.IsNullOrEmpty(oldCourse.ImgUrl))
+                    using (var stream = System.IO.File.Create(filePath))
                     {
-                        var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/Course", oldCourse.ImgUrl);
-                        if (System.IO.File.Exists(oldPath)) System.IO.File.Delete(oldPath);
+                        file.CopyTo(stream);
+                    }
+                    //delete old img
+                    var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\Course", oldCourse.ImgUrl);
+                    if (System.IO.File.Exists(oldPath))
+                    {
+                        System.IO.File.Delete(oldPath);
                     }
 
+                    // Save in db
                     course.ImgUrl = fileName;
                 }
                 else { course.ImgUrl = oldCourse.ImgUrl; }
+                // preview
+
+                if (file2 != null && file2.Length > 0)
+                {
+                    // Genereate name
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file2.FileName);
+
+                    // Save in wwwroot
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Videos\\Previews", fileName);
+
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        file2.CopyTo(stream);
+                    }
+                    //delete old img
+                    var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Videos\\Previews", oldCourse.preview);
+                    if (System.IO.File.Exists(oldPath))
+                    {
+                        System.IO.File.Delete(oldPath);
+                    }
+
+                    // Save in db
+                    course.preview = fileName;
+                }
+                else
+                {
+                    course.preview = oldCourse.preview;
+                }
 
                 // disable the trigger of courses table
                 _unitOfWork.ExecuteRawSql("DISABLE TRIGGER triggerUpdateInstructorRating ON Courses");
@@ -165,7 +211,7 @@ namespace MNA.Areas.Instructor.Controllers
             return View(course);
         }
 
-        // Delete - Show confirmation page
+        
         public IActionResult Delete(int id)
         {
             var course = _unitOfWork.Courses.GetOne(c => c.Id == id, includeProps: query => query.Include(c => c.Category));

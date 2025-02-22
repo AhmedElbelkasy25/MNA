@@ -69,8 +69,11 @@
                 <!-- Category Selection -->
                 <div class="mb-3">
                     <label asp-for="CategoryId" class="form-label fw-bold"><i class="bi bi-tags"></i> Category</label>
-                    <select asp-for="CategoryId" class="form-control rounded-pill" asp-items="ViewBag.Categories">
-                        <option value="">-- Select Category --</option>
+                    <select asp-for="CategoryId" class="form-control rounded-pill" >
+                        @foreach (var item in ViewBag.Categories)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
                     </select>
 
                     <span asp-validation-for="CategoryId" class="text-danger"></span>
