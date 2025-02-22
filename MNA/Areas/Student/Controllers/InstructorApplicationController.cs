@@ -28,11 +28,28 @@ namespace MNA.Areas.Student.Controllers
             var existingApplication = _unitOfWork.InstructorApplications
                 .GetOne(a => a.UserId == user.Id);
 
-            if (existingApplication != null)
+
+            //var existingApplication = _unitOfWork.InstructorApplications
+            //    .Get(filter: a => a.UserId == user.Id).FirstOrDefault();
+
+
+
+
+
+            //if (existingApplication != null)
+            //{
+            //    ViewBag.Message = "You have already applied.";
+            //    return View("ApplicationStatus");
+            //}
+
+            // Populate the view model with current user data
+            var model = new InstructorApplication
             {
-                ViewBag.Message = "You have already applied.";
-                return View("ApplicationStatus");
-            }
+                Email = user.Email
+            };
+
+            return View(model);
+        }
 
             // Populate the view model with current user data
             var model = new InstructorApplication
@@ -55,15 +72,13 @@ namespace MNA.Areas.Student.Controllers
                 return View(model); // Return with validation errors
             }
 
-            var newApplication = new InstructorApplication
+            _unitOfWork.InstructorApplications.Create(new InstructorApplication
             {
                 UserId = user.Id,
                 FullName = model.FullName,
                 Email = model.Email,
                 Bio = model.Bio
-            };
-
-            _unitOfWork.InstructorApplications.Create(newApplication);
+            });
             _unitOfWork.Commit();
 
             ViewBag.Message = "Your application has been submitted.";
