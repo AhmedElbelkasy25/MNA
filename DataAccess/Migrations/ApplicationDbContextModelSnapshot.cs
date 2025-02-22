@@ -262,7 +262,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Carts");
+                    b.ToTable("Carts", (string)null);
                 });
 
             modelBuilder.Entity("Models.Category", b =>
@@ -279,7 +279,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Models.Coupon", b =>
@@ -310,7 +310,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Coupons");
+                    b.ToTable("Coupons", (string)null);
                 });
 
             modelBuilder.Entity("Models.Course", b =>
@@ -357,7 +357,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("InstructorId");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("Models.Degree", b =>
@@ -395,7 +395,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("LessonId");
 
-                    b.ToTable("Degree");
+                    b.ToTable("Degree", (string)null);
                 });
 
             modelBuilder.Entity("Models.Enrollment", b =>
@@ -425,7 +425,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Enrollments");
+                    b.ToTable("Enrollments", (string)null);
                 });
 
             modelBuilder.Entity("Models.Favourite", b =>
@@ -449,7 +449,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Favourites");
+                    b.ToTable("Favourites", (string)null);
                 });
 
             modelBuilder.Entity("Models.Instructor", b =>
@@ -482,7 +482,41 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Instructors");
+                    b.ToTable("Instructors", (string)null);
+                });
+
+            modelBuilder.Entity("Models.InstructorApplication", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Bio")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("InstructorApplication", (string)null);
                 });
 
             modelBuilder.Entity("Models.Lesson", b =>
@@ -508,7 +542,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("SectionId");
 
-                    b.ToTable("Lessons");
+                    b.ToTable("Lessons", (string)null);
                 });
 
             modelBuilder.Entity("Models.Payment", b =>
@@ -532,17 +566,13 @@ namespace DataAccess.Migrations
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date");
 
-                    b.Property<string>("TransactionId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("Models.Question", b =>
@@ -567,7 +597,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("QuizId");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Questions", (string)null);
                 });
 
             modelBuilder.Entity("Models.Quiz", b =>
@@ -585,7 +615,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("LessonId");
 
-                    b.ToTable("Quizzes");
+                    b.ToTable("Quizzes", (string)null);
                 });
 
             modelBuilder.Entity("Models.Review", b =>
@@ -616,7 +646,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Reviews", t =>
+                    b.ToTable("Reviews", null, t =>
                         {
                             t.HasTrigger("triggerUpdateCourseRating");
                         });
@@ -643,7 +673,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Sections");
+                    b.ToTable("Sections", (string)null);
                 });
 
             modelBuilder.Entity("Models.StudentCategories", b =>
@@ -667,7 +697,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("StudentCategories");
+                    b.ToTable("StudentCategories", (string)null);
                 });
 
             modelBuilder.Entity("Models.StudentCouPons", b =>
@@ -694,7 +724,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("CouponId");
 
-                    b.ToTable("StudentCouPons");
+                    b.ToTable("StudentCouPons", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -867,6 +897,17 @@ namespace DataAccess.Migrations
                     b.HasOne("Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Models.InstructorApplication", b =>
+                {
+                    b.HasOne("Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

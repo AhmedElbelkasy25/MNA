@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models;
 using Models.ViewModels;
-using System.Security.Claims;
 
 namespace MNA.Areas.Instructor.Controllers
 {
@@ -18,142 +17,225 @@ namespace MNA.Areas.Instructor.Controllers
 
         public InstructorCourseController(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
         {
-            _unitOfWork = unitOfWork;
-            _userManager = userManager;
+            this._unitOfWork = unitOfWork;
+            this._userManager = userManager;
         }
 
-        public IActionResult Index(int? categoryId, int pageNumber = 1, int numOfItems = 9)
+        
+        public async Task<IActionResult> Index(int pageNumber = 1, int numOfItems = 9)
         {
-            // Get the logged-in user's ID
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
-            {
-                return Unauthorized();
-            }
+            var user = await _userManager.GetUserAsync(User);
+            var instructor = _unitOfWork.Instructors.GetOne(i => i.UserId == user.Id);
+            if (instructor == null) return Unauthorized();
 
-            // Get the instructor linked to this user
-            var instructor = _unitOfWork.Instructors.GetOne(i => i.UserId == userId);
-            if (instructor == null)
-            {
-                return NotFound("Instructor profile not found.");
-            }
-
-            // Query courses created by this instructor
-            var query = _unitOfWork.Courses.Get(
-                filter: c => c.InstructorId == instructor.Id, // Filter by instructor
-                includeProps: q => q.Include(c => c.Category).Include(c => c.Instructor)
+            var courses = _unitOfWork.Courses.Get(
+                c => c.InstructorId == instructor.Id,
+                includeProps: query => query.Include(c => c.Category).Include(c => c.Sections).ThenInclude(e=>e.Lessons).ThenInclude(e=>e.Quizs)
             );
 
-            // Apply Category Filter
-            if (categoryId.HasValue)
-            {
-                query = query.Where(c => c.CategoryId == categoryId);
-                ViewBag.CategoryName = _unitOfWork.Categories.GetOne(c => c.Id == categoryId)?.Name ?? "All Courses";
-            }
-            else
-            {
-                ViewBag.CategoryName = "All Courses";
-            }
+            int pages = (int)Math.Ceiling((double)courses.Count() / numOfItems);
+            courses = courses.Skip((pageNumber - 1) * numOfItems).Take(numOfItems);
 
-            // Pagination
-            int totalItems = query.Count();
-            int totalPages = (int)Math.Ceiling((double)totalItems / numOfItems);
-            var courses = query.Skip((pageNumber - 1) * numOfItems).Take(numOfItems).ToList();
-
-            var coursePaginationVM = new CoursePaginationVM
+            CoursePaginationVM coursePaginationVM = new CoursePaginationVM()
             {
-                Courses = courses,
-                Pages = totalPages,
+                Courses = courses.ToList(),
+                Pages = pages,
                 PageNumber = pageNumber
             };
 
             return View(coursePaginationVM);
         }
 
-
-
+        
         public IActionResult Create()
         {
+            ViewBag.Categories = _unitOfWork.Categories.Get().ToList();
             return View();
         }
 
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Course course, IFormFile? file)
+        public async Task<IActionResult> Create(Course course, IFormFile? file, IFormFile? file2)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return Unauthorized();
+            ModelState.Remove("ImgUrl");
+            ModelState.Remove("Category");
+            ModelState.Remove("Instructor");
+            ModelState.Remove("InstructorId");
+            ModelState.Remove("Preview");
 
+            var user = await _userManager.GetUserAsync(User);
             var instructor = _unitOfWork.Instructors.GetOne(i => i.UserId == user.Id);
             if (instructor == null) return Unauthorized();
-
-            course.InstructorId = instructor.Id;
 
             if (ModelState.IsValid)
             {
+                if (file != null && file.Length > 0 && file2 != null && file2.Length > 0)
+                {
+                    // Genereate name
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    var file2Name = Guid.NewGuid().ToString() + Path.GetExtension(file2.FileName);
+
+                    // Save in wwwroot
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\Course", fileName);
+                    var file2Path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Videos\\Previews", file2Name);
+
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        file.CopyTo(stream);
+                    }
+                    using (var stream = System.IO.File.Create(file2Path))
+                    {
+                        file2.CopyTo(stream);
+                    }
+
+                    // Save in db
+                    course.ImgUrl = fileName;
+                    course.preview = file2Name;
+                }
+                else
+                {
+                    ViewBag.Categories = _unitOfWork.Categories.Get().ToList();
+                    return View(course);
+                }
+
+                course.InstructorId = instructor.Id;
+                // disable the trigger of courses table
+                _unitOfWork.ExecuteRawSql("DISABLE TRIGGER triggerUpdateInstructorRating ON Courses");
+
                 _unitOfWork.Courses.Create(course);
                 _unitOfWork.Commit();
+                _unitOfWork.ExecuteRawSql("ENABLE TRIGGER triggerUpdateInstructorRating ON Courses");
+
+                TempData["success"] = "Course has been added successfully";
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.Categories = _unitOfWork.Categories.Get().ToList();
             return View(course);
         }
 
-        public async Task<IActionResult> Edit(int id)
+        
+        public IActionResult Edit(int id)
         {
-            var user = await _userManager.GetUserAsync(User);
-            var instructor = _unitOfWork.Instructors.GetOne(i => i.UserId == user.Id);
-            if (instructor == null) return Unauthorized();
-
-            var course = _unitOfWork.Courses.GetOne(c => c.Id == id && c.InstructorId == instructor.Id);
+            var course = _unitOfWork.Courses.GetOne(c => c.Id == id, includeProps: query => query.Include(c => c.Category));
             if (course == null) return NotFound();
 
+            ViewBag.Categories = _unitOfWork.Categories.Get().ToList();
             return View(course);
         }
 
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Course course)
+        public async Task<IActionResult> Edit(int id, Course course, IFormFile? file, IFormFile? file2)
         {
+            if (id != course.Id) return BadRequest();
+            ModelState.Remove("ImgUrl");
+            ModelState.Remove("Category");
+            ModelState.Remove("Instructor");
+            
+            ModelState.Remove("Preview");
+
             var user = await _userManager.GetUserAsync(User);
             var instructor = _unitOfWork.Instructors.GetOne(i => i.UserId == user.Id);
             if (instructor == null) return Unauthorized();
-
-            if (id != course.Id || course.InstructorId != instructor.Id)
+            course.InstructorId= instructor.Id;
+            var oldCourse = _unitOfWork.Courses.GetOne(c => c.Id == course.Id, tracked: false);
+            if (ModelState.IsValid)
             {
-                return BadRequest();
+                if (file != null && file.Length > 0)
+                {
+                    // Genereate name
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+
+                    // Save in wwwroot
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\Course", fileName);
+
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        file.CopyTo(stream);
+                    }
+                    //delete old img
+                    var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\Course", oldCourse.ImgUrl);
+                    if (System.IO.File.Exists(oldPath))
+                    {
+                        System.IO.File.Delete(oldPath);
+                    }
+
+                    // Save in db
+                    course.ImgUrl = fileName;
+                }
+                else { course.ImgUrl = oldCourse.ImgUrl; }
+                // preview
+
+                if (file2 != null && file2.Length > 0)
+                {
+                    // Genereate name
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file2.FileName);
+
+                    // Save in wwwroot
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Videos\\Previews", fileName);
+
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        file2.CopyTo(stream);
+                    }
+                    //delete old img
+                    var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Videos\\Previews", oldCourse.preview);
+                    if (System.IO.File.Exists(oldPath))
+                    {
+                        System.IO.File.Delete(oldPath);
+                    }
+
+                    // Save in db
+                    course.preview = fileName;
+                }
+                else
+                {
+                    course.preview = oldCourse.preview;
+                }
+
+                // disable the trigger of courses table
+                _unitOfWork.ExecuteRawSql("DISABLE TRIGGER triggerUpdateInstructorRating ON Courses");
+
+                _unitOfWork.Courses.Alter(course);
+                _unitOfWork.Commit();
+                _unitOfWork.ExecuteRawSql("ENABLE TRIGGER triggerUpdateInstructorRating ON Courses");
+
+                TempData["success"] = "Course has been updated successfully";
+                return RedirectToAction(nameof(Index));
             }
 
-            _unitOfWork.Courses.Alter(course);
-            _unitOfWork.Commit();
-            return RedirectToAction(nameof(Index));
+            ViewBag.Categories = _unitOfWork.Categories.Get().ToList();
+            return View(course);
         }
 
-        public async Task<IActionResult> Delete(int id)
+        
+        public IActionResult Delete(int id)
         {
-            var user = await _userManager.GetUserAsync(User);
-            var instructor = _unitOfWork.Instructors.GetOne(i => i.UserId == user.Id);
-            if (instructor == null) return Unauthorized();
-
-            var course = _unitOfWork.Courses.GetOne(c => c.Id == id && c.InstructorId == instructor.Id);
+            var course = _unitOfWork.Courses.GetOne(c => c.Id == id, includeProps: query => query.Include(c => c.Category));
             if (course == null) return NotFound();
 
             return View(course);
         }
 
+        // Delete - Confirm deletion
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            var user = await _userManager.GetUserAsync(User);
-            var instructor = _unitOfWork.Instructors.GetOne(i => i.UserId == user.Id);
-            if (instructor == null) return Unauthorized();
-
-            var course = _unitOfWork.Courses.GetOne(c => c.Id == id && c.InstructorId == instructor.Id);
+            var course = _unitOfWork.Courses.GetOne(c => c.Id == id);
             if (course == null) return NotFound();
+
+            // disable the trigger of courses table
+            _unitOfWork.ExecuteRawSql("DISABLE TRIGGER triggerUpdateInstructorRating ON Courses");
 
             _unitOfWork.Courses.Delete(course);
             _unitOfWork.Commit();
+            _unitOfWork.ExecuteRawSql("ENABLE TRIGGER triggerUpdateInstructorRating ON Courses");
 
+            TempData["success"] = "Course has been deleted successfully";
             return RedirectToAction(nameof(Index));
         }
     }

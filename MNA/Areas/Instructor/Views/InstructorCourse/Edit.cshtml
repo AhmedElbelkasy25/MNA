@@ -1,0 +1,76 @@
+﻿@model Models.Course
+
+@{
+    ViewData["Title"] = "Edit Course";
+}
+<div class="container-fluid bg-white p-4">
+    <h2 class="text-primary">Edit Course</h2>
+
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="form-group">
+            <label asp-for="Title" class="control-label"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="CategoryId" class="control-label">Category</label>
+            <select asp-for="CategoryId" class="form-control rounded-pill">
+                @foreach (var item in ViewBag.Categories)
+                {
+                    <option value="@item.Id" selected="@(Model.CategoryId == item.Id ? "selected" : null)">@item.Name</option>
+                }
+            </select>
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Price" class="control-label"></label>
+            <input asp-for="Price" type="number" step="0.01" class="form-control" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Description" class="control-label"></label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label>Current Image</label><br />
+            @if (!string.IsNullOrEmpty(Model.ImgUrl))
+            {
+                <img src="~/images/Course/@Model.ImgUrl" class="img-thumbnail" width="200" />
+            }
+        </div>
+
+        <div class="form-group">
+            <label for="file">Upload New Image</label>
+            <input type="file" name="file" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label>Current Preview Video</label><br />
+            @if (!string.IsNullOrEmpty(Model.preview))
+            {
+                <video width="250" controls>
+                    <source src="~/Videos/Previews/@Model.preview" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            }
+        </div>
+
+        <div class="form-group">
+            <label for="file2">Upload New Preview Video</label>
+            <input type="file" name="file2" class="form-control" />
+        </div>
+
+        <div class="form-group mt-3">
+            <button type="submit" class="btn btn-success">Save Changes</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+
+</div>

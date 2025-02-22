@@ -1,0 +1,42 @@
+﻿@model Models.InstructorApplication
+
+@{
+    ViewData["Title"] = "Apply to Become an Instructor";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center">Apply to Become an Instructor</h2>
+
+    @if (ViewBag.Message != null)
+    {
+        <div class="alert alert-info">@ViewBag.Message</div>
+    }
+
+    <form asp-area="Student" asp-controller="InstructorApplication" asp-action="Apply" method="post">
+        <input type="hidden" asp-for="UserId" />
+
+        <div class="mb-3">
+            <label asp-for="FullName" class="form-label">Full Name</label>
+            <input asp-for="FullName" class="form-control" required />
+            <span asp-validation-for="FullName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label">Email</label>
+            <input asp-for="Email" type="email" class="form-control" required />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Bio" class="form-label">Tell us about yourself</label>
+            <textarea asp-for="Bio" class="form-control" rows="5" required></textarea>
+            <span asp-validation-for="Bio" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit Application</button>
+    </form>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+</div>

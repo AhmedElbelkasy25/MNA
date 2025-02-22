@@ -231,8 +231,9 @@
                             <div class="card-body d-flex flex-column flex-grow-1">
                                 <h5 class="card-title">@instructor.Name</h5>
                                 <p class="card-text flex-grow-1">@instructor.Bio</p>
-                                <a asp-controller="Instructor" asp-action="GetProfile" asp-route-id="@instructor.Id"
+                                <a asp-area="Student" asp-controller="Instructor" asp-action="Profile" asp-route-id="@instructor.Id"
                                    class="btn btn-primary mt-auto">View Profile</a>
+
                             </div>
                         </div>
                     </div>
