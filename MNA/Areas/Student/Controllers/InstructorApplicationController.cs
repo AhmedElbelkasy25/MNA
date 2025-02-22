@@ -19,21 +19,34 @@ namespace MNA.Areas.Student.Controllers
             _unitOfWork = unitOfWork;
             _userManager = userManager;
         }
-
         [Authorize]
         public async Task<IActionResult> Apply()
         {
             var user = await _userManager.GetUserAsync(User);
-            var existingApplication = _unitOfWork.InstructorApplications.GetOne(a => a.UserId == user.Id);
 
-            if (existingApplication != null)
+
+            //var existingApplication = _unitOfWork.InstructorApplications
+            //    .Get(filter: a => a.UserId == user.Id).FirstOrDefault();
+
+
+
+
+
+            //if (existingApplication != null)
+            //{
+            //    ViewBag.Message = "You have already applied.";
+            //    return View("ApplicationStatus");
+            //}
+
+            // Populate the view model with current user data
+            var model = new InstructorApplication
             {
-                ViewBag.Message = "You have already applied.";
-                return View("ApplicationStatus");
-            }
+                Email = user.Email
+            };
 
-            return View();
+            return View(model);
         }
+
 
         [HttpPost]
         [Authorize]
@@ -42,21 +55,30 @@ namespace MNA.Areas.Student.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             if (!ModelState.IsValid)
-                return View(model);
+            {
+                return View(model); // Return with validation errors
+            }
 
-            var newApplication = new InstructorApplication
+            //var newApplication = new InstructorApplication
+            //{
+            //    UserId = user.Id,
+            //    FullName = model.FullName,
+            //    Email = model.Email,
+            //    Bio = model.Bio
+            //};
+
+            _unitOfWork.InstructorApplications.Create(new InstructorApplication
             {
                 UserId = user.Id,
                 FullName = model.FullName,
                 Email = model.Email,
                 Bio = model.Bio
-            };
-
-            _unitOfWork.InstructorApplications.Create(newApplication);
+            });
             _unitOfWork.Commit();
 
             ViewBag.Message = "Your application has been submitted.";
             return View("ApplicationStatus");
         }
+
     }
 }
